@@ -1,14 +1,13 @@
-import { ChangeEvent, FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ChangeEvent, FC, useCallback, useEffect, useRef, useState } from "react";
 import debounce from "lodash.debounce";
 import { useCalendar } from "@/context/CalendarProvider";
 import { Day, SchedulerData, SchedulerProjectData, TooltipData, ZoomLevel } from "@/types/global";
 import { getTooltipData } from "@/utils/getTooltipData";
-import { getDatesRange } from "@/utils/getDatesRange";
 import { usePagination } from "@/hooks/usePagination";
 import EmptyBox from "../EmptyBox";
 import { Grid, Header, LeftColumn, Tooltip } from "..";
 import { CalendarProps } from "./types";
-import { StyledOuterWrapper, StyledInnerWrapper } from "./styles";
+import { StyledOuterWrapper, StyledInnerWrapper, StyledEmptyBoxWrapper } from "./styles";
 
 const initialTooltipData: TooltipData = {
   coords: { x: 0, y: 0 },
@@ -21,7 +20,13 @@ const initialTooltipData: TooltipData = {
   reservationData: { startTime: "", client: "", eventName: "" }
 };
 
-export const Calendar: FC<CalendarProps> = ({ data, onTileClick, onItemClick, topBarWidth }) => {
+export const Calendar: FC<CalendarProps> = ({
+  data,
+  onTileClick,
+  onItemClick,
+  toggleTheme,
+  topBarWidth
+}) => {
   const [tooltipData, setTooltipData] = useState<TooltipData>(initialTooltipData);
   const [filteredData, setFilteredData] = useState(data);
   const [isVisible, setIsVisible] = useState(false);
@@ -29,8 +34,7 @@ export const Calendar: FC<CalendarProps> = ({ data, onTileClick, onItemClick, to
   const {
     zoom,
     startDate,
-    date,
-    config: { includeTakenHoursOnWeekendsInDayView }
+    config: { includeTakenHoursOnWeekendsInDayView, showTooltip, showThemeToggle }
   } = useCalendar();
   const gridRef = useRef<HTMLDivElement>(null);
 
@@ -45,7 +49,7 @@ export const Calendar: FC<CalendarProps> = ({ data, onTileClick, onItemClick, to
     next,
     previous,
     reset
-  } = usePagination(filteredData, datesRange);
+  } = usePagination(filteredData);
   const debouncedHandleMouseOver = useRef(
     debounce(
       (
@@ -191,7 +195,12 @@ export const Calendar: FC<CalendarProps> = ({ data, onTileClick, onItemClick, to
         onItemClick={onItemClick}
       />
       <StyledInnerWrapper>
-        <Header zoom={zoom} topBarWidth={topBarWidth} />
+        <Header
+          zoom={zoom}
+          topBarWidth={topBarWidth}
+          showThemeToggle={showThemeToggle}
+          toggleTheme={toggleTheme}
+        />
         {data.length ? (
           <Grid
             data={page}
@@ -201,9 +210,11 @@ export const Calendar: FC<CalendarProps> = ({ data, onTileClick, onItemClick, to
             onTileClick={onTileClick}
           />
         ) : (
-          <EmptyBox />
+          <StyledEmptyBoxWrapper width={topBarWidth}>
+            <EmptyBox />
+          </StyledEmptyBoxWrapper>
         )}
-        {isVisible && tooltipData?.resourceIndex > -1 && (
+        {showTooltip && isVisible && tooltipData?.resourceIndex > -1 && (
           <Tooltip tooltipData={tooltipData} zoom={zoom} />
         )}
       </StyledInnerWrapper>

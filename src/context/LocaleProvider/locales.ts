@@ -1,18 +1,20 @@
-import { en } from "@/locales/en";
-import { pl } from "@/locales/pl";
-import { es } from "@/locales/es";
+
+import enDayjsTranslations from "dayjs/locale/en";
+import plDayjsTranslations from "dayjs/locale/pl";
+import deDayjsTranslations from "dayjs/locale/de";
+import ltDayjsTranslations from "dayjs/locale/lt";
+import { en, pl, de, lt } from "@/locales";
 import { LocaleType } from "./types";
 
-export const locales: LocaleType[] = [
+export const localesData: LocaleType[] = [
   {
     id: "en",
-    name: "ENGLISH",
     lang: en,
-    translateCode: "en-GB"
+    translateCode: "en-GB",
+    dayjsTranslations: enDayjsTranslations
   },
   {
     id: "pl",
-    name: "POLISH",
     lang: pl,
     translateCode: "pl-PL"
   },
@@ -21,5 +23,35 @@ export const locales: LocaleType[] = [
     name: "SPANISH",
     lang: es,
     translateCode: "es-ES"
+    translateCode: "pl-PL",
+    dayjsTranslations: plDayjsTranslations
+  },
+  {
+    id: "lt",
+    lang: lt,
+    translateCode: "lt-LT",
+    dayjsTranslations: ltDayjsTranslations
+  },
+  {
+    id: "de",
+    lang: de,
+    translateCode: "de-DE",
+    dayjsTranslations: deDayjsTranslations
   }
 ];
+
+class Locales {
+  public locales: LocaleType[] = localesData;
+
+  getLocales() {
+    return this.locales;
+  }
+
+  addLocales(locale: LocaleType) {
+    this.locales.push(locale);
+  }
+}
+
+const locales = new Locales();
+
+export { locales };
