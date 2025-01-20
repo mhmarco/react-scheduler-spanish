@@ -1,9 +1,17 @@
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { weekWidth, boxHeight, dayWidth } from "@/constants";
-import { Day, Coords, SchedulerProjectData, TooltipData, ZoomLevel } from "@/types/global";
+import {
+  Day,
+  Coords,
+  SchedulerProjectData,
+  TooltipData,
+  ZoomLevel,
+  SchedulerRow
+} from "@/types/global";
 import { getOccupancy } from "./getOccupancy";
 
 export const getTooltipData = (
+  reservation: SchedulerProjectData,
   startDate: Day,
   cursorPosition: Coords,
   rowsPerPerson: number[],
@@ -33,5 +41,14 @@ export const getTooltipData = (
     zoom,
     includeTakenHoursOnWeekendsInDayView
   );
-  return { coords: { x: xPos, y: yPos }, resourceIndex, disposition };
+  return {
+    coords: { x: xPos, y: yPos },
+    resourceIndex,
+    disposition,
+    reservationData: {
+      startTime: dayjs(reservation.startDate).format("hh:mm A"),
+      client: reservation.subtitle ?? "",
+      eventName: reservation.title
+    }
+  };
 };

@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import { dayWidth, fonts, headerMonthHeight, monthsInYear, topRowTextYPos } from "@/constants";
 import { Day } from "@/types/global";
+import { theme } from "@/styles";
 import { drawRow } from "../../drawRow";
 
 export const drawMonthsOnTop = (ctx: CanvasRenderingContext2D, startDate: Day) => {
@@ -31,7 +32,16 @@ export const drawMonthsOnTop = (ctx: CanvasRenderingContext2D, startDate: Day) =
       width,
       height: headerMonthHeight,
       textYPos: topRowTextYPos,
+      strokeStyle: theme.colors.blue400,
       label:
+        dayjs(`${startDate.year}-${startDate.month + 1}-${startDate.dayOfMonth}`)
+          .month(startMonthIndex)
+          .format("MMMM")
+          .toUpperCase() +
+        ` ${dayjs(`${startDate.year + yearIndex}-${startDate.month + 1}-${startDate.dayOfMonth}`)
+          .month(startMonthIndex)
+          .format("YYYY")}` +
+        "                                                                                             " +
         dayjs(`${startDate.year}-${startDate.month + 1}-${startDate.dayOfMonth}`)
           .month(startMonthIndex)
           .format("MMMM")

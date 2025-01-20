@@ -1,5 +1,5 @@
 export const es = {
-  feelingEmpty: "Me siento vacio...",
+  feelingEmpty: "Cargando...",
   free: "Libre",
   loadNext: "Siguiente",
   loadPrevious: "Anterior",

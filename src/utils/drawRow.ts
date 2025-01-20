@@ -16,11 +16,12 @@ export const drawRow = (config: DrawRowConfig) => {
     isBottomRow,
     fillStyle,
     topText,
-    bottomText
+    bottomText,
+    strokeStyle
   } = config;
 
   ctx.beginPath();
-  ctx.strokeStyle = theme.colors.grey400;
+  ctx.strokeStyle = strokeStyle ?? theme.colors.grey400;
   ctx.setLineDash([]);
 
   if (label && font && textYPos) {
@@ -32,7 +33,7 @@ export const drawRow = (config: DrawRowConfig) => {
 
     const textXPos = x + width / 2 - ctx.measureText(label).width / 2;
     ctx.textBaseline = "middle";
-    ctx.fillStyle = theme.colors.grey600;
+    ctx.fillStyle = theme.colors.blue400;
     ctx.fillText(label, textXPos, textYPos);
   }
   if (isBottomRow && fillStyle && topText && bottomText) {
@@ -46,7 +47,6 @@ export const drawRow = (config: DrawRowConfig) => {
 
     ctx.fillStyle = topText.color;
     ctx.fillText(topText.label, dayNameXPos, topText.y);
-
     ctx.font = bottomText.font;
 
     const dayNumXPos = x + width / 2 - ctx.measureText(bottomText.label).width / 2;

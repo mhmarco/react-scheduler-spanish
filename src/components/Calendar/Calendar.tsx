@@ -17,7 +17,8 @@ const initialTooltipData: TooltipData = {
     taken: { hours: 0, minutes: 0 },
     free: { hours: 0, minutes: 0 },
     overtime: { hours: 0, minutes: 0 }
-  }
+  },
+  reservationData: { startTime: "", client: "", eventName: "" }
 };
 
 export const Calendar: FC<CalendarProps> = ({ data, onTileClick, onItemClick, topBarWidth }) => {
@@ -32,6 +33,7 @@ export const Calendar: FC<CalendarProps> = ({ data, onTileClick, onItemClick, to
     config: { includeTakenHoursOnWeekendsInDayView }
   } = useCalendar();
   const gridRef = useRef<HTMLDivElement>(null);
+
   const datesRange = useMemo(() => getDatesRange(date, zoom), [date, zoom]);
   const {
     page,
@@ -48,19 +50,29 @@ export const Calendar: FC<CalendarProps> = ({ data, onTileClick, onItemClick, to
     debounce(
       (
         e: MouseEvent,
+        schedulerData: SchedulerData,
         startDate: Day,
         rowsPerItem: number[],
         projectsPerPerson: SchedulerProjectData[][][],
         zoom: ZoomLevel
       ) => {
         if (!gridRef.current) return;
+        const bookingNumber = getBookingNumber(e);
+        if (bookingNumber === null) {
+          setIsVisible(false);
+          setTooltipData(initialTooltipData);
+          return;
+        }
+        const reservation = getReservation(bookingNumber, schedulerData);
         const { left, top } = gridRef.current.getBoundingClientRect();
         const tooltipCoords = { x: e.clientX - left, y: e.clientY - top };
         const {
           coords: { x, y },
           resourceIndex,
-          disposition
+          disposition,
+          reservationData: { startTime, client, eventName }
         } = getTooltipData(
+          reservation!,
           startDate,
           tooltipCoords,
           rowsPerItem,
@@ -68,7 +80,12 @@ export const Calendar: FC<CalendarProps> = ({ data, onTileClick, onItemClick, to
           zoom,
           includeTakenHoursOnWeekendsInDayView
         );
-        setTooltipData({ coords: { x, y }, resourceIndex, disposition });
+        setTooltipData({
+          coords: { x, y },
+          resourceIndex,
+          disposition,
+          reservationData: { startTime, client, eventName }
+        });
         setIsVisible(true);
       },
       300
@@ -85,6 +102,38 @@ export const Calendar: FC<CalendarProps> = ({ data, onTileClick, onItemClick, to
     }, 500)
   );
 
+  const getReservation = (bookingNumber: string | undefined, schedulerData: SchedulerData) => {
+    if (!bookingNumber) return;
+    let reservation: SchedulerProjectData;
+    return schedulerData
+      .flatMap((item) => item.data)
+      .find((row) => {
+        if (row.description) {
+          return row.description.includes(bookingNumber);
+        }
+        return false;
+      });
+  };
+
+  const getBookingNumber = (event: MouseEvent) => {
+    if (!event.target) return;
+    const button = (event.target as HTMLElement).closest("button");
+    if (!button) return;
+
+    const paragraphs = button.querySelectorAll("p");
+    if (paragraphs.length < 3) return;
+
+    const thirdParagraphText = paragraphs[2].textContent;
+    if (!thirdParagraphText) return;
+    return extractBookingNumber(thirdParagraphText);
+  };
+
+  const extractBookingNumber = (str: string): string | null => {
+    //return str;
+    const match = str.match(/Booking:\s*(.+)/);
+    return match ? match[1] : null;
+  };
+
   const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
     const phrase = event.target.value;
     setSearchPhrase(phrase);
@@ -100,7 +149,7 @@ export const Calendar: FC<CalendarProps> = ({ data, onTileClick, onItemClick, to
 
   useEffect(() => {
     const handleMouseOver = (e: MouseEvent) =>
-      debouncedHandleMouseOver.current(e, startDate, rowsPerItem, projectsPerPerson, zoom);
+      debouncedHandleMouseOver.current(e, data, startDate, rowsPerItem, projectsPerPerson, zoom);
     const gridArea = gridRef.current;
 
     if (!gridArea) return;
@@ -112,7 +161,15 @@ export const Calendar: FC<CalendarProps> = ({ data, onTileClick, onItemClick, to
       gridArea.removeEventListener("mousemove", handleMouseOver);
       gridArea.removeEventListener("mouseleave", handleMouseLeave);
     };
-  }, [debouncedHandleMouseOver, handleMouseLeave, projectsPerPerson, rowsPerItem, startDate, zoom]);
+  }, [
+    debouncedHandleMouseOver,
+    handleMouseLeave,
+    projectsPerPerson,
+    rowsPerItem,
+    startDate,
+    zoom,
+    data
+  ]);
 
   useEffect(() => {
     if (searchPhrase) return;

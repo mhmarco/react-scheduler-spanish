@@ -1,10 +1,12 @@
+import { FC } from "react";
 import { useLanguage } from "@/context/LocaleProvider";
 import { ReactComponent as EmptyBoxSvg } from "./empty-box.svg";
 import { StyledText, StyledWrapper } from "./styles";
-const EmptyBox = () => {
+import { EmptyBoxProps } from "./types";
+const EmptyBox: FC<EmptyBoxProps> = ({ onTileClick }) => {
   const { feelingEmpty } = useLanguage();
   return (
-    <StyledWrapper>
+    <StyledWrapper onClick={onTileClick}>
       <EmptyBoxSvg />
       <StyledText>{feelingEmpty}</StyledText>
     </StyledWrapper>

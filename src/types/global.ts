@@ -125,6 +125,7 @@ export type DrawRowConfig = {
   fillStyle?: string;
   topText?: BottomRowText;
   bottomText?: BottomRowText;
+  strokeStyle?: string;
 };
 
 export type TileProperties = {
@@ -162,4 +163,11 @@ export type TooltipData = {
   coords: Coords;
   resourceIndex: number;
   disposition: OccupancyData;
+  reservationData: ReservationData;
+};
+
+export type ReservationData = {
+  startTime: string;
+  client: string;
+  eventName: string;
 };

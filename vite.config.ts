@@ -49,6 +49,8 @@ export default defineConfig({
         }
       }
     }
+    //sourcemap: true, //remove these lines to debug
+    //minify: false
   },
   server: {
     host: "0.0.0.0"
