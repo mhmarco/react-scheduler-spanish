@@ -58,7 +58,7 @@ export const Calendar: FC<CalendarProps> = ({ data, onTileClick, onItemClick, to
       ) => {
         if (!gridRef.current) return;
         const bookingNumber = getBookingNumber(e);
-        if (bookingNumber === null) {
+        if (!bookingNumber) {
           setIsVisible(false);
           setTooltipData(initialTooltipData);
           return;
@@ -102,7 +102,7 @@ export const Calendar: FC<CalendarProps> = ({ data, onTileClick, onItemClick, to
     }, 500)
   );
 
-  const getReservation = (bookingNumber: string | undefined, schedulerData: SchedulerData) => {
+  const getReservation = (bookingNumber: string, schedulerData: SchedulerData) => {
     if (!bookingNumber) return;
     let reservation: SchedulerProjectData;
     return schedulerData
