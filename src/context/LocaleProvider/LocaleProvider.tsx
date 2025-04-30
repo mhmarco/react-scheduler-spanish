@@ -1,10 +1,5 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import dayjs from "dayjs";
-
-import en from "dayjs/locale/en";
-import pl from "dayjs/locale/pl";
-import es from "dayjs/locale/es";
-import { LangCodes } from "@/types/global";
 import { localeContext } from "./localeContext";
 import { locales } from "./locales";
 import { LocaleProviderProps, LocaleType } from "./types";

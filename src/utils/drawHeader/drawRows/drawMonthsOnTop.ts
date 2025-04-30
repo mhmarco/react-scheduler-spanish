@@ -8,7 +8,6 @@ export const drawMonthsOnTop = (ctx: CanvasRenderingContext2D, startDate: Day, t
   const yPos = 0;
   let xPos = 0;
   let width = 0;
-  let yearIndex = 0;
   let startMonthIndex = dayjs(
     `${startDate.year}-${startDate.month + 1}-${startDate.dayOfMonth}`
   ).month();
@@ -17,7 +16,6 @@ export const drawMonthsOnTop = (ctx: CanvasRenderingContext2D, startDate: Day, t
   for (let i = 0; i < monthsInYear; i++) {
     if (startMonthIndex > monthsInYear - 1) {
       startMonthIndex = 0;
-      yearIndex++;
     }
     const dayInMonth = dayjs(`${startDate.year}-${startDate.month + 1}-${startDate.dayOfMonth}`)
       .add(i, "months")
@@ -37,10 +35,12 @@ export const drawMonthsOnTop = (ctx: CanvasRenderingContext2D, startDate: Day, t
           dayjs(`${startDate.year}-${startDate.month + 1}-${startDate.dayOfMonth}`)
             .month(startMonthIndex)
             .format("MMMM")
-            .toUpperCase() +
-          ` ${dayjs(`${startDate.year + yearIndex}-${startDate.month + 1}-${startDate.dayOfMonth}`)
+            .toUpperCase() 
+            + "                                                                                                 " +
+          ` ${dayjs(`${startDate.year}-${startDate.month + 1}-${startDate.dayOfMonth}`)
             .month(startMonthIndex)
-            .format("YYYY")}`,
+            .format("MMMM")
+            .toUpperCase()}`,
         font: fonts.topRow
       },
       theme

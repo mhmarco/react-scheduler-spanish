@@ -1,7 +1,7 @@
 import { ChangeEvent, FC, useCallback, useEffect, useRef, useState } from "react";
 import debounce from "lodash.debounce";
 import { useCalendar } from "@/context/CalendarProvider";
-import { Day, SchedulerData, SchedulerProjectData, TooltipData, ZoomLevel } from "@/types/global";
+import { Day, ReservationType, SchedulerData, SchedulerProjectData, TooltipData, ZoomLevel } from "@/types/global";
 import { getTooltipData } from "@/utils/getTooltipData";
 import { usePagination } from "@/hooks/usePagination";
 import EmptyBox from "../EmptyBox";
@@ -17,7 +17,7 @@ const initialTooltipData: TooltipData = {
     free: { hours: 0, minutes: 0 },
     overtime: { hours: 0, minutes: 0 }
   },
-  reservationData: { startTime: "", client: "", eventName: "" }
+  reservationData: { startTime: "", client: "", eventName: "", reservationType: ReservationType.Tour, bookingNumber: ""}
 };
 
 export const Calendar: FC<CalendarProps> = ({
@@ -37,8 +37,6 @@ export const Calendar: FC<CalendarProps> = ({
     config: { includeTakenHoursOnWeekendsInDayView, showTooltip, showThemeToggle }
   } = useCalendar();
   const gridRef = useRef<HTMLDivElement>(null);
-
-  const datesRange = useMemo(() => getDatesRange(date, zoom), [date, zoom]);
   const {
     page,
     projectsPerPerson,
@@ -74,7 +72,7 @@ export const Calendar: FC<CalendarProps> = ({
           coords: { x, y },
           resourceIndex,
           disposition,
-          reservationData: { startTime, client, eventName }
+          reservationData: { startTime, client, eventName, endDate, groupName }
         } = getTooltipData(
           reservation!,
           startDate,
@@ -88,7 +86,7 @@ export const Calendar: FC<CalendarProps> = ({
           coords: { x, y },
           resourceIndex,
           disposition,
-          reservationData: { startTime, client, eventName }
+          reservationData: { startTime, client, eventName, reservationType: reservation!.eventType!, bookingNumber, endDate, groupName}
         });
         setIsVisible(true);
       },
@@ -99,16 +97,25 @@ export const Calendar: FC<CalendarProps> = ({
     debounce((dataToFilter: SchedulerData, enteredSearchPhrase: string) => {
       reset();
       setFilteredData(
-        dataToFilter.filter((item) =>
-          item.label.title.toLowerCase().includes(enteredSearchPhrase.toLowerCase())
-        )
+        dataToFilter
+          .map((item) => ({
+            ...item,
+            data: item.data.filter((row) => {
+              const { title, description, subtitle } = row;
+              return (
+                title?.toLowerCase().includes(enteredSearchPhrase.toLowerCase()) ||
+                subtitle?.toLowerCase().includes(enteredSearchPhrase.toLowerCase()) ||
+                description?.toLowerCase().includes(enteredSearchPhrase.toLowerCase())
+              );
+            }),
+          }))
+          .filter((item) => item.data.length > 0)
       );
     }, 500)
   );
 
   const getReservation = (bookingNumber: string, schedulerData: SchedulerData) => {
     if (!bookingNumber) return;
-    let reservation: SchedulerProjectData;
     return schedulerData
       .flatMap((item) => item.data)
       .find((row) => {

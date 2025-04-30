@@ -47,7 +47,7 @@ export const drawRow = (config: DrawRowConfig, theme: Theme) => {
 
     const textXPos = x + width / 2 - ctx.measureText(label).width / 2;
     ctx.textBaseline = "middle";
-    ctx.fillStyle = theme.colors.blue400;
+    ctx.fillStyle = theme.colors.accent;
     // change from main branch: ctx.fillStyle = theme.colors.placeholder;
     ctx.fillText(label, textXPos, textYPos);
   }

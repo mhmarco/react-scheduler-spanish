@@ -13,6 +13,7 @@ const Grid = forwardRef<HTMLDivElement, GridProps>(function Grid(
   { zoom, rows, data, onTileClick },
   ref
 ) {
+  const isThrottled = useRef(false);
   const { handleScrollNext, handleScrollPrev, date, isLoading, cols, startDate } = useCalendar();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const refRight = useRef<HTMLSpanElement>(null);
@@ -52,29 +53,54 @@ const Grid = forwardRef<HTMLDivElement, GridProps>(function Grid(
     handleResize(ctx);
   }, [date, rows, zoom, handleResize]);
 
+
   useEffect(() => {
     if (!refRight.current) return;
     const observerRight = new IntersectionObserver(
-      (e) => (e[0].isIntersecting ? handleScrollNext() : null),
+      (e) => {
+        if (e[0].isIntersecting && !isThrottled.current) {
+          isThrottled.current = true;
+          handleScrollNext();
+          setTimeout(() => {
+            isThrottled.current = false;
+          }, 1000);
+        }
+      },
       { root: document.getElementById(outsideWrapperId) }
     );
+
     observerRight.observe(refRight.current);
 
-    return () => observerRight.disconnect();
+    return () => {
+      observerRight.disconnect();
+    };
   }, [handleScrollNext]);
 
   useEffect(() => {
     if (!refLeft.current) return;
+
     const observerLeft = new IntersectionObserver(
-      (e) => (e[0].isIntersecting ? handleScrollPrev() : null),
+      (e) => {
+        if (e[0].isIntersecting && !isThrottled.current) {
+          isThrottled.current = true; 
+          handleScrollPrev();
+
+          setTimeout(() => {
+            isThrottled.current = false;
+          }, 1000); 
+        }
+      },
       {
         root: document.getElementById(outsideWrapperId),
         rootMargin: `0px 0px 0px -${leftColumnWidth}px`
       }
     );
+
     observerLeft.observe(refLeft.current);
 
-    return () => observerLeft.disconnect();
+    return () => {
+      observerLeft.disconnect();
+    };
   }, [handleScrollPrev]);
 
   return (

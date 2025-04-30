@@ -168,7 +168,7 @@ const CalendarProvider = ({
     loadMore("forward");
     debounce(() => {
       moveHorizontalScroll("forward");
-    }, 300)();
+    }, 500)();
   }, [isLoading, loadMore, moveHorizontalScroll]);
 
   const handleGoPrev = () => {
@@ -185,7 +185,7 @@ const CalendarProvider = ({
     loadMore("back");
     debounce(() => {
       moveHorizontalScroll("back");
-    }, 300)();
+    }, 500)();
   }, [isInitialized, isLoading, loadMore, moveHorizontalScroll]);
 
   const handleGoToday = useCallback(() => {

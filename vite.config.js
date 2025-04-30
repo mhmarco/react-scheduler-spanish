@@ -6,52 +6,54 @@ import dts from "vite-plugin-dts";
 import { visualizer } from "rollup-plugin-visualizer";
 import svgr from "vite-plugin-svgr";
 export default defineConfig({
-    resolve: {
-        alias: {
-            "@": resolve(__dirname, "./src")
-        }
-    },
-    plugins: [
-        react({
-            babel: {
-                env: {
-                    production: {
-                        plugins: [["babel-plugin-styled-components", { displayName: false, pure: true }]]
-                    },
-                    development: {
-                        plugins: [["babel-plugin-styled-components", { displayName: true, pure: true }]]
-                    }
-                }
-            }
-        }),
-        dts({
-            rollupTypes: true
-        }),
-        svgr(),
-        visualizer({
-            template: "treemap"
-        })
-    ],
-    build: {
-        lib: {
-            entry: resolve(__dirname, "src/index.ts"),
-            name: "react-scheduler",
-            fileName: "index"
-        },
-        rollupOptions: {
-            external: ["react", "react-dom", "react/jsx-runtime"],
-            output: {
-                globals: {
-                    react: "React",
-                    "react-dom": "ReactDOM",
-                    "react/jsx-runtime": "react/jsx-runtime"
-                }
-            }
-        }
-        //sourcemap: true, //remove these lines to debug
-        //minify: false
-    },
-    server: {
-        host: "0.0.0.0"
+  resolve: {
+    alias: {
+      // eslint-disable-next-line no-undef
+      "@": resolve(__dirname, "./src")
     }
+  },
+  plugins: [
+    react({
+      babel: {
+        env: {
+          production: {
+            plugins: [["babel-plugin-styled-components", { displayName: false, pure: true }]]
+          },
+          development: {
+            plugins: [["babel-plugin-styled-components", { displayName: true, pure: true }]]
+          }
+        }
+      }
+    }),
+    dts({
+      rollupTypes: true
+    }),
+    svgr(),
+    visualizer({
+      template: "treemap"
+    })
+  ],
+  build: {
+    lib: {
+      // eslint-disable-next-line no-undef
+      entry: resolve(__dirname, "src/index.ts"),
+      name: "react-scheduler",
+      fileName: "index"
+    },
+    rollupOptions: {
+      external: ["react", "react-dom", "react/jsx-runtime"],
+      output: {
+        globals: {
+          react: "React",
+          "react-dom": "ReactDOM",
+          "react/jsx-runtime": "react/jsx-runtime"
+        }
+      }
+    },
+    sourcemap: true, //remove these lines to debug
+    minify: false
+  },
+  server: {
+    host: "0.0.0.0"
+  }
 });

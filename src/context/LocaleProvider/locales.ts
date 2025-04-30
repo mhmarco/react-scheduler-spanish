@@ -3,6 +3,8 @@ import enDayjsTranslations from "dayjs/locale/en";
 import plDayjsTranslations from "dayjs/locale/pl";
 import deDayjsTranslations from "dayjs/locale/de";
 import ltDayjsTranslations from "dayjs/locale/lt";
+import esDayjsTranslations from "dayjs/locale/es";
+import { es } from "@/locales/es";
 import { en, pl, de, lt } from "@/locales";
 import { LocaleType } from "./types";
 
@@ -16,15 +18,14 @@ export const localesData: LocaleType[] = [
   {
     id: "pl",
     lang: pl,
-    translateCode: "pl-PL"
+    translateCode: "pl-PL",
+    dayjsTranslations: plDayjsTranslations
   },
   {
     id: "es",
-    name: "SPANISH",
     lang: es,
-    translateCode: "es-ES"
-    translateCode: "pl-PL",
-    dayjsTranslations: plDayjsTranslations
+    translateCode: "es-ES",
+    dayjsTranslations: esDayjsTranslations
   },
   {
     id: "lt",

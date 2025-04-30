@@ -3,6 +3,8 @@ import { DatesRange } from "./getDatesRange";
 
 export const getTileXAndWidth = (item: DatesRange, range: DatesRange, zoom: number) => {
   let cellWidth: number;
+  const MIN_WIDTH = 50; // Define a minimum width
+
   switch (zoom) {
     case 0:
       cellWidth = singleDayWidth;
@@ -13,6 +15,7 @@ export const getTileXAndWidth = (item: DatesRange, range: DatesRange, zoom: numb
     default:
       cellWidth = dayWidth;
   }
+
   const getX = () => {
     let position;
     switch (zoom) {
@@ -32,10 +35,16 @@ export const getTileXAndWidth = (item: DatesRange, range: DatesRange, zoom: numb
     let width;
     switch (zoom) {
       case 2:
-        width = (item.endDate.diff(item.startDate, "minute") / minutesInHour) * cellWidth;
+        width = Math.max(
+          (item.endDate.diff(item.startDate, "minute") / minutesInHour) * cellWidth,
+          MIN_WIDTH
+        );
         break;
       default:
-        width = item.endDate.diff(item.startDate, "day") * cellWidth + cellWidth;
+        width = Math.max(
+          item.endDate.diff(item.startDate, "day") * cellWidth + cellWidth,
+          MIN_WIDTH
+        );
     }
 
     return { x: getX(), width };
@@ -45,12 +54,17 @@ export const getTileXAndWidth = (item: DatesRange, range: DatesRange, zoom: numb
     let width;
     switch (zoom) {
       case 2:
-        width =
+        width = Math.max(
           (item.endDate.diff(range.startDate, "minute") / minutesInHour) * cellWidth +
-          0.5 * cellWidth;
+            0.5 * cellWidth,
+          MIN_WIDTH
+        );
         break;
       default:
-        width = item.endDate.diff(range.startDate, "day") * cellWidth + cellWidth;
+        width = Math.max(
+          item.endDate.diff(range.startDate, "day") * cellWidth + cellWidth,
+          MIN_WIDTH
+        );
     }
 
     return { x: getX(), width };
@@ -60,10 +74,16 @@ export const getTileXAndWidth = (item: DatesRange, range: DatesRange, zoom: numb
     let width;
     switch (zoom) {
       case 2:
-        width = (range.endDate.diff(item.startDate, "minute") / minutesInHour) * cellWidth;
+        width = Math.max(
+          (range.endDate.diff(item.startDate, "minute") / minutesInHour) * cellWidth,
+          MIN_WIDTH
+        );
         break;
       default:
-        width = range.endDate.diff(item.startDate, "day") * cellWidth + cellWidth;
+        width = Math.max(
+          range.endDate.diff(item.startDate, "day") * cellWidth + cellWidth,
+          MIN_WIDTH
+        );
     }
 
     return { x: getX(), width };
@@ -73,13 +93,21 @@ export const getTileXAndWidth = (item: DatesRange, range: DatesRange, zoom: numb
     let width;
     switch (zoom) {
       case 2:
-        width = (range.endDate.diff(range.startDate, "minute") / minutesInHour) * cellWidth;
+        width = Math.max(
+          (range.endDate.diff(range.startDate, "minute") / minutesInHour) * cellWidth,
+          MIN_WIDTH
+        );
         break;
       default:
-        width = range.endDate.diff(range.startDate, "day") * cellWidth + cellWidth;
+        width = Math.max(
+          range.endDate.diff(range.startDate, "day") * cellWidth + cellWidth,
+          MIN_WIDTH
+        );
     }
 
     return { x: getX(), width };
   }
-  return { x: getX(), width: 0 };
+
+  return { x: getX(), width: MIN_WIDTH }; // Ensure a minimum width
 };
+

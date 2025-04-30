@@ -1,21 +1,19 @@
 import { FC, useLayoutEffect, useRef } from "react";
 import { dayWidth, weekWidth, zoom2ColumnWidth } from "@/constants";
-import { useLanguage } from "@/context/LocaleProvider";
+import { ReservationType } from "@/types/global";
 import Icon from "../Icon";
+import { TooltipProps } from "./types";
 import {
   StyledContentWrapper,
   StyledInnerWrapper,
-  StyledOvertimeWarning,
   StyledText,
   StyledTextWrapper,
   StyledTooltipBeak,
   StyledTooltipContent,
   StyledTooltipWrapper
 } from "./styles";
-import { TooltipProps } from "./types";
 
 const Tooltip: FC<TooltipProps> = ({ tooltipData, zoom }) => {
-  const { taken, free, over } = useLanguage();
 
   const { coords, disposition } = tooltipData;
   const tooltipRef = useRef<HTMLDivElement>(null);
@@ -57,6 +55,12 @@ const Tooltip: FC<TooltipProps> = ({ tooltipData, zoom }) => {
     <StyledTooltipWrapper ref={tooltipRef}>
       <StyledTooltipContent>
         <StyledContentWrapper>
+        <StyledInnerWrapper>
+            <Icon iconName="search" height="12" />
+            <StyledTextWrapper>
+              <StyledText>{`Booking: ${tooltipData.reservationData.bookingNumber}`}</StyledText>
+            </StyledTextWrapper>
+          </StyledInnerWrapper>
           <StyledInnerWrapper>
             <Icon iconName="defaultAvatar" height="12" />
             <StyledTextWrapper>
@@ -68,6 +72,11 @@ const Tooltip: FC<TooltipProps> = ({ tooltipData, zoom }) => {
             <StyledTextWrapper>
               <StyledText>{`Inicio: ${tooltipData.reservationData.startTime}`}</StyledText>
             </StyledTextWrapper>
+            {tooltipData.reservationData.reservationType === ReservationType.Tour && (
+              <StyledTextWrapper>
+                <StyledText>{`Finaliza: ${tooltipData.reservationData.endDate}`}</StyledText>
+              </StyledTextWrapper>
+            )}
           </StyledInnerWrapper>
           <StyledInnerWrapper>
             <Icon iconName="subtract" height="12" />
@@ -75,6 +84,14 @@ const Tooltip: FC<TooltipProps> = ({ tooltipData, zoom }) => {
               <StyledText>{tooltipData.reservationData.eventName}</StyledText>
             </StyledTextWrapper>
           </StyledInnerWrapper>
+            {(tooltipData.reservationData.reservationType === ReservationType.Transfer && !!tooltipData.reservationData.groupName) && (
+            <StyledInnerWrapper>
+              <Icon iconName="subtract" height="12" />
+              <StyledTextWrapper>
+              <StyledText>{`Reserva a nombre de: ${tooltipData.reservationData.groupName}`}</StyledText>
+              </StyledTextWrapper>
+            </StyledInnerWrapper>
+            )}
         </StyledContentWrapper>
       </StyledTooltipContent>
       <StyledTooltipBeak />

@@ -25,7 +25,7 @@ export const drawZoom2HoursOnBottom = (
   const width = zoom2ColumnWidth;
 
   for (let i = 0; i < cols; i++) {
-    const hourLabel = startDateHour.add(i, "hours").format("HH:00").toUpperCase();
+    const hourLabel = startDateHour.add(i, "hours").format("h:00a").toUpperCase();
 
     drawRow(
       {
@@ -35,7 +35,7 @@ export const drawZoom2HoursOnBottom = (
         width,
         height: zoom2HeaderBottomRowHeight,
         label: hourLabel,
-        font: fonts.bottomRow.number,
+        font: fonts.bottomRow.hoursInDay,
         textYPos:
           zoom2HeaderTopRowHeight + zoom2HeaderMiddleRowHeight + zoom2HeaderBottomRowHeight / 2 + 2,
         labelBetweenCells: true

@@ -1,7 +1,6 @@
-
 import dayjs from "dayjs";
 import { weekWidth, boxHeight, dayWidth, zoom2ColumnWidth } from "@/constants";
-import { Day, Coords, SchedulerProjectData, TooltipData, ZoomLevel } from "@/types/global";
+import { Day, Coords, SchedulerProjectData, TooltipData, ZoomLevel, ReservationType } from "@/types/global";
 import { getOccupancy } from "./getOccupancy";
 
 export const getTooltipData = (
@@ -59,7 +58,11 @@ export const getTooltipData = (
     reservationData: {
       startTime: dayjs(reservation.startDate).format("hh:mm A"),
       client: reservation.subtitle ?? "",
-      eventName: reservation.title
+      eventName: reservation.title,
+      reservationType: reservation.eventType!,
+      bookingNumber: reservation.bookingNumber!,
+      endDate: reservation.eventType === ReservationType.Tour ? dayjs(reservation.endDate).format("hh:mm A") : undefined,
+      groupName: reservation.groupName
     }
   };
 };

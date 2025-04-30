@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 import dayjs from "dayjs";
-import { SchedulerData, SchedulerProjectData } from "@/types/global";
+import { ReservationType, SchedulerData, SchedulerProjectData } from "@/types/global";
 import { ParsedDatesRange } from "@/utils/getDatesRange";
 
 const secondsInWorkDay = 28800;
@@ -54,7 +54,9 @@ export const generateProjects = (
         title,
         subtitle: getRandomWords(),
         description: getRandomWords(amountOfDscWords),
-        bgColor
+        bgColor,
+        ReservationType: ReservationType.Tour,
+        bookingNumber: faker.random.alphaNumeric(6)
       });
     }
   }

@@ -63,7 +63,7 @@ const Scheduler = ({
     window.addEventListener("resize", handleResize);
 
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+    }, []);
 
   if (!outsideWrapperRef.current) null;
   return (

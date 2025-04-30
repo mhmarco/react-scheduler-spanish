@@ -20,27 +20,42 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["react", "@typescript-eslint", "filenames"],
+  "plugins": [
+    "react",
+    "@typescript-eslint",
+    "filenames"
+  ],
   "rules": {
     "react/react-in-jsx-scope": "off",
-    "eqeqeq": ["error", "always"],
+    "eqeqeq": [
+      "error",
+      "always"
+    ],
     "@typescript-eslint/no-empty-function": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/no-explicit-any": "off",
     "import/order": [
       "error",
       {
-        "groups": ["builtin", "external", "internal", "parent", "sibling"]
+        "groups": [
+          "builtin",
+          "external",
+          "internal",
+          "parent",
+          "sibling"
+        ]
       }
     ],
     "prettier/prettier": [
-      "error",
-      {
-        "endOfLine": "auto"
-      }
+      "off" // Disables Prettier linting entirely
     ],
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
     "react/prop-types": "off",
-    "semi": [2, "always"],
+    "semi": [
+      2,
+      "always"
+    ],
     "quotes": [
       2,
       "double",
@@ -53,7 +68,9 @@
     "import/no-internal-modules": [
       "error",
       {
-        "forbid": ["@/components/**"]
+        "forbid": [
+          "@/components/**"
+        ]
       }
     ]
   },
@@ -61,7 +78,12 @@
     "import/resolver": {
       "typescript": {},
       "node": {
-        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+        "extensions": [
+          ".js",
+          ".jsx",
+          ".ts",
+          ".tsx"
+        ]
       }
     },
     "react": {

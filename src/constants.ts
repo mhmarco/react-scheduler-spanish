@@ -15,7 +15,7 @@ export const zoom2HeaderMiddleRowHeight = 16;
 export const zoom2HeaderBottomRowHeight = 40;
 export const zoom2HeaderHeight =
   zoom2HeaderTopRowHeight + zoom2HeaderMiddleRowHeight + zoom2HeaderBottomRowHeight;
-export const zoom2ButtonJump = 1;
+export const zoom2ButtonJump = 24;
 export const weeksInYear = 52;
 export const navHeight = 44;
 export const fonts = {
@@ -23,7 +23,8 @@ export const fonts = {
   middleRow: "400 10px Inter",
   bottomRow: {
     name: "600 14px Inter",
-    number: "600 10px Inter"
+    number: "600 10px Inter",
+    hoursInDay: "400 9px Inter"
   }
 };
 export const screenWidthMultiplier = 3;

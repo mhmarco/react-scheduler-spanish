@@ -1,6 +1,8 @@
 import type { JSX as JSX_2 } from 'react/jsx-runtime';
 
-declare const allZoomLevel: readonly [0, 1];
+declare const allZoomLevel: readonly [0, 1, 2];
+
+declare type ColorType = "background" | "gridBackground" | "primary" | "secondary" | "tertiary" | "textPrimary" | "textSecondary" | "accent" | "disabled" | "border" | "placeholder" | "warning" | "button" | "tooltip" | "defaultTile" | "hover";
 
 export declare type Config = {
     zoom: ZoomLevel;
@@ -12,9 +14,9 @@ export declare type Config = {
      */
     filterButtonState?: number;
     /**
-     * Language code: "en" | "pl" | "es"
+     * Language code: "en" | "pl" | "de" | "es"
      */
-    lang?: LangCodes;
+    lang?: LangCodes | string;
     isFiltersButtonVisible?: boolean;
     maxRecordsPerPage?: number;
     /**
@@ -24,14 +26,43 @@ export declare type Config = {
      * @default false
      */
     includeTakenHoursOnWeekendsInDayView?: boolean;
+    /**
+     * show tooltip when hovering over tiles items
+     * @default true
+     */
+    showTooltip?: boolean;
+    translations?: LocaleType[];
+    /**
+     * show toggle button for changing theme (light/dark)
+     */
+    showThemeToggle?: boolean;
+    /**
+     * default theme (light/dark)
+     * when theme toggle is displayed - this is a default value of the toggle
+     * @default "light"
+     */
+    defaultTheme?: "light" | "dark";
+    theme?: Theme;
 };
 
-declare type LangCodes = "en" | "pl" | "es";
+declare type LangCodes = "en" | "pl" | "de" | "lt" | "es";
+
+declare type LocaleType = {
+    id: string;
+    lang: Translation;
+    translateCode: string;
+    dayjsTranslations: string | ILocale | undefined;
+};
 
 declare type ParsedDatesRange = {
     startDate: Date;
     endDate: Date;
 };
+
+declare enum ReservationType {
+    Tour = 0,
+    Transfer = 1
+}
 
 export declare const Scheduler: ({ data, config, startDate, onRangeChange, onTileClick, onFilterData, onClearFilterData, onItemClick, isLoading }: SchedulerProps) => JSX_2.Element;
 
@@ -72,6 +103,18 @@ export declare type SchedulerProjectData = {
      * Background color of the tile, given in rgb color model. If not given, default color (rgb(114, 141,226 )) is set. Optional
      */
     bgColor?: string;
+    /**
+     * Event type of the item. Optional
+     */
+    eventType?: ReservationType;
+    /**
+     * Booking number of the item.
+     */
+    bookingNumber: string;
+    /**
+     * Group name of the item.
+     */
+    groupName?: string;
 };
 
 export declare type SchedulerProps = {
@@ -96,6 +139,31 @@ declare type SchedulerRowLabel = {
     icon: string;
     title: string;
     subtitle: string;
+};
+
+declare type Theme = {
+    light?: Partial<Record<ColorType, string>>;
+    dark?: Partial<Record<ColorType, string>>;
+};
+
+declare type Topbar = {
+    filters: string;
+    next: string;
+    prev: string;
+    today: string;
+    view: string;
+};
+
+declare type Translation = {
+    feelingEmpty: string;
+    free: string;
+    loadNext: string;
+    loadPrevious: string;
+    over: string;
+    taken: string;
+    topbar: Topbar;
+    search: string;
+    week: string;
 };
 
 export declare type ZoomLevel = ZoomLevelTuple[number];

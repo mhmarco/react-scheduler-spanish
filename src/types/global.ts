@@ -114,7 +114,24 @@ export type SchedulerProjectData = {
    * Background color of the tile, given in rgb color model. If not given, default color (rgb(114, 141,226 )) is set. Optional
    */
   bgColor?: string;
+  /**
+   * Event type of the item. Optional
+   */
+  eventType?: ReservationType;
+  /**
+   * Booking number of the item.
+   */
+  bookingNumber: string;
+
+  /**
+   * Group name of the item.
+   */
+  groupName?: string;
 };
+
+export enum ReservationType {
+  Tour, Transfer
+}
 
 export type Day = {
   hour: number;
@@ -200,4 +217,8 @@ export type ReservationData = {
   startTime: string;
   client: string;
   eventName: string;
+  reservationType: ReservationType;
+  endDate?: string;
+  bookingNumber: string;
+  groupName?: string;
 };
