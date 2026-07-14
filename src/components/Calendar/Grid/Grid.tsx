@@ -8,7 +8,8 @@ import {
   DragOverlay,
   SelectionOverlay,
   MultiSelectToolbar,
-  PendingSelections
+  PendingSelections,
+  TodayColumn
 } from "@/components";
 import { useCalendar } from "@/context/CalendarProvider";
 import { resizeCanvas } from "@/utils/resizeCanvas";
@@ -202,13 +203,14 @@ const Grid = forwardRef<HTMLDivElement, GridProps>(function Grid(
       >
         <StyledSpan position="left" ref={refLeft} />
         <Loader isLoading={isLoading} position="left" />
-        <StyledCanvas 
+        <StyledCanvas
           ref={canvasRef}
           onDragStart={handleCanvasDragStart}
           onDragOver={handleCanvasDragOver}
           style={{ userSelect: dragState === "dragging" ? "none" : "auto" }}
         />
-        <Tiles 
+        <TodayColumn zoom={zoom as 0 | 1 | 2} startDate={startDate} />
+        <Tiles
           data={data} 
           zoom={zoom} 
           onTileClick={onTileClick}
