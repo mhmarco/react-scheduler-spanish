@@ -7,15 +7,20 @@ import { getTileProperties } from "@/utils/getTileProperties";
 import { getTileTextColor } from "@/utils/getTileTextColor";
 import { ReservationType } from "@/types/global";
 import {
-  StyledDescription,
-  StyledStickyWrapper,
-  StyledText,
-  StyledTextWrapper,
   StyledTileWrapper,
-  StyledOneDayWrapper,
-  StyledOneDayLabel
+  StyledOneDayStack,
+  StyledTimes,
+  StyledTileIcon,
+  StyledTileBody,
+  StyledTileLines,
+  StyledLine
 } from "./styles";
 import { TileProps } from "./types";
+
+// Width buckets (px, on the actual rendered tile) — content scales up with available room (plan §4/§22.6).
+const TIMES_MIN = 34; // one-day: show start/end times under the type icon
+const SUBTITLE_MIN = 90; // multi-day: add the client line
+const DRIVER_MIN = 150; // multi-day: add the driver line
 
 const Tile: FC<TileProps> = ({
   row,
@@ -48,6 +53,7 @@ const Tile: FC<TileProps> = ({
   const isTour = data.eventType === ReservationType.Tour;
   const isTransfer = data.eventType === ReservationType.Transfer;
   const isOneDayEvent = isSameDay && (isTour || isTransfer);
+  const icon = isTransfer ? "⇄" : isOneDayEvent ? "☀" : "▦";
 
   const handleMouseDown = (e: React.MouseEvent) => {
     mouseDownPos.current = { x: e.clientX, y: e.clientY };
@@ -74,55 +80,56 @@ const Tile: FC<TileProps> = ({
     }
   };
 
-  // Render compact layout for single-day events - just a clean label
+  const wrapperStyle = {
+    left: `${x}px`,
+    top: `${y + yOffset}px`,
+    backgroundColor: `${data.bgColor ?? colors.defaultTile}`,
+    width: `${width}px`,
+    color: getTileTextColor(data.bgColor ?? "")
+  };
+
+  // XS one-day: type icon over start/end times (fixes the old blank "1-DAY"/"TRF" pill). Icon-only when too narrow.
   if (isOneDayEvent) {
     return (
       <StyledTileWrapper
         data-segment-id={data.segmentId}
-        style={{
-          left: `${x}px`,
-          top: `${y + yOffset}px`,
-          backgroundColor: `${data.bgColor ?? colors.defaultTile}`,
-          width: `${width}px`,
-          color: getTileTextColor(data.bgColor ?? "")
-        }}
+        style={wrapperStyle}
         onClick={handleClick}
         onMouseDown={handleMouseDown}
         onDragStart={(e) => e.preventDefault()}
         isDraggable={isDraggable}
         isDragging={isDragging}>
-        <StyledOneDayWrapper>
-          <StyledOneDayLabel $type={isTransfer ? "transfer" : "tour"}>
-            {isTransfer ? "TRF" : "1-DAY"}
-          </StyledOneDayLabel>
-        </StyledOneDayWrapper>
+        <StyledOneDayStack>
+          <StyledTileIcon>{icon}</StyledTileIcon>
+          {width >= TIMES_MIN && (
+            <StyledTimes>
+              <span>{dayjs(data.startDate).format("HH:mm")}</span>
+              {!isTransfer && <span>{dayjs(data.endDate).format("HH:mm")}</span>}
+            </StyledTimes>
+          )}
+        </StyledOneDayStack>
       </StyledTileWrapper>
     );
   }
 
-  // Standard layout for multi-day events
+  // Multi-day: icon + title, adding client and driver as the tile widens. True ellipsis, no sticky fade-mask clip.
   return (
     <StyledTileWrapper
       data-segment-id={data.segmentId}
-      style={{
-        left: `${x}px`,
-        top: `${y + yOffset}px`,
-        backgroundColor: `${data.bgColor ?? colors.defaultTile}`,
-        width: `${width}px`,
-        color: getTileTextColor(data.bgColor ?? "")
-      }}
+      style={wrapperStyle}
       onClick={handleClick}
       onMouseDown={handleMouseDown}
       onDragStart={(e) => e.preventDefault()}
       isDraggable={isDraggable}
       isDragging={isDragging}>
-      <StyledTextWrapper>
-        <StyledStickyWrapper>
-          <StyledText bold>{data.title}</StyledText>
-          <StyledText>{data.subtitle}</StyledText>
-          <StyledDescription>{data.description}</StyledDescription>
-        </StyledStickyWrapper>
-      </StyledTextWrapper>
+      <StyledTileBody>
+        <StyledTileIcon>{icon}</StyledTileIcon>
+        <StyledTileLines>
+          <StyledLine bold>{data.title}</StyledLine>
+          {width >= SUBTITLE_MIN && data.subtitle && <StyledLine>{data.subtitle}</StyledLine>}
+          {width >= DRIVER_MIN && data.driver && <StyledLine>{data.driver}</StyledLine>}
+        </StyledTileLines>
+      </StyledTileBody>
     </StyledTileWrapper>
   );
 };

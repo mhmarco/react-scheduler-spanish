@@ -144,3 +144,66 @@ export const createMockData = (
 
   return schedulerData;
 };
+
+// Deterministic demo dataset anchored to today — dev-only (NOT part of the library build). Every tile bucket
+// (1-day tour, transfer, 2-day, multi-day, route-width) + subcontract confirmed/unconfirmed, so the redesigned
+// Tile can be visually verified against every state in one viewport.
+export const createDemoData = (): SchedulerData => {
+  const d = (offsetDays: number, h = 0, m = 0) =>
+    dayjs().startOf("day").add(offsetDays, "day").add(h, "hour").add(m, "minute").toDate();
+  let seq = 0;
+  const ev = (o: Partial<SchedulerProjectData> & { startDate: Date; endDate: Date }): SchedulerProjectData => ({
+    reservationId: `demo-r-${seq}`,
+    segmentId: `demo-s-${seq++}`,
+    occupancy: secondsInWorkDay,
+    title: "ARENAL",
+    subtitle: "Cliente Demo",
+    description: "Booking: DEMO01",
+    eventType: ReservationType.Tour,
+    bookingNumber: "DEMO01",
+    ...o
+  });
+
+  return [
+    {
+      id: "demo-hiace-1",
+      label: { icon: "🚐", title: "Hiace #1", subtitle: "14 Pax | SJB1001" },
+      capacity: 14,
+      categoryId: "hiace",
+      data: [
+        ev({ startDate: d(0, 8), endDate: d(0, 17), title: "MANUEL ANTONIO", subtitle: "AMADEUS", bgColor: "#3B82F6", driver: "Maria Garcia" }),
+        ev({ startDate: d(2, 14), endDate: d(2, 14), title: "SJO → Hotel", subtitle: "Traslado", bgColor: "#8B5CF6", eventType: ReservationType.Transfer, flightNumber: "AA1234" }),
+        ev({ startDate: d(4), endDate: d(5, 20), title: "TORTUGUERO", subtitle: "GECKO TRAILS", bgColor: "#0EA5E9", driver: "John Smith" })
+      ]
+    },
+    {
+      id: "demo-rosa-1",
+      label: { icon: "🚌", title: "Rosa #1", subtitle: "28 Pax | SJB2001" },
+      capacity: 28,
+      categoryId: "rosa",
+      data: [
+        ev({ startDate: d(1), endDate: d(5, 18), title: "MONTEVERDE + ARENAL", subtitle: "SWISS TRAVEL", bgColor: "#F97316", driver: "Ana Martinez" }),
+        ev({ startDate: d(8), endDate: d(14, 16), title: "COMBO 7 DÍAS PACÍFICO", subtitle: "TAM TOURS", bgColor: "#14B8A6", driver: "Robert Brown" })
+      ]
+    },
+    {
+      id: "demo-bus-1",
+      label: { icon: "🚎", title: "Bus #1", subtitle: "45 Pax | SJB3001" },
+      capacity: 45,
+      categoryId: "bus",
+      data: [
+        ev({ startDate: d(2), endDate: d(4, 19), title: "GUANACASTE", subtitle: "COLONIAL TOURS", bgColor: "#6366F1" })
+      ]
+    },
+    {
+      id: "demo-sub-1",
+      label: { icon: "🏢", title: "Alpha Transport", subtitle: "Subcontrato" },
+      capacity: 20,
+      isSubcontract: true,
+      data: [
+        ev({ startDate: d(0), endDate: d(3, 18), title: "RÍO CELESTE", subtitle: "Confirmado", bgColor: "#3E8E5A" }),
+        ev({ startDate: d(6), endDate: d(8, 17), title: "NICOYA", subtitle: "Sin confirmar", bgColor: "#707070" })
+      ]
+    }
+  ];
+};

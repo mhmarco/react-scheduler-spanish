@@ -82,6 +82,67 @@ export const StyledStickyWrapper = styled.div`
   overflow: hidden;
 `;
 
+// --- Redesigned adaptive tile chrome (width-bucketed; plan §4/§22.6) ---
+
+// Type glyph (sun = 1-day gira, ⇄ = transfer, multi-day gira). Legible on any bgColor via inherited color.
+export const StyledTileIcon = styled.span`
+  font-size: 12px;
+  line-height: 1;
+  flex-shrink: 0;
+  opacity: 0.95;
+`;
+
+// XS one-day: icon over start/end times, centred.
+export const StyledOneDayStack = styled.div`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  padding: 0 2px;
+  overflow: hidden;
+`;
+
+export const StyledTimes = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 8px;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: 0.2px;
+  font-variant-numeric: tabular-nums;
+`;
+
+// Multi-day: icon + a flex text column with TRUE ellipsis (no sticky fade-mask clip).
+export const StyledTileBody = styled.div`
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 8px;
+  min-width: 0;
+  overflow: hidden;
+`;
+
+export const StyledTileLines = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  gap: 1px;
+`;
+
+export const StyledLine = styled.span<{ bold?: boolean }>`
+  ${truncate}
+  font-size: ${({ bold }) => (bold ? "11px" : "9px")};
+  font-weight: ${({ bold }) => (bold ? "700" : "500")};
+  line-height: 1.25;
+  letter-spacing: 0.2px;
+  opacity: ${({ bold }) => (bold ? 1 : 0.9)};
+`;
+
 export const StyledOneDayText = styled.span`
   ${truncate}
   font-size: 10px;

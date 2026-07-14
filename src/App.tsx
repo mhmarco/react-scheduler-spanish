@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import dayjs from "dayjs";
 import styled from "styled-components";
-import { createMockData, mockCategories } from "./mock/appMock";
+import { createDemoData, mockCategories } from "./mock/appMock";
 import { ParsedDatesRange } from "./utils/getDatesRange";
 import { ConfigFormValues, SchedulerProjectData } from "./types/global";
 import ConfigPanel from "./components/ConfigPanel";
@@ -119,14 +119,7 @@ function App() {
 
   const { peopleCount, projectsPerYear, yearsCovered, isFullscreen, maxRecordsPerPage } = values;
 
-  const [mockedData, setMockedData] = useState(() =>
-    createMockData(+peopleCount, +yearsCovered, +projectsPerYear)
-  );
-
-  // Update mocked data when config changes
-  useEffect(() => {
-    setMockedData(createMockData(+peopleCount, +yearsCovered, +projectsPerYear));
-  }, [peopleCount, projectsPerYear, yearsCovered]);
+  const [mockedData, setMockedData] = useState(() => createDemoData());
 
   const [range, setRange] = useState<ParsedDatesRange>({
     startDate: new Date(),
