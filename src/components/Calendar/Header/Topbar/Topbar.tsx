@@ -26,7 +26,7 @@ const Topbar: FC<TopbarProps> = ({ width, showThemeToggle, toggleTheme }) => {
     zoomOut,
     isNextZoom,
     isPrevZoom,
-    handleFilterData,
+    toggleDisplayActiveUnits,
     onClearFilterData
   } = useCalendar();
   const { colors } = useTheme();
@@ -46,7 +46,7 @@ const Topbar: FC<TopbarProps> = ({ width, showThemeToggle, toggleTheme }) => {
             iconName="filter"
             width="16"
             height="16"
-            onClick={handleFilterData}>
+            onClick={toggleDisplayActiveUnits}>
             {topbar.filters}
             {!!filterButtonState && (
               <span onClick={handleClearFilters}>
@@ -57,12 +57,12 @@ const Topbar: FC<TopbarProps> = ({ width, showThemeToggle, toggleTheme }) => {
         )}
       </Filters>
       <NavigationWrapper>
-        <NavBtn disabled={!data?.length} onClick={handleGoPrev}>
+        <NavBtn onClick={handleGoPrev}>
           <Icon iconName="arrowLeft" height="15" fill={colors.textPrimary} />
           {topbar.prev}
         </NavBtn>
         <Today onClick={handleGoToday}>{topbar.today}</Today>
-        <NavBtn disabled={!data?.length} onClick={handleGoNext}>
+        <NavBtn onClick={handleGoNext}>
           {topbar.next}
           <Icon iconName="arrowRight" height="15" fill={colors.textPrimary} />
         </NavBtn>

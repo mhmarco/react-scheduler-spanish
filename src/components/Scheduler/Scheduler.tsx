@@ -1,26 +1,119 @@
 import { ThemeProvider } from "styled-components";
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+  MutableRefObject
+} from "react";
 import dayjs from "dayjs";
 import { Calendar } from "@/components";
-import CalendarProvider from "@/context/CalendarProvider";
+import CalendarProvider, { useCalendar } from "@/context/CalendarProvider";
 import LocaleProvider from "@/context/LocaleProvider";
 import { darkTheme, GlobalStyle, theme } from "@/styles";
-import { Config } from "@/types/global";
+import { Config, SchedulerCategory, SchedulerData, ZoomLevel } from "@/types/global";
 import { outsideWrapperId } from "@/constants";
-import { SchedulerProps } from "./types";
+import { isAvailableZoom } from "@/types/guards";
+import { EventDropData, EventDragData, DraggableConfig } from "@/hooks/types";
+import { SchedulerProps, SchedulerRef } from "./types";
 import { StyledInnerWrapper, StyledOutsideWrapper } from "./styles";
 
-const Scheduler = ({
+type SchedulerContentProps = {
+  data: SchedulerData;
+  baseData?: SchedulerData;
+  categories?: SchedulerCategory[];
+  onTileClick?: SchedulerProps["onTileClick"];
+  topBarWidth: number;
+  onItemClick?: SchedulerProps["onItemClick"];
+  toggleTheme: () => void;
+  onEventDrop?: (dropData: EventDropData) => Promise<boolean> | boolean;
+  onEventDrag?: (dragData: EventDragData) => void;
+  draggableConfig?: DraggableConfig;
+  schedulerRef: MutableRefObject<SchedulerRef | null>;
+  onTimeRangeSelect?: SchedulerProps["onTimeRangeSelect"];
+  onMultiTimeRangeSelect?: SchedulerProps["onMultiTimeRangeSelect"];
+  clickToAddConfig?: SchedulerProps["clickToAddConfig"];
+};
+
+const SchedulerContent = ({
   data,
-  config,
-  startDate,
-  onRangeChange,
+  baseData,
+  categories,
   onTileClick,
-  onFilterData,
-  onClearFilterData,
+  topBarWidth,
   onItemClick,
-  isLoading
-}: SchedulerProps) => {
+  toggleTheme,
+  onEventDrop,
+  onEventDrag,
+  draggableConfig,
+  schedulerRef,
+  onTimeRangeSelect,
+  onMultiTimeRangeSelect,
+  clickToAddConfig
+}: SchedulerContentProps) => {
+  const { goToDate, handleGoToday, zoomIn, zoomOut, zoom } = useCalendar();
+
+  useImperativeHandle(
+    schedulerRef,
+    () => ({
+      goToDate,
+      goToToday: handleGoToday,
+      setZoom: (newZoom: ZoomLevel) => {
+        if (!isAvailableZoom(newZoom)) return;
+        const diff = newZoom - zoom;
+        if (diff > 0) {
+          for (let i = 0; i < diff; i++) zoomIn();
+        } else {
+          for (let i = 0; i < Math.abs(diff); i++) zoomOut();
+        }
+      }
+    }),
+    [goToDate, handleGoToday, zoom, zoomIn, zoomOut]
+  );
+
+  return (
+    <Calendar
+      data={data}
+      baseData={baseData}
+      categories={categories}
+      onTileClick={onTileClick}
+      topBarWidth={topBarWidth}
+      onItemClick={onItemClick}
+      toggleTheme={toggleTheme}
+      onEventDrop={onEventDrop}
+      onEventDrag={onEventDrag}
+      draggableConfig={draggableConfig}
+      onTimeRangeSelect={onTimeRangeSelect}
+      onMultiTimeRangeSelect={onMultiTimeRangeSelect}
+      clickToAddConfig={clickToAddConfig}
+    />
+  );
+};
+
+const Scheduler = forwardRef<SchedulerRef, SchedulerProps>(function Scheduler(
+  {
+    data,
+    categories,
+    baseData,
+    config,
+    startDate,
+    onRangeChange,
+    onTileClick,
+    handleToggleDisplayActiveUnits,
+    onClearFilterData,
+    onItemClick,
+    isLoading,
+    onEventDrop,
+    onEventDrag,
+    draggableConfig,
+    onTimeRangeSelect,
+    onMultiTimeRangeSelect,
+    clickToAddConfig
+  },
+  ref
+) {
   const appConfig: Config = useMemo(
     () => ({
       zoom: 0,
@@ -34,6 +127,7 @@ const Scheduler = ({
   );
 
   const outsideWrapperRef = useRef<HTMLDivElement>(null);
+  const schedulerRef = useRef<SchedulerRef | null>(null);
   const [topBarWidth, setTopBarWidth] = useState(outsideWrapperRef.current?.clientWidth);
   const defaultStartDate = useMemo(() => dayjs(startDate), [startDate]);
   const [themeMode, setThemeMode] = useState<"light" | "dark">(appConfig.defaultTheme ?? "light");
@@ -51,6 +145,17 @@ const Scheduler = ({
     }
   };
 
+  // Forward the internal ref to the external ref
+  useImperativeHandle(
+    ref,
+    () => ({
+      goToDate: (date: Date | string | number) => schedulerRef.current?.goToDate(date),
+      goToToday: () => schedulerRef.current?.goToToday(),
+      setZoom: (zoom: ZoomLevel) => schedulerRef.current?.setZoom(zoom)
+    }),
+    []
+  );
+
   useEffect(() => {
     const handleResize = () => {
       if (outsideWrapperRef.current) {
@@ -63,7 +168,7 @@ const Scheduler = ({
     window.addEventListener("resize", handleResize);
 
     return () => window.removeEventListener("resize", handleResize);
-    }, []);
+  }, []);
 
   if (!outsideWrapperRef.current) null;
   return (
@@ -77,19 +182,28 @@ const Scheduler = ({
             config={appConfig}
             onRangeChange={onRangeChange}
             defaultStartDate={defaultStartDate}
-            onFilterData={onFilterData}
+            handleToggleDisplayActiveUnits={handleToggleDisplayActiveUnits}
             onClearFilterData={onClearFilterData}>
             <StyledOutsideWrapper
               showScroll={!!data.length}
               id={outsideWrapperId}
               ref={outsideWrapperRef}>
               <StyledInnerWrapper>
-                <Calendar
+                <SchedulerContent
                   data={data}
+                  baseData={baseData}
+                  categories={categories}
                   onTileClick={onTileClick}
                   topBarWidth={topBarWidth ?? 0}
                   onItemClick={onItemClick}
                   toggleTheme={toggleTheme}
+                  onEventDrop={onEventDrop}
+                  onEventDrag={onEventDrag}
+                  draggableConfig={draggableConfig}
+                  schedulerRef={schedulerRef}
+                  onTimeRangeSelect={onTimeRangeSelect}
+                  onMultiTimeRangeSelect={onMultiTimeRangeSelect}
+                  clickToAddConfig={clickToAddConfig}
                 />
               </StyledInnerWrapper>
             </StyledOutsideWrapper>
@@ -98,6 +212,6 @@ const Scheduler = ({
       </ThemeProvider>
     </>
   );
-};
+});
 
 export default Scheduler;

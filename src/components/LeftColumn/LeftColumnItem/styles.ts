@@ -9,7 +9,11 @@ export const StyledWrapper = styled.div<StyledLeftColumnItemWrapperProps>`
   width: 100%;
   min-height: ${boxHeight}px;
   height: calc(${boxHeight}px * ${({ rows }) => rows});
-  border-top: 1px solid ${({ theme }) => theme.colors.border};
+  border-top: 1px solid
+    ${({ theme, $isSubcontract }) =>
+      $isSubcontract ? theme.colors.subcontractBorder + "33" : theme.colors.border};
+  background-color: ${({ theme, $isSubcontract }) =>
+    $isSubcontract ? theme.colors.subcontractBg : "transparent"};
   transition: 0.5s ease;
   cursor: ${({ clickable }) => (clickable ? "pointer" : "auto")};
   &:hover {

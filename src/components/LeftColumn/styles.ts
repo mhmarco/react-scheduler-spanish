@@ -26,6 +26,13 @@ export const StyledLeftColumnHeader = styled.div`
   z-index: 3;
 `;
 
+export const StyledHeaderActions = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding-right: 10px;
+`;
+
 export const StyledInput = styled.input`
   height: 100%;
   width: calc(100% - 44px);
@@ -42,7 +49,8 @@ export const StyledInput = styled.input`
 export const StyledInputWrapper = styled.div<StyledInputWrapperProps>`
   margin-left: 10px;
   height: 36px;
-  width: calc(100% - 20px); //20px = 10px margin each side
+  flex: 1;
+  min-width: 0;
   background-color: ${({ theme }) => theme.colors.primary};
   border: 1px solid
     ${({ theme, isFocused }) => (isFocused ? theme.colors.accent : theme.colors.border)};
@@ -56,5 +64,31 @@ export const StyledInputWrapper = styled.div<StyledInputWrapperProps>`
     margin-right: 12px;
     height: 24px;
     width: 24px;
+  }
+`;
+
+export const StyledCollapseButton = styled.button<{ $allCollapsed: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: 4px;
+  background: ${({ theme }) => theme.colors.primary};
+  cursor: pointer;
+  padding: 0;
+  color: ${({ theme }) => theme.colors.placeholder};
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    background: ${({ theme }) => theme.colors.hover};
+    color: ${({ theme }) => theme.colors.textPrimary};
+    border-color: ${({ theme }) => theme.colors.accent};
+  }
+
+  &:active {
+    transform: scale(0.95);
   }
 `;

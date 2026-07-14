@@ -1,7 +1,8 @@
-import { PaginatedSchedulerData, SchedulerItemClickData } from "@/types/global";
+import { PaginatedSchedulerData, SchedulerCategory, SchedulerItemClickData } from "@/types/global";
 
 export type LeftColumnProps = {
   data: PaginatedSchedulerData;
+  categories?: SchedulerCategory[];
   rows: number[];
   pageNum: number;
   pagesAmount: number;
@@ -10,6 +11,11 @@ export type LeftColumnProps = {
   searchInputValue: string;
   onSearchInputChange: React.ChangeEventHandler<HTMLInputElement>;
   onItemClick?: (data: SchedulerItemClickData) => void;
+  collapsedGroups: Set<string>;
+  onToggleGroup: (groupId: string) => void;
+  allGroupIds: string[];
+  onExpandAll: () => void;
+  onCollapseAll: () => void;
 };
 
 export type StyledInputWrapperProps = {

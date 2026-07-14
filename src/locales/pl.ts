@@ -13,5 +13,54 @@ export const pl = {
     view: "Widok"
   },
   search: "szukaj",
-  week: "tydzień"
+  week: "tydzień",
+  conflicts: {
+    detected: "Konflikt",
+    detectedPlural: "Konflikty",
+    detectedSuffix: "Wykryto",
+    conflictsWith: "Konflikt z",
+    movingTo: "Przenoszenie do",
+    currentlyAt: "Obecnie o",
+    conflictTime: "Czas konfliktu",
+    to: "do",
+    nearbyEvent: "Bliskie wydarzenie",
+    nearbyEvents: "Bliskie wydarzenia",
+    before: "przed",
+    after: "po",
+    gap: "przerwa",
+    yourEvent: "Twoje wydarzenie",
+    sameDay: "Ten sam dzień",
+    changeStart: "Zmień czas rozpoczęcia",
+    changeEnd: "Zmień czas zakończenia",
+    changeBoth: "Zmień czasy"
+  },
+  multiSelect: {
+    selectionsPending: "wybór(y) oczekujące",
+    selectionPending: "wybór oczekujący",
+    clickToRemove: "Kliknij × aby usunąć",
+    pressEscToClear: "Naciśnij Esc aby wyczyścić",
+    clearAll: "Wyczyść Wszystko",
+    confirmSelection: "Potwierdź Wybór",
+    confirmSelections: "Potwierdź Wybory",
+    conflictWarning: "1 wybór ma konflikty",
+    conflictsWarning: "{count} wyborów ma konflikty",
+    confirmWithConflict: "Potwierdź z Konfliktem",
+    confirmWithConflicts: "Potwierdź z Konfliktami"
+  },
+  tooltip: {
+    client: "Klient",
+    schedule: "Harmonogram",
+    startDate: "Początek",
+    endDate: "Koniec",
+    groupName: "Nazwa Grupy",
+    driver: "Kierowca",
+    flightNumber: "Lot",
+    serviceNotes: "Uwagi Serwisowe",
+    reservationNotes: "Uwagi Rezerwacji",
+    tour: "Wycieczka",
+    transfer: "Transfer",
+    oneDay: "Jednodniowy",
+    passengers: "Pax"
+  },
+  subcontract: "Podwykonawca"
 };

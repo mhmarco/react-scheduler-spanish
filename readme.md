@@ -170,6 +170,9 @@ const mockedSchedulerData: SchedulerData = [
 | onItemClick       | `function` | clicked left column item data     | detects item click on left column                                                                                                 |
 | onFilterData      | `function` | -                                 | callback firing when filter button was clicked                                                                                    |
 | onClearFilterData | `function` | -                                 | callback firing when clear filters button was clicked (clearing button is visible **only** when filterButtonState is set to `>0`) |
+| onEventDrop       | `function` | `EventDropData`                   | callback firing when an event is dropped after dragging. Return `true` to accept, `false` to reject. See [Drag and Drop](#drag-and-drop-events) |
+| onEventDrag       | `function` | `EventDragData`                   | callback firing during drag operation (throttled to 100ms). See [Drag and Drop](#drag-and-drop-events)                           |
+| draggableConfig   | `DraggableConfig` | -                             | configuration object for drag-and-drop behavior. See [Drag and Drop](#drag-and-drop-events)                                      |
 | config            | `Config`   | -                                 | object with scheduler config properties                                                                                           |
 
 ##### Scheduler Config Object
@@ -266,6 +269,7 @@ array of chart rows with shape of
 | id | `string` | unique row id |
 | label | `SchedulerRowLabel` | row's label, `e.g person's name, surname, icon` |
 | data | `Array<ResourceItem>` | array of `resources` |
+| capacity | `number (optional)` | maximum capacity for this resource (used for drag-and-drop validation) |
 
 ##### Left Colum Item Data
 
@@ -288,6 +292,54 @@ item that will be visible on the grid as tile and that will be accessible as arg
 | endDate | `Date` | date for calculating end position for resource |
 | occupancy | `number` | number of seconds resource takes up for given row that will be visible on resource tooltip when hovered |
 | bgColor | `string (optional)` | tile color |
+| draggable | `boolean (optional)` | whether this specific event can be dragged (default: `true` if drag-and-drop is enabled) |
+| totalPassengers | `number (optional)` | number of passengers/occupants for capacity validation during drag-and-drop |
+
+### Drag and Drop Events
+
+The scheduler supports drag-and-drop functionality for rescheduling and reassigning events. For detailed documentation, examples, and API reference, see [DRAG_AND_DROP.md](DRAG_AND_DROP.md).
+
+#### Quick Example
+
+```tsx
+import { Scheduler, EventDropData } from '@bitnoi.se/react-scheduler';
+
+function MyScheduler() {
+  const handleEventDrop = async (dropData: EventDropData): Promise<boolean> => {
+    // Validate and save the drop
+    try {
+      await updateEvent(dropData.event.id, {
+        startDate: dropData.newStartDate,
+        endDate: dropData.newEndDate,
+        resourceId: dropData.newResourceId
+      });
+      return true; // Accept drop
+    } catch (error) {
+      return false; // Reject drop
+    }
+  };
+
+  return (
+    <Scheduler
+      data={schedulerData}
+      onEventDrop={handleEventDrop}
+      draggableConfig={{ enabled: true }}
+    />
+  );
+}
+```
+
+#### Key Features
+
+- **Grid Snapping**: Events automatically snap to the grid based on zoom level
+- **Duration Preservation**: Event duration is maintained during drag operations
+- **Capacity Validation**: Prevent events from being dropped on resources with insufficient capacity
+- **Conflict Detection**: Automatic calculation of conflict details including overlap duration and affected events
+- **Resource-Only Mode**: Drag to change resource assignment without changing dates
+- **Visual Feedback**: Real-time indicators show valid/invalid drop targets
+- **Detailed Conflict Information**: Access exact overlap periods, durations, and conflicting events
+
+See [DRAG_AND_DROP.md](DRAG_AND_DROP.md) for complete documentation.
 
 ### Troubleshooting
 

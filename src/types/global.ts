@@ -60,10 +60,29 @@ export type Theme = {
 
 export type SchedulerData = SchedulerRow[];
 
+/**
+ * Category for grouping scheduler resources.
+ * Categories create collapsible sections in the left column, ordered by maxPassengers.
+ */
+export type SchedulerCategory = {
+  /** Unique identifier for this category */
+  id: string;
+  /** Display name for the category group header */
+  name: string;
+  /** Minimum passenger capacity for this category */
+  minPassengers: number;
+  /** Maximum passenger capacity for this category */
+  maxPassengers: number;
+};
+
 export type SchedulerRow = {
   id: string;
   label: SchedulerRowLabel;
   data: SchedulerProjectData[];
+  capacity?: number;
+  isSubcontract?: boolean;
+  /** Category ID to group this resource under. Must match a SchedulerCategory.id */
+  categoryId?: string;
 };
 
 export type SchedulerItemClickData = Omit<SchedulerRow, "data">;
@@ -74,6 +93,9 @@ export type PaginatedSchedulerRow = {
   id: string;
   label: SchedulerRowLabel;
   data: SchedulerProjectData[][];
+  capacity?: number;
+  isSubcontract?: boolean;
+  categoryId?: string;
 };
 
 export type SchedulerRowLabel = {
@@ -81,56 +103,172 @@ export type SchedulerRowLabel = {
   title: string;
   subtitle: string;
 };
+/**
+ * Represents a single event/reservation displayed on the scheduler timeline.
+ *
+ * ## Tile Display
+ * - Multi-day events show: title | subtitle | description
+ * - Single-day events (transfers or one-day tours) show a compact badge: "TRF" or "1-DAY"
+ *
+ * ## Tooltip Display (on hover)
+ * The tooltip displays event details in a card format:
+ * - Header: bookingNumber, eventType badge, title, subtitle (as client)
+ * - Time block: startDate/startTime, endDate/endTime (tours only)
+ * - Details grid: driver, flightNumber, groupName (if provided)
+ * - Notes section: serviceNotes, reservationNotes (if provided)
+ */
 export type SchedulerProjectData = {
   /**
-   * Unique Id of item
+   * Unique identifier for this segment/tile. Used internally to identify the tile in the Scheduler.
+   * @required
    */
-  id: string;
+  segmentId: string;
+
   /**
-   * Represents start date of from which tile will render
+   * Unique identifier for the parent reservation. Multiple segments can share the same reservationId.
+   * @required
+   */
+  reservationId: string;
+
+  /**
+   * Start date and time of the event. Determines where the tile begins on the timeline.
+   * @required
+   * @tooltip Displayed as formatted date and time in the tooltip time block
    */
   startDate: Date;
+
   /**
-   * Represents end date to which tile will render
+   * End date and time of the event. Determines where the tile ends on the timeline.
+   * For transfers, set equal to startDate for single-point events.
+   * For one-day tours, set to same date with different time.
+   * @required
+   * @tooltip Displayed for tours only (not shown for transfers)
    */
   endDate: Date;
+
   /**
-   * Indicates how much time is spent per day. Given in seconds and converted by Scheduler to hours/minutes
+   * Time spent per day in seconds. Converted by Scheduler to hours/minutes for occupancy display.
+   * @required
    */
   occupancy: number;
+
   /**
-   * Title of item
+   * Primary title of the event. Displayed prominently on multi-day tiles and in tooltip header.
+   * @required
+   * @tile Shown on multi-day event tiles
+   * @tooltip Displayed as main event name in header
    */
   title: string;
+
   /**
-   * Subtitle of item. Optional
+   * Secondary text for the event. Typically used for client/customer name.
+   * @optional
+   * @tile Shown on multi-day event tiles after title
+   * @tooltip Displayed as client name below the title
    */
   subtitle?: string;
+
   /**
-   * Short description displayed on tile. Optional
+   * Brief description of the event. Only shown on multi-day event tiles.
+   * @optional
+   * @tile Shown on multi-day event tiles
    */
   description?: string;
+
   /**
-   * Background color of the tile, given in rgb color model. If not given, default color (rgb(114, 141,226 )) is set. Optional
+   * Background color of the tile in RGB format (e.g., "rgb(114, 141, 226)").
+   * If not provided, uses the theme's default tile color.
+   * @optional
+   * @default "rgb(114, 141, 226)"
    */
   bgColor?: string;
+
   /**
-   * Event type of the item. Optional
+   * Type of event - Tour or Transfer. Affects tooltip display and tile styling.
+   * - Tour: Shows start and end dates in tooltip. Multi-day tours show full tile content.
+   * - Transfer: Shows only start date in tooltip. Single-day transfers show "TRF" badge.
+   * - One-day tours (same start/end date): Show "1-DAY" badge on tile.
+   * @optional
+   * @tooltip Displayed as colored badge: "Tour", "One-day", or "Transfer"
    */
   eventType?: ReservationType;
+
   /**
-   * Booking number of the item.
+   * Unique booking/reservation reference number. Displayed prominently in tooltip header.
+   * @required
+   * @tooltip Displayed in header as accent-colored identifier
    */
   bookingNumber: string;
 
   /**
-   * Group name of the item.
+   * Name of the group associated with this event (e.g., tour group, corporate booking).
+   * @optional
+   * @tooltip Displayed in details grid if provided
    */
   groupName?: string;
+
+  /**
+   * Name of the driver/operator assigned to this event.
+   * @optional
+   * @tooltip Displayed in details grid if provided
+   */
+  driver?: string;
+
+  /**
+   * Flight number associated with this event. Commonly used for airport transfers.
+   * @optional
+   * @tooltip Displayed in details grid if provided
+   */
+  flightNumber?: string;
+
+  /**
+   * Internal service notes for staff. Only displayed if provided.
+   * @optional
+   * @tooltip Displayed in notes section with styled background
+   */
+  serviceNotes?: string;
+
+  /**
+   * Customer-facing reservation notes. Only displayed if provided.
+   * @optional
+   * @tooltip Displayed in notes section with styled background
+   */
+  reservationNotes?: string;
+
+  /**
+   * Controls whether this event can be dragged. If false, drag operations will not be initiated.
+   * @optional
+   * @default true (if drag-and-drop is enabled globally)
+   */
+  draggable?: boolean;
+
+  /**
+   * Total number of passengers/occupants for capacity validation during drag-and-drop.
+   * Events can only be dropped on resources with sufficient capacity.
+   * @optional - if not provided, capacity validation is skipped
+   */
+  totalPassengers?: number;
 };
 
+/**
+ * Event type classification for scheduler items.
+ * Affects both tile display and tooltip presentation.
+ *
+ * @example
+ * // Multi-day tour (2+ days)
+ * { eventType: ReservationType.Tour, startDate: new Date('2026-01-15'), endDate: new Date('2026-01-18') }
+ *
+ * // One-day tour (same date, different times) - shows "1-DAY" badge
+ * { eventType: ReservationType.Tour, startDate: new Date('2026-01-15T09:00'), endDate: new Date('2026-01-15T17:00') }
+ *
+ * // Transfer (single point in time) - shows "TRF" badge
+ * { eventType: ReservationType.Transfer, startDate: new Date('2026-01-15T14:00'), endDate: new Date('2026-01-15T14:00') }
+ */
 export enum ReservationType {
-  Tour, Transfer
+  /** Tour event - can be multi-day or one-day. Tooltip shows both start and end dates. */
+  Tour,
+  /** Transfer event - typically single point in time. Tooltip shows only start date. */
+  Transfer
 }
 
 export type Day = {
@@ -208,17 +346,32 @@ export type OccupancyData = {
 
 export type TooltipData = {
   coords: Coords;
+  mouseCoords: Coords;
   resourceIndex: number;
   disposition: OccupancyData;
   reservationData: ReservationData;
+  tileBounds?: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  };
 };
 
 export type ReservationData = {
   startTime: string;
+  startDate: string;
+  endTime?: string;
+  endDate?: string;
   client: string;
   eventName: string;
   reservationType: ReservationType;
-  endDate?: string;
   bookingNumber: string;
   groupName?: string;
+  driver?: string;
+  flightNumber?: string;
+  serviceNotes?: string;
+  reservationNotes?: string;
+  isOneDayEvent?: boolean;
+  passengers?: number;
 };

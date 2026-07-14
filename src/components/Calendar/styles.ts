@@ -18,6 +18,7 @@ export const StyledEmptyBoxWrapper = styled.div<{ width: number }>`
   width: calc(${({ width }) => width}px - ${leftColumnWidth}px);
   position: sticky;
   top: 0;
+  min-height: 440px;
   height: 100%;
   left: ${leftColumnWidth}px;
   display: flex;

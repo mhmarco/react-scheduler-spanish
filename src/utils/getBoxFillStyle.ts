@@ -5,7 +5,7 @@ export const getBoxFillStyle = (config: TextAndBoxStyleConfig, theme: Theme) => 
   const { isCurrent, isBusinessDay, variant } = config;
   if (variant === "yearView")
     return isCurrent ? theme.colors.tertiary : theme.colors.gridBackground;
-  if (isCurrent) return theme.colors.secondary;
+  if (isCurrent) return theme.colors.currentDay;
   if (!isBusinessDay) return theme.colors.secondary;
 
   return theme.colors.primary;

@@ -1,100 +1,180 @@
-import { FC, useLayoutEffect, useRef } from "react";
-import { dayWidth, weekWidth, zoom2ColumnWidth } from "@/constants";
+import { FC, useLayoutEffect, useRef, useState } from "react";
 import { ReservationType } from "@/types/global";
-import Icon from "../Icon";
+import { useLanguage } from "@/context/LocaleProvider";
 import { TooltipProps } from "./types";
 import {
-  StyledContentWrapper,
-  StyledInnerWrapper,
-  StyledText,
-  StyledTextWrapper,
-  StyledTooltipBeak,
-  StyledTooltipContent,
-  StyledTooltipWrapper
+  StyledTooltipWrapper,
+  StyledHeader,
+  StyledHeaderTop,
+  StyledBookingId,
+  StyledTypeBadge,
+  StyledTitle,
+  StyledClient,
+  StyledBody,
+  StyledTimeBlock,
+  StyledTimeItem,
+  StyledTimeLabel,
+  StyledTimeValue,
+  StyledTimeDate,
+  StyledTimeHour,
+  StyledDetails,
+  StyledDetailItem,
+  StyledDetailLabel,
+  StyledDetailValue,
+  StyledNotesSection,
+  StyledNoteItem,
+  StyledNoteLabel,
+  StyledNoteText
 } from "./styles";
 
-const Tooltip: FC<TooltipProps> = ({ tooltipData, zoom }) => {
+type TooltipPosition = "above" | "below";
 
-  const { coords, disposition } = tooltipData;
+const defaultTranslations = {
+  client: "Client",
+  startDate: "Start",
+  endDate: "End",
+  groupName: "Group",
+  driver: "Driver",
+  flightNumber: "Flight",
+  serviceNotes: "Service Notes",
+  reservationNotes: "Reservation Notes",
+  tour: "Tour",
+  transfer: "Transfer",
+  oneDay: "One-day",
+  passengers: "Pax"
+};
+
+const Tooltip: FC<TooltipProps> = ({ tooltipData }) => {
+  const { mouseCoords, reservationData } = tooltipData;
   const tooltipRef = useRef<HTMLDivElement>(null);
-  let width = weekWidth;
-  switch (zoom) {
-    case 0:
-      width = weekWidth;
-      break;
-    case 1:
-      width = dayWidth;
-      break;
-    case 2:
-      width = zoom2ColumnWidth;
-      break;
-  }
+  const [position, setPosition] = useState<TooltipPosition>("below");
+  const lang = useLanguage();
+  const t = { ...defaultTranslations, ...lang.tooltip };
 
   useLayoutEffect(() => {
-    // re calculate tooltip width before repaint
-    if (!tooltipRef.current) return;
+    if (!tooltipRef.current || !mouseCoords) return;
 
-    const { width: tooltipWidth } = tooltipRef.current.getBoundingClientRect();
-
-    let xOffset;
-    switch (zoom) {
-      case 2:
-        xOffset = tooltipWidth / 2 + width;
-        break;
-      default:
-        xOffset = tooltipWidth / 2 + width / 2;
-        break;
+    const tooltip = tooltipRef.current;
+    const { width: tooltipWidth, height: tooltipHeight } = tooltip.getBoundingClientRect();
+    
+    const parent = tooltip.parentElement;
+    if (!parent) return;
+    const parentRect = parent.getBoundingClientRect();
+    
+    const offset = 12;
+    const padding = 4;
+    
+    const spaceBelow = parentRect.height - mouseCoords.y;
+    const spaceRight = parentRect.width - mouseCoords.x;
+    
+    let x = mouseCoords.x + offset;
+    let y = mouseCoords.y + offset;
+    let pos: TooltipPosition = "below";
+    
+    if (spaceRight < tooltipWidth + offset) {
+      x = mouseCoords.x - tooltipWidth - offset;
     }
-    tooltipRef.current.style.left = `${coords.x - xOffset}px`;
-    tooltipRef.current.style.top = `${coords.y + 8}px`;
+    if (spaceBelow < tooltipHeight + offset) {
+      y = mouseCoords.y - tooltipHeight - offset;
+      pos = "above";
+    }
+    
+    x = Math.max(padding, Math.min(x, parentRect.width - tooltipWidth - padding));
+    y = Math.max(padding, Math.min(y, parentRect.height - tooltipHeight - padding));
+    
+    setPosition(pos);
+    tooltip.style.left = `${x}px`;
+    tooltip.style.top = `${y}px`;
+  }, [mouseCoords]);
 
-    // disposition.overtime affects tooltip's width, thus it's needed to recalculate it's coords whenever overtime changes
-  }, [coords.x, width, disposition.overtime, coords.y, zoom]);
+  const isTour = reservationData.reservationType === ReservationType.Tour;
+  const isOneDayTour = isTour && reservationData.isOneDayEvent;
+  
+  // Determine badge type and label
+  const getBadgeType = () => {
+    if (!isTour) return "transfer";
+    return isOneDayTour ? "oneday" : "tour";
+  };
+  
+  const getBadgeLabel = () => {
+    if (!isTour) return t.transfer;
+    return isOneDayTour ? t.oneDay : t.tour;
+  };
+  
+  // Build details array for grid
+  const details = [
+    reservationData.groupName && { label: t.groupName, value: reservationData.groupName },
+    reservationData.driver && { label: t.driver, value: reservationData.driver },
+    reservationData.passengers && { label: t.passengers, value: String(reservationData.passengers) },
+    reservationData.flightNumber && { label: t.flightNumber, value: reservationData.flightNumber }
+  ].filter(Boolean) as { label: string; value: string }[];
 
   return (
-    <StyledTooltipWrapper ref={tooltipRef}>
-      <StyledTooltipContent>
-        <StyledContentWrapper>
-        <StyledInnerWrapper>
-            <Icon iconName="search" height="12" />
-            <StyledTextWrapper>
-              <StyledText>{`Booking: ${tooltipData.reservationData.bookingNumber}`}</StyledText>
-            </StyledTextWrapper>
-          </StyledInnerWrapper>
-          <StyledInnerWrapper>
-            <Icon iconName="defaultAvatar" height="12" />
-            <StyledTextWrapper>
-              <StyledText>{`Cliente: ${tooltipData.reservationData.client}`}</StyledText>
-            </StyledTextWrapper>
-          </StyledInnerWrapper>
-          <StyledInnerWrapper>
-            <Icon iconName="calendarFree" height="12" />
-            <StyledTextWrapper>
-              <StyledText>{`Inicio: ${tooltipData.reservationData.startTime}`}</StyledText>
-            </StyledTextWrapper>
-            {tooltipData.reservationData.reservationType === ReservationType.Tour && (
-              <StyledTextWrapper>
-                <StyledText>{`Finaliza: ${tooltipData.reservationData.endDate}`}</StyledText>
-              </StyledTextWrapper>
+    <StyledTooltipWrapper ref={tooltipRef} $position={position}>
+      <StyledHeader>
+        <StyledHeaderTop>
+          <StyledBookingId>{reservationData.bookingNumber}</StyledBookingId>
+          <StyledTypeBadge $type={getBadgeType()}>
+            {getBadgeLabel()}
+          </StyledTypeBadge>
+        </StyledHeaderTop>
+        <StyledTitle>{reservationData.eventName}</StyledTitle>
+        {reservationData.client && (
+          <StyledClient>{reservationData.client}</StyledClient>
+        )}
+      </StyledHeader>
+
+      <StyledBody>
+        <StyledTimeBlock>
+          <StyledTimeItem>
+            <StyledTimeLabel>{t.startDate}</StyledTimeLabel>
+            <StyledTimeValue>
+              <StyledTimeDate>{reservationData.startDate}</StyledTimeDate>
+              {" "}
+              <StyledTimeHour>{reservationData.startTime}</StyledTimeHour>
+            </StyledTimeValue>
+          </StyledTimeItem>
+          
+          {isTour && reservationData.endDate && (
+            <StyledTimeItem $isEnd>
+              <StyledTimeLabel>{t.endDate}</StyledTimeLabel>
+              <StyledTimeValue>
+                <StyledTimeDate>{reservationData.endDate}</StyledTimeDate>
+                {" "}
+                <StyledTimeHour>{reservationData.endTime}</StyledTimeHour>
+              </StyledTimeValue>
+            </StyledTimeItem>
+          )}
+        </StyledTimeBlock>
+
+        {details.length > 0 && (
+          <StyledDetails>
+            {details.map((detail, i) => (
+              <StyledDetailItem key={i}>
+                <StyledDetailLabel>{detail.label}</StyledDetailLabel>
+                <StyledDetailValue>{detail.value}</StyledDetailValue>
+              </StyledDetailItem>
+            ))}
+          </StyledDetails>
+        )}
+
+        {(reservationData.serviceNotes || reservationData.reservationNotes) && (
+          <StyledNotesSection>
+            {reservationData.serviceNotes && (
+              <StyledNoteItem>
+                <StyledNoteLabel>{t.serviceNotes}</StyledNoteLabel>
+                <StyledNoteText>{reservationData.serviceNotes}</StyledNoteText>
+              </StyledNoteItem>
             )}
-          </StyledInnerWrapper>
-          <StyledInnerWrapper>
-            <Icon iconName="subtract" height="12" />
-            <StyledTextWrapper>
-              <StyledText>{tooltipData.reservationData.eventName}</StyledText>
-            </StyledTextWrapper>
-          </StyledInnerWrapper>
-            {(tooltipData.reservationData.reservationType === ReservationType.Transfer && !!tooltipData.reservationData.groupName) && (
-            <StyledInnerWrapper>
-              <Icon iconName="subtract" height="12" />
-              <StyledTextWrapper>
-              <StyledText>{`Reserva a nombre de: ${tooltipData.reservationData.groupName}`}</StyledText>
-              </StyledTextWrapper>
-            </StyledInnerWrapper>
+            {reservationData.reservationNotes && (
+              <StyledNoteItem>
+                <StyledNoteLabel>{t.reservationNotes}</StyledNoteLabel>
+                <StyledNoteText>{reservationData.reservationNotes}</StyledNoteText>
+              </StyledNoteItem>
             )}
-        </StyledContentWrapper>
-      </StyledTooltipContent>
-      <StyledTooltipBeak />
+          </StyledNotesSection>
+        )}
+      </StyledBody>
     </StyledTooltipWrapper>
   );
 };

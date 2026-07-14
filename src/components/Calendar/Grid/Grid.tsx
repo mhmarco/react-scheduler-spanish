@@ -1,16 +1,25 @@
-import { forwardRef, useCallback, useEffect, useRef } from "react";
+import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
 import { useTheme } from "styled-components";
 import { drawGrid } from "@/utils/drawGrid/drawGrid";
-import { boxHeight, canvasWrapperId, leftColumnWidth, outsideWrapperId } from "@/constants";
-import { Loader, Tiles } from "@/components";
+import { boxHeight, canvasWrapperId, leftColumnWidth, outsideWrapperId, subcontractSeparatorHeight } from "@/constants";
+import {
+  Loader,
+  Tiles,
+  DragOverlay,
+  SelectionOverlay,
+  MultiSelectToolbar,
+  PendingSelections
+} from "@/components";
 import { useCalendar } from "@/context/CalendarProvider";
 import { resizeCanvas } from "@/utils/resizeCanvas";
 import { getCanvasWidth } from "@/utils/getCanvasWidth";
+import { useDragAndDrop } from "@/hooks/useDragAndDrop";
+import { useClickToAdd } from "@/hooks/useClickToAdd";
 import { GridProps } from "./types";
 import { StyledCanvas, StyledInnerWrapper, StyledSpan, StyledWrapper } from "./styles";
 
 const Grid = forwardRef<HTMLDivElement, GridProps>(function Grid(
-  { zoom, rows, data, onTileClick },
+  { zoom, rows, data, baseData, onTileClick, onEventDrop, onEventDrag, draggableConfig, onDragStateChange, onTimeRangeSelect, onMultiTimeRangeSelect, clickToAddConfig, separatorRowIndices = [] },
   ref
 ) {
   const isThrottled = useRef(false);
@@ -18,17 +27,88 @@ const Grid = forwardRef<HTMLDivElement, GridProps>(function Grid(
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const refRight = useRef<HTMLSpanElement>(null);
   const refLeft = useRef<HTMLSpanElement>(null);
+  const gridWrapperRef = useRef<HTMLDivElement>(null);
+  const [isDraggingState, setIsDraggingState] = useState(false);
 
   const theme = useTheme();
+
+  // Initialize drag-and-drop hook
+  const {
+    dragState,
+    draggedEvent,
+    ghostPosition,
+    ghostDimensions,
+    dropTarget,
+    isValidDrop,
+    handleDragStart,
+    isDraggable,
+    draggingEventId,
+    resourceOnly
+  } = useDragAndDrop({
+    data,
+    baseData: baseData || data,
+    zoom: zoom as 0 | 1 | 2,
+    startDate,
+    onEventDrop,
+    onEventDrag,
+    draggableConfig,
+    gridRef: gridWrapperRef,
+    separatorRowIndices
+  });
+
+  // Notify parent when drag state changes
+  useEffect(() => {
+    const isDragging = dragState === "dragging" || dragState === "potential";
+    setIsDraggingState(isDragging);
+    if (onDragStateChange) {
+      onDragStateChange(isDragging);
+    }
+  }, [dragState, onDragStateChange]);
+
+  // Initialize click-to-add hook
+  const {
+    selectionState,
+    selectionBox,
+    handleGridMouseDown,
+    pendingSelections,
+    confirmSelections,
+    clearSelections,
+    removeSelection,
+    updateSelection,
+    isMultiSelectActive,
+    hasUnconfirmedSelections
+  } = useClickToAdd({
+    data,
+    baseData: baseData || data,
+    zoom: zoom as 0 | 1 | 2,
+    startDate,
+    onTimeRangeSelect,
+    onMultiTimeRangeSelect,
+    clickToAddConfig,
+    gridRef: gridWrapperRef,
+    isDragging: isDraggingState,
+    separatorRowIndices
+  });
+
+  // Prevent default drag behavior on canvas
+  const handleCanvasDragStart = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+  }, []);
+
+  const handleCanvasDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+  }, []);
+
+  const totalSeparatorOffset = separatorRowIndices.length * subcontractSeparatorHeight;
 
   const handleResize = useCallback(
     (ctx: CanvasRenderingContext2D) => {
       const width = getCanvasWidth();
-      const height = rows * boxHeight + 1;
+      const height = rows * boxHeight + 1 + totalSeparatorOffset;
       resizeCanvas(ctx, width, height);
-      drawGrid(ctx, zoom, rows, cols, startDate, theme);
+      drawGrid(ctx, zoom, rows, cols, startDate, theme, separatorRowIndices);
     },
-    [cols, startDate, rows, zoom, theme]
+    [cols, startDate, rows, zoom, theme, separatorRowIndices, totalSeparatorOffset]
   );
 
   useEffect(() => {
@@ -105,14 +185,78 @@ const Grid = forwardRef<HTMLDivElement, GridProps>(function Grid(
 
   return (
     <StyledWrapper id={canvasWrapperId}>
-      <StyledInnerWrapper ref={ref}>
+      <StyledInnerWrapper 
+        ref={(node) => {
+          // Set both refs
+          if (typeof ref === "function") {
+            ref(node);
+          } else if (ref) {
+            ref.current = node;
+          }
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore - We need to set this ref for drag-and-drop
+          gridWrapperRef.current = node;
+        }}
+        onMouseDown={handleGridMouseDown}
+        style={{ cursor: onTimeRangeSelect ? "crosshair" : "default" }}
+      >
         <StyledSpan position="left" ref={refLeft} />
         <Loader isLoading={isLoading} position="left" />
-        <StyledCanvas ref={canvasRef} />
-        <Tiles data={data} zoom={zoom} onTileClick={onTileClick} />
+        <StyledCanvas 
+          ref={canvasRef}
+          onDragStart={handleCanvasDragStart}
+          onDragOver={handleCanvasDragOver}
+          style={{ userSelect: dragState === "dragging" ? "none" : "auto" }}
+        />
+        <Tiles 
+          data={data} 
+          zoom={zoom} 
+          onTileClick={onTileClick}
+          onDragStart={handleDragStart}
+          isDraggable={isDraggable}
+          draggingEventId={draggingEventId}
+          separatorRowIndices={separatorRowIndices}
+        />
         <StyledSpan ref={refRight} position="right" />
         <Loader isLoading={isLoading} position="right" />
+        {(dragState === "dragging" || dragState === "animating") && (
+          <DragOverlay
+            draggedEvent={draggedEvent}
+            ghostPosition={ghostPosition}
+            ghostDimensions={ghostDimensions}
+            dropTarget={dropTarget}
+            isValidDrop={isValidDrop}
+            dragState={dragState}
+            zoom={zoom as 0 | 1 | 2}
+            data={data}
+            resourceOnly={resourceOnly}
+            separatorRowIndices={separatorRowIndices}
+          />
+        )}
+        <SelectionOverlay
+          selectionBox={selectionBox}
+          isSelecting={selectionState === "selecting"}
+        />
+        {isMultiSelectActive && pendingSelections.length > 0 && (
+          <PendingSelections
+            selections={pendingSelections}
+            data={data}
+            zoom={zoom as 0 | 1 | 2}
+            startDate={startDate}
+            onRemove={removeSelection}
+            onUpdate={updateSelection}
+            separatorRowIndices={separatorRowIndices}
+          />
+        )}
       </StyledInnerWrapper>
+      {isMultiSelectActive && hasUnconfirmedSelections && pendingSelections.length > 0 && (
+        <MultiSelectToolbar
+          selections={pendingSelections}
+          onConfirm={confirmSelections}
+          onClear={clearSelections}
+          onRemove={removeSelection}
+        />
+      )}
     </StyledWrapper>
   );
 });

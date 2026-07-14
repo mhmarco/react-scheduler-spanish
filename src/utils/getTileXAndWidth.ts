@@ -16,6 +16,13 @@ export const getTileXAndWidth = (item: DatesRange, range: DatesRange, zoom: numb
       cellWidth = dayWidth;
   }
 
+  // Normalize dates to start of day for day-based calculations (zoom 0 and 1)
+  // This prevents off-by-one errors when times don't align
+  const itemStartDay = item.startDate.startOf("day");
+  const itemEndDay = item.endDate.startOf("day");
+  const rangeStartDay = range.startDate.startOf("day");
+  const rangeEndDay = range.endDate.startOf("day");
+
   const getX = () => {
     let position;
     switch (zoom) {
@@ -25,7 +32,7 @@ export const getTileXAndWidth = (item: DatesRange, range: DatesRange, zoom: numb
           cellWidth / 2;
         break;
       default: {
-        position = (item.startDate.diff(range.startDate, "day") + 1) * cellWidth;
+        position = itemStartDay.diff(rangeStartDay, "day") * cellWidth;
       }
     }
     return Math.max(0, position);
@@ -42,7 +49,7 @@ export const getTileXAndWidth = (item: DatesRange, range: DatesRange, zoom: numb
         break;
       default:
         width = Math.max(
-          item.endDate.diff(item.startDate, "day") * cellWidth + cellWidth,
+          itemEndDay.diff(itemStartDay, "day") * cellWidth + cellWidth,
           MIN_WIDTH
         );
     }
@@ -62,7 +69,7 @@ export const getTileXAndWidth = (item: DatesRange, range: DatesRange, zoom: numb
         break;
       default:
         width = Math.max(
-          item.endDate.diff(range.startDate, "day") * cellWidth + cellWidth,
+          itemEndDay.diff(rangeStartDay, "day") * cellWidth + cellWidth,
           MIN_WIDTH
         );
     }
@@ -81,7 +88,7 @@ export const getTileXAndWidth = (item: DatesRange, range: DatesRange, zoom: numb
         break;
       default:
         width = Math.max(
-          range.endDate.diff(item.startDate, "day") * cellWidth + cellWidth,
+          rangeEndDay.diff(itemStartDay, "day") * cellWidth + cellWidth,
           MIN_WIDTH
         );
     }
@@ -100,7 +107,7 @@ export const getTileXAndWidth = (item: DatesRange, range: DatesRange, zoom: numb
         break;
       default:
         width = Math.max(
-          range.endDate.diff(range.startDate, "day") * cellWidth + cellWidth,
+          rangeEndDay.diff(rangeStartDay, "day") * cellWidth + cellWidth,
           MIN_WIDTH
         );
     }

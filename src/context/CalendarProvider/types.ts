@@ -9,9 +9,10 @@ export type CalendarContextType = {
   handleGoPrev: () => void;
   handleScrollPrev: () => void;
   handleGoToday: () => void;
+  goToDate: (date: Date | string | number) => void;
   zoomIn: () => void;
   zoomOut: () => void;
-  handleFilterData: () => void;
+  toggleDisplayActiveUnits: () => void;
   updateTilesCoords: (coords: Coords[]) => void;
   onClearFilterData?: () => void;
   data?: SchedulerData;
@@ -35,6 +36,6 @@ export type CalendarProviderProps = {
   data?: SchedulerData;
   config: Config;
   onRangeChange?: (range: ParsedDatesRange) => void;
-  onFilterData?: () => void;
+  handleToggleDisplayActiveUnits?: () => void;
   onClearFilterData?: () => void;
 };

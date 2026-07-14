@@ -51,18 +51,30 @@ export const getTooltipData = (
     zoom,
     includeTakenHoursOnWeekendsInDayView
   );
+
+  const isOneDayEvent = dayjs(reservation.startDate).isSame(dayjs(reservation.endDate), "day");
+
   return {
     coords: { x: xPos, y: yPos },
+    mouseCoords: cursorPosition,
     resourceIndex,
     disposition,
     reservationData: {
       startTime: dayjs(reservation.startDate).format("hh:mm A"),
+      startDate: dayjs(reservation.startDate).format("MMM D, YYYY"),
+      endTime: dayjs(reservation.endDate).format("hh:mm A"),
+      endDate: dayjs(reservation.endDate).format("MMM D, YYYY"),
       client: reservation.subtitle ?? "",
       eventName: reservation.title,
       reservationType: reservation.eventType!,
       bookingNumber: reservation.bookingNumber!,
-      endDate: reservation.eventType === ReservationType.Tour ? dayjs(reservation.endDate).format("hh:mm A") : undefined,
-      groupName: reservation.groupName
+      groupName: reservation.groupName,
+      driver: reservation.driver,
+      flightNumber: reservation.flightNumber,
+      serviceNotes: reservation.serviceNotes,
+      reservationNotes: reservation.reservationNotes,
+      isOneDayEvent,
+      passengers: reservation.totalPassengers
     }
   };
 };

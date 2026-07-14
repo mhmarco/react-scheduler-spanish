@@ -37,7 +37,11 @@ export type ColorType =
   | "button"
   | "tooltip"
   | "defaultTile"
-  | "hover";
+  | "hover"
+  | "currentDay"
+  | "subcontractBg"
+  | "subcontractBorder"
+  | "subcontractText";
 
 export type Theme = {
   colors: Record<ColorType, string>;
@@ -69,7 +73,11 @@ export const theme: DefaultTheme = {
 
     defaultTile: "#728DE2",
 
-    accent: "#0A11EB"
+    accent: "#0A11EB",
+    currentDay: "#B3D9FF",
+    subcontractBg: "#FFF7ED",
+    subcontractBorder: "#F59E0B",
+    subcontractText: "#92400E"
   }
 };
 
@@ -97,7 +105,11 @@ export const darkTheme: Theme = {
 
     defaultTile: "#728DE2",
 
-    accent: "#1798c2"
+    accent: "#1798c2",
+    currentDay: "#2A4A6B",
+    subcontractBg: "#422006",
+    subcontractBorder: "#D97706",
+    subcontractText: "#FCD34D"
   }
 };
 

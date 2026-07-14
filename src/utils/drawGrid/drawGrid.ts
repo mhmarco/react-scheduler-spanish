@@ -1,9 +1,10 @@
 import { Day } from "@/types/global";
-import { canvasWrapperId } from "@/constants";
+import { boxHeight, canvasWrapperId, subcontractSeparatorHeight } from "@/constants";
 import { Theme } from "@/styles";
 import { drawMonthlyView } from "./drawMonthlyView";
 import { drawYearlyView } from "./drawYearlyView";
 import { drawHourlyView } from "./drawHourlyView";
+import { drawSeparator } from "./drawSeparator";
 
 export const drawGrid = (
   ctx: CanvasRenderingContext2D,
@@ -11,7 +12,8 @@ export const drawGrid = (
   rows: number,
   cols: number,
   parsedStartDate: Day,
-  theme: Theme
+  theme: Theme,
+  separatorRowIndices: number[] = []
 ) => {
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   const canvasWrapper = document.getElementById(canvasWrapperId);
@@ -19,13 +21,18 @@ export const drawGrid = (
 
   switch (zoom) {
     case 0:
-      drawYearlyView(ctx, rows, cols, parsedStartDate, theme);
+      drawYearlyView(ctx, rows, cols, parsedStartDate, theme, separatorRowIndices);
       break;
     case 1:
-      drawMonthlyView(ctx, rows, cols, parsedStartDate, theme);
+      drawMonthlyView(ctx, rows, cols, parsedStartDate, theme, separatorRowIndices);
       break;
     case 2:
-      drawHourlyView(ctx, rows, cols, parsedStartDate, theme);
+      drawHourlyView(ctx, rows, cols, parsedStartDate, theme, separatorRowIndices);
       break;
+  }
+
+  // Draw all separators
+  for (let i = 0; i < separatorRowIndices.length; i++) {
+    drawSeparator(ctx, i, separatorRowIndices[i], theme);
   }
 };

@@ -21,6 +21,55 @@ export type Topbar = {
   view: string;
 };
 
+export type Conflicts = {
+  detected: string;
+  detectedPlural: string;
+  detectedSuffix: string;
+  conflictsWith: string;
+  movingTo: string;
+  currentlyAt: string;
+  conflictTime: string;
+  to: string;
+  nearbyEvent: string;
+  nearbyEvents: string;
+  before: string;
+  after: string;
+  gap: string;
+  yourEvent: string;
+  sameDay: string;
+  changeStart: string;
+  changeEnd: string;
+  changeBoth: string;
+};
+
+export type MultiSelect = {
+  selectionsPending: string;
+  selectionPending: string;
+  clickToRemove: string;
+  pressEscToClear: string;
+  clearAll: string;
+  confirmSelection: string;
+  confirmSelections: string;
+  conflictWarning: string;
+  conflictsWarning: string;
+  confirmWithConflict: string;
+  confirmWithConflicts: string;
+};
+
+export type Tooltip = {
+  client: string;
+  schedule: string;
+  startDate: string;
+  endDate: string;
+  groupName: string;
+  driver: string;
+  flightNumber: string;
+  serviceNotes: string;
+  reservationNotes: string;
+  tour: string;
+  transfer: string;
+};
+
 export type Translation = {
   feelingEmpty: string;
   free: string;
@@ -31,6 +80,10 @@ export type Translation = {
   topbar: Topbar;
   search: string;
   week: string;
+  conflicts: Conflicts;
+  multiSelect?: MultiSelect;
+  tooltip?: Tooltip;
+  subcontract?: string;
 };
 
 export type LocaleType = {

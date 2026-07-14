@@ -13,5 +13,54 @@ export const lt = {
     view: "Rodinys"
   },
   search: "ieškoti",
-  week: "savaitė"
+  week: "savaitė",
+  conflicts: {
+    detected: "Konfliktas",
+    detectedPlural: "Konfliktai",
+    detectedSuffix: "Aptikta",
+    conflictsWith: "Konfliktas su",
+    movingTo: "Perkeliama į",
+    currentlyAt: "Šiuo metu",
+    conflictTime: "Konflikto laikas",
+    to: "iki",
+    nearbyEvent: "Artimas įvykis",
+    nearbyEvents: "Artimi įvykiai",
+    before: "prieš",
+    after: "po",
+    gap: "tarpas",
+    yourEvent: "Jūsų įvykis",
+    sameDay: "Ta pati diena",
+    changeStart: "Keisti pradžios laiką",
+    changeEnd: "Keisti pabaigos laiką",
+    changeBoth: "Keisti laikus"
+  },
+  multiSelect: {
+    selectionsPending: "pasirinkimas(-ai) laukia",
+    selectionPending: "pasirinkimas laukia",
+    clickToRemove: "Spustelėkite × norėdami pašalinti",
+    pressEscToClear: "Paspauskite Esc norėdami išvalyti",
+    clearAll: "Išvalyti Viską",
+    confirmSelection: "Patvirtinti Pasirinkimą",
+    confirmSelections: "Patvirtinti Pasirinkimus",
+    conflictWarning: "1 pasirinkimas turi konfliktų",
+    conflictsWarning: "{count} pasirinkimai turi konfliktų",
+    confirmWithConflict: "Patvirtinti su Konfliktu",
+    confirmWithConflicts: "Patvirtinti su Konfliktais"
+  },
+  tooltip: {
+    client: "Klientas",
+    schedule: "Tvarkaraštis",
+    startDate: "Pradžia",
+    endDate: "Pabaiga",
+    groupName: "Grupės Pavadinimas",
+    driver: "Vairuotojas",
+    flightNumber: "Skrydis",
+    serviceNotes: "Paslaugų Pastabos",
+    reservationNotes: "Rezervacijos Pastabos",
+    tour: "Turas",
+    transfer: "Pervežimas",
+    oneDay: "Vienos dienos",
+    passengers: "Pax"
+  },
+  subcontract: "Subrangovas"
 };

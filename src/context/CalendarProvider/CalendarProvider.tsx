@@ -36,7 +36,7 @@ const CalendarProvider = ({
   config,
   defaultStartDate = dayjs(),
   onRangeChange,
-  onFilterData,
+  handleToggleDisplayActiveUnits,
   onClearFilterData
 }: CalendarProviderProps) => {
   const { zoom: configZoom, maxRecordsPerPage = 50 } = config;
@@ -197,6 +197,25 @@ const CalendarProvider = ({
     }, 300)();
   }, [isLoading, loadMore, moveHorizontalScroll]);
 
+  const goToDate = useCallback(
+    (targetDate: Date | string | number) => {
+      if (isLoading) return;
+
+      // Handle various input types and normalize to start of day
+      // This ensures consistent behavior regardless of input format
+      const newDate = dayjs(targetDate).startOf("day");
+      if (!newDate.isValid()) return;
+
+      setDate(newDate);
+      onRangeChange?.(range);
+      // Use setTimeout to ensure state update completes before scrolling
+      setTimeout(() => {
+        moveHorizontalScroll("middle", "smooth");
+      }, 300);
+    },
+    [isLoading, moveHorizontalScroll, onRangeChange, range]
+  );
+
   const zoomIn = () => changeZoom(zoom + 1);
 
   const zoomOut = () => changeZoom(zoom - 1);
@@ -208,7 +227,7 @@ const CalendarProvider = ({
     onRangeChange?.(range);
   };
 
-  const handleFilterData = () => onFilterData?.();
+  const toggleDisplayActiveUnits = () => handleToggleDisplayActiveUnits?.();
 
   const { Provider } = calendarContext;
 
@@ -222,6 +241,7 @@ const CalendarProvider = ({
         handleGoPrev,
         handleScrollPrev,
         handleGoToday,
+        goToDate,
         zoomIn,
         zoomOut,
         zoom,
@@ -232,7 +252,7 @@ const CalendarProvider = ({
         cols,
         startDate: parsedStartDate,
         dayOfYear,
-        handleFilterData,
+        toggleDisplayActiveUnits,
         tilesCoords,
         updateTilesCoords,
         recordsThreshold: maxRecordsPerPage,

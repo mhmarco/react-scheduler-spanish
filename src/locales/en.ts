@@ -13,5 +13,54 @@ export const en = {
     view: "View"
   },
   search: "search",
-  week: "week"
+  week: "week",
+  conflicts: {
+    detected: "Conflict",
+    detectedPlural: "Conflicts",
+    detectedSuffix: "Detected",
+    conflictsWith: "Conflicts with",
+    movingTo: "Moving to",
+    currentlyAt: "Currently at",
+    conflictTime: "Conflict time",
+    to: "to",
+    nearbyEvent: "Nearby Event",
+    nearbyEvents: "Nearby Events",
+    before: "before",
+    after: "after",
+    gap: "gap",
+    yourEvent: "Your event",
+    sameDay: "Same day",
+    changeStart: "Change start time",
+    changeEnd: "Change end time",
+    changeBoth: "Change times"
+  },
+  multiSelect: {
+    selectionsPending: "selection(s) pending",
+    selectionPending: "selection pending",
+    clickToRemove: "Click × on selections to remove",
+    pressEscToClear: "Press Esc to clear all",
+    clearAll: "Clear All",
+    confirmSelection: "Confirm Selection",
+    confirmSelections: "Confirm Selections",
+    conflictWarning: "1 selection has conflicts",
+    conflictsWarning: "{count} selections have conflicts",
+    confirmWithConflict: "Confirm with Conflict",
+    confirmWithConflicts: "Confirm with Conflicts"
+  },
+  tooltip: {
+    client: "Client",
+    schedule: "Schedule",
+    startDate: "Start",
+    endDate: "End",
+    groupName: "Group Name",
+    driver: "Driver",
+    flightNumber: "Flight",
+    serviceNotes: "Service Notes",
+    reservationNotes: "Reservation Notes",
+    tour: "Tour",
+    transfer: "Transfer",
+    oneDay: "One-day",
+    passengers: "Pax"
+  },
+  subcontract: "Subcontract"
 };

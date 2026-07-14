@@ -12,7 +12,7 @@ export const drawCell = (
 ) => {
   ctx.strokeStyle = theme.colors.border;
   if (isCurrentDay) {
-    ctx.fillStyle = theme.colors.secondary;
+    ctx.fillStyle = theme.colors.currentDay;
   } else if (isBusinessDay) {
     ctx.fillStyle = "transparent";
   } else {

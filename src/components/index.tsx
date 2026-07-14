@@ -14,3 +14,8 @@ export { default as ConfigPanel } from "./ConfigPanel";
 export { default as Tooltip } from "./Tooltip";
 export { default as PaginationButton } from "./PaginationButton";
 export { default as Toggle } from "./Toggle";
+export { default as DragOverlay } from "./DragOverlay";
+export { default as SelectionOverlay } from "./SelectionOverlay";
+export { default as MultiSelectToolbar } from "./MultiSelectToolbar";
+export { default as PendingSelections } from "./PendingSelections";
+export { default as GroupHeader } from "./LeftColumn/GroupHeader";

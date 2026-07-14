@@ -3,6 +3,7 @@ import { StyledSpanProps } from "./types";
 
 export const StyledWrapper = styled.div`
   height: calc(100vh - headerHeight);
+  position: relative;
 `;
 
 export const StyledInnerWrapper = styled.div`

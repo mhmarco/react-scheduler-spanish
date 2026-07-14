@@ -10,12 +10,13 @@ import {
 } from "./styles";
 import { LeftColumnItemProps } from "./types";
 
-const LeftColumnItem: FC<LeftColumnItemProps> = ({ id, item, rows, onItemClick }) => {
+const LeftColumnItem: FC<LeftColumnItemProps> = ({ id, item, rows, onItemClick, isSubcontract }) => {
   return (
     <StyledWrapper
       title={item.title}
       clickable={typeof onItemClick === "function"}
       rows={rows}
+      $isSubcontract={isSubcontract}
       onClick={() => onItemClick?.({ id, label: item })}>
       <StyledInnerWrapper>
         <StyledImageWrapper>
