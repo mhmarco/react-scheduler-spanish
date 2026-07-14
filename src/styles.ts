@@ -39,6 +39,7 @@ export type ColorType =
   | "defaultTile"
   | "hover"
   | "currentDay"
+  | "today"
   | "subcontractBg"
   | "subcontractBorder"
   | "subcontractText";
@@ -75,6 +76,7 @@ export const theme: DefaultTheme = {
 
     accent: "#0A11EB",
     currentDay: "#B3D9FF",
+    today: "#0F7D66",
     subcontractBg: "#FFF7ED",
     subcontractBorder: "#F59E0B",
     subcontractText: "#92400E"
@@ -107,6 +109,7 @@ export const darkTheme: Theme = {
 
     accent: "#1798c2",
     currentDay: "#2A4A6B",
+    today: "#2DD4BF",
     subcontractBg: "#422006",
     subcontractBorder: "#D97706",
     subcontractText: "#FCD34D"

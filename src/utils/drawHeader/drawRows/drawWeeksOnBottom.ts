@@ -40,12 +40,15 @@ export const drawWeeksOnBottom = (
         width: weekWidth,
         height: headerDayHeight,
         isBottomRow: true,
-        fillStyle: getBoxFillStyle({ isCurrent: isCurrWeek, variant: "yearView" }, theme),
+        // HOY marker (§22.3): a teal wash + bold teal week number, distinct from the sage/blue current-cell tint.
+        fillStyle: isCurrWeek
+          ? theme.colors.today + "26"
+          : getBoxFillStyle({ isCurrent: isCurrWeek, variant: "yearView" }, theme),
         topText: {
           y: dayNameYPos,
           label: week.isoWeek().toString(),
-          font: fonts.bottomRow.name,
-          color: getTextStyle({ isCurrent: isCurrWeek }, theme)
+          font: isCurrWeek ? "700 14px Inter" : fonts.bottomRow.name,
+          color: isCurrWeek ? theme.colors.today : getTextStyle({ isCurrent: isCurrWeek }, theme)
         },
         bottomText: {
           y: dayNumYPos,

@@ -1615,6 +1615,7 @@ const S = Jt, gt = "reactSchedulerOutsideWrapper", as = is`
     defaultTile: "#728DE2",
     accent: "#0A11EB",
     currentDay: "#B3D9FF",
+    today: "#0F7D66",
     subcontractBg: "#FFF7ED",
     subcontractBorder: "#F59E0B",
     subcontractText: "#92400E"
@@ -1640,6 +1641,7 @@ const S = Jt, gt = "reactSchedulerOutsideWrapper", as = is`
     defaultTile: "#728DE2",
     accent: "#1798c2",
     currentDay: "#2A4A6B",
+    today: "#2DD4BF",
     subcontractBg: "#422006",
     subcontractBorder: "#D97706",
     subcontractText: "#FCD34D"
@@ -5515,12 +5517,13 @@ to{
         width: ft,
         height: Xe,
         isBottomRow: !0,
-        fillStyle: Qr({ isCurrent: f, variant: "yearView" }, o),
+        // HOY marker (§22.3): a teal wash + bold teal week number, distinct from the sage/blue current-cell tint.
+        fillStyle: f ? o.colors.today + "26" : Qr({ isCurrent: f, variant: "yearView" }, o),
         topText: {
           y: s,
           label: l.isoWeek().toString(),
-          font: Ye.bottomRow.name,
-          color: mn({ isCurrent: f }, o)
+          font: f ? "700 14px Inter" : Ye.bottomRow.name,
+          color: f ? o.colors.today : mn({ isCurrent: f }, o)
         },
         bottomText: {
           y: i,
