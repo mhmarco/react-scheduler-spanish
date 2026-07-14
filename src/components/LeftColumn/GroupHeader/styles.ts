@@ -5,7 +5,7 @@ export const StyledGroupHeader = styled.div<{ $variant: "category" | "subcontrac
   align-items: center;
   gap: 8px;
   padding: 0 10px 0 0;
-  height: 28px;
+  height: 21px;
   background: ${({ theme }) =>
     theme.mode === "dark"
       ? `linear-gradient(90deg, ${theme.colors.primary} 0%, ${theme.colors.background} 100%)`

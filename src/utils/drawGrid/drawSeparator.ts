@@ -12,10 +12,10 @@ export const drawSeparator = (
   const width = ctx.canvas.width;
   const midY = y + subcontractSeparatorHeight / 2;
 
-  ctx.fillStyle = theme.mode === "dark" ? theme.colors.primary + "80" : "#F6F7F9";
+  ctx.fillStyle = theme.mode === "dark" ? theme.colors.primary + "80" : theme.colors.primary;
   ctx.fillRect(0, y, width, subcontractSeparatorHeight);
 
-  ctx.strokeStyle = theme.mode === "dark" ? theme.colors.border : "#DDE0E4";
+  ctx.strokeStyle = theme.colors.border;
   ctx.lineWidth = 1;
   ctx.setLineDash([]);
   ctx.beginPath();

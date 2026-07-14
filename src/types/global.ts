@@ -50,6 +50,11 @@ export type Config = {
    * @default "light"
    */
   defaultTheme?: "light" | "dark";
+  /**
+   * show the internal top bar (nav/zoom/filter/multi-select controls)
+   * @default true
+   */
+  showTopbar?: boolean;
   theme?: Theme;
 };
 

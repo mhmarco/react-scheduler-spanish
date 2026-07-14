@@ -120,6 +120,7 @@ const Scheduler = forwardRef<SchedulerRef, SchedulerProps>(function Scheduler(
       filterButtonState: 1,
       includeTakenHoursOnWeekendsInDayView: false,
       showTooltip: true,
+      showTopbar: true,
       translations: undefined,
       ...config
     }),
