@@ -40,6 +40,7 @@ const Tiles: FC<TilesProps> = ({
                 row={absoluteRow}
                 data={project}
                 zoom={zoom}
+                isSubcontract={person.isSubcontract}
                 onTileClick={onTileClick}
                 onDragStart={onDragStart}
                 isDragging={isDraggingThis}

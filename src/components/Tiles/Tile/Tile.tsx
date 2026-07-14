@@ -5,7 +5,7 @@ import { useCalendar } from "@/context/CalendarProvider";
 import { getDatesRange } from "@/utils/getDatesRange";
 import { getTileProperties } from "@/utils/getTileProperties";
 import { getTileTextColor } from "@/utils/getTileTextColor";
-import { ReservationType } from "@/types/global";
+import { ReservationType, TileReadiness } from "@/types/global";
 import {
   StyledTileWrapper,
   StyledOneDayStack,
@@ -13,7 +13,11 @@ import {
   StyledTileIcon,
   StyledTileBody,
   StyledTileLines,
-  StyledLine
+  StyledLine,
+  StyledReadinessStripe,
+  StyledTileTR,
+  StyledSubPill,
+  StyledAckDot
 } from "./styles";
 import { TileProps } from "./types";
 
@@ -22,10 +26,21 @@ const TIMES_MIN = 34; // one-day: show start/end times under the type icon
 const SUBTITLE_MIN = 90; // multi-day: add the client line
 const DRIVER_MIN = 150; // multi-day: add the driver line
 
+// Readiness stripe/dot palette (§22.4: muted / warn / info / ok).
+const READINESS_COLOR: Record<TileReadiness, string> = {
+  sin_chofer: "#9AA5A0",
+  sin_avisar: "#E0A83C",
+  notificado: "#3B82F6",
+  confirmado: "#2FA36B"
+};
+const SUB_CONFIRMED = "#3E8E5A";
+const SUB_UNCONFIRMED = "#9AA5A0";
+
 const Tile: FC<TileProps> = ({
   row,
   data,
   zoom,
+  isSubcontract = false,
   onTileClick,
   onDragStart,
   isDragging = false,
@@ -88,6 +103,28 @@ const Tile: FC<TileProps> = ({
     color: getTileTextColor(data.bgColor ?? "")
   };
 
+  // Two-indicator chrome (§22.2): left readiness stripe + top-right cluster (SUB pill for subcontracts, an
+  // ack/readiness dot for in-house). Unconfirmed subcontracts also get a dashed border.
+  const unconfirmedSub = isSubcontract && data.subcontractConfirmed === false;
+  const stripeColor = isSubcontract
+    ? (data.subcontractConfirmed === false ? SUB_UNCONFIRMED : SUB_CONFIRMED)
+    : data.readiness
+    ? READINESS_COLOR[data.readiness]
+    : undefined;
+
+  const chrome = (
+    <>
+      {stripeColor && <StyledReadinessStripe style={{ background: stripeColor }} />}
+      <StyledTileTR>
+        {isSubcontract ? (
+          <StyledSubPill>SUB</StyledSubPill>
+        ) : (
+          data.readiness && <StyledAckDot style={{ background: READINESS_COLOR[data.readiness] }} />
+        )}
+      </StyledTileTR>
+    </>
+  );
+
   // XS one-day: type icon over start/end times (fixes the old blank "1-DAY"/"TRF" pill). Icon-only when too narrow.
   if (isOneDayEvent) {
     return (
@@ -98,7 +135,9 @@ const Tile: FC<TileProps> = ({
         onMouseDown={handleMouseDown}
         onDragStart={(e) => e.preventDefault()}
         isDraggable={isDraggable}
-        isDragging={isDragging}>
+        isDragging={isDragging}
+        $dashed={unconfirmedSub}>
+        {chrome}
         <StyledOneDayStack>
           <StyledTileIcon>{icon}</StyledTileIcon>
           {width >= TIMES_MIN && (
@@ -121,7 +160,9 @@ const Tile: FC<TileProps> = ({
       onMouseDown={handleMouseDown}
       onDragStart={(e) => e.preventDefault()}
       isDraggable={isDraggable}
-      isDragging={isDragging}>
+      isDragging={isDragging}
+      $dashed={unconfirmedSub}>
+      {chrome}
       <StyledTileBody>
         <StyledTileIcon>{icon}</StyledTileIcon>
         <StyledTileLines>

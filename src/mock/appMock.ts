@@ -171,9 +171,9 @@ export const createDemoData = (): SchedulerData => {
       capacity: 14,
       categoryId: "hiace",
       data: [
-        ev({ startDate: d(0, 8), endDate: d(0, 17), title: "MANUEL ANTONIO", subtitle: "AMADEUS", bgColor: "#3B82F6", driver: "Maria Garcia" }),
-        ev({ startDate: d(2, 14), endDate: d(2, 14), title: "SJO → Hotel", subtitle: "Traslado", bgColor: "#8B5CF6", eventType: ReservationType.Transfer, flightNumber: "AA1234" }),
-        ev({ startDate: d(4), endDate: d(5, 20), title: "TORTUGUERO", subtitle: "GECKO TRAILS", bgColor: "#0EA5E9", driver: "John Smith" })
+        ev({ startDate: d(0, 8), endDate: d(0, 17), title: "MANUEL ANTONIO", subtitle: "AMADEUS", bgColor: "#3B82F6", driver: "Maria Garcia", readiness: "confirmado" }),
+        ev({ startDate: d(2, 14), endDate: d(2, 14), title: "SJO → Hotel", subtitle: "Traslado", bgColor: "#8B5CF6", eventType: ReservationType.Transfer, flightNumber: "AA1234", readiness: "sin_chofer" }),
+        ev({ startDate: d(4), endDate: d(5, 20), title: "TORTUGUERO", subtitle: "GECKO TRAILS", bgColor: "#0EA5E9", driver: "John Smith", readiness: "notificado" })
       ]
     },
     {
@@ -182,8 +182,8 @@ export const createDemoData = (): SchedulerData => {
       capacity: 28,
       categoryId: "rosa",
       data: [
-        ev({ startDate: d(1), endDate: d(5, 18), title: "MONTEVERDE + ARENAL", subtitle: "SWISS TRAVEL", bgColor: "#F97316", driver: "Ana Martinez" }),
-        ev({ startDate: d(8), endDate: d(14, 16), title: "COMBO 7 DÍAS PACÍFICO", subtitle: "TAM TOURS", bgColor: "#14B8A6", driver: "Robert Brown" })
+        ev({ startDate: d(1), endDate: d(5, 18), title: "MONTEVERDE + ARENAL", subtitle: "SWISS TRAVEL", bgColor: "#F97316", driver: "Ana Martinez", readiness: "confirmado" }),
+        ev({ startDate: d(8), endDate: d(14, 16), title: "COMBO 7 DÍAS PACÍFICO", subtitle: "TAM TOURS", bgColor: "#14B8A6", driver: "Robert Brown", readiness: "sin_avisar" })
       ]
     },
     {
@@ -192,7 +192,7 @@ export const createDemoData = (): SchedulerData => {
       capacity: 45,
       categoryId: "bus",
       data: [
-        ev({ startDate: d(2), endDate: d(4, 19), title: "GUANACASTE", subtitle: "COLONIAL TOURS", bgColor: "#6366F1" })
+        ev({ startDate: d(2), endDate: d(4, 19), title: "GUANACASTE", subtitle: "COLONIAL TOURS", bgColor: "#6366F1", readiness: "sin_chofer" })
       ]
     },
     {
@@ -201,8 +201,8 @@ export const createDemoData = (): SchedulerData => {
       capacity: 20,
       isSubcontract: true,
       data: [
-        ev({ startDate: d(0), endDate: d(3, 18), title: "RÍO CELESTE", subtitle: "Confirmado", bgColor: "#3E8E5A" }),
-        ev({ startDate: d(6), endDate: d(8, 17), title: "NICOYA", subtitle: "Sin confirmar", bgColor: "#707070" })
+        ev({ startDate: d(0), endDate: d(3, 18), title: "RÍO CELESTE", subtitle: "Confirmado", bgColor: "#3E8E5A", subcontractConfirmed: true }),
+        ev({ startDate: d(6), endDate: d(8, 17), title: "NICOYA", subtitle: "Sin confirmar", bgColor: "#707070", subcontractConfirmed: false })
       ]
     }
   ];

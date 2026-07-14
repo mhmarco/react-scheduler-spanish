@@ -535,6 +535,18 @@ export declare type SchedulerProjectData = {
      * @optional - if not provided, capacity validation is skipped
      */
     totalPassengers?: number;
+    /**
+     * Driver-readiness of an in-house event — drives the 3px left stripe + top-right status dot.
+     * The consumer maps its own driver/notify/ack state onto these four; the acknowledged tier is only meaningful
+     * when a driver-app feature is enabled (otherwise use up to `notificado`).
+     * @optional
+     */
+    readiness?: TileReadiness;
+    /**
+     * For subcontract-row events: whether the subcontract is confirmed. Unconfirmed renders grey + dashed.
+     * @optional
+     */
+    subcontractConfirmed?: boolean;
 };
 
 export declare type SchedulerProps = {
@@ -807,6 +819,9 @@ declare type Theme = {
     light?: Partial<Record<ColorType, string>>;
     dark?: Partial<Record<ColorType, string>>;
 };
+
+/** In-house driver readiness, worst → best. */
+declare type TileReadiness = "sin_chofer" | "sin_avisar" | "notificado" | "confirmado";
 
 /**
  * Data provided to consumer when a time range is selected on the calendar.

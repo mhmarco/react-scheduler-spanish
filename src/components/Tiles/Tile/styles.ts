@@ -8,7 +8,7 @@ export const StyledTileWrapper = styled.button<StyledTileWrapperProps>`
   height: ${tileHeight}px;
   position: absolute;
   outline: none;
-  border: none;
+  border: ${({ $dashed }) => ($dashed ? "1.5px dashed rgba(255, 255, 255, 0.75)" : "none")};
   border-radius: 4px;
   text-align: left;
   color: ${({ theme }) => theme.colors.textPrimary};
@@ -90,6 +90,46 @@ export const StyledTileIcon = styled.span`
   line-height: 1;
   flex-shrink: 0;
   opacity: 0.95;
+`;
+
+// 3px left readiness stripe (in-house: driver readiness; subcontract: confirmed/unconfirmed). Color set inline.
+export const StyledReadinessStripe = styled.span`
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  border-radius: 4px 0 0 4px;
+  pointer-events: none;
+`;
+
+// Top-right cluster: a SUB pill (subcontract) OR a readiness/ack dot (in-house) — §22.2.
+export const StyledTileTR = styled.div`
+  position: absolute;
+  top: 3px;
+  right: 4px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  pointer-events: none;
+`;
+
+export const StyledSubPill = styled.span`
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  line-height: 1;
+  padding: 2px 3px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.3);
+  color: #fff;
+`;
+
+export const StyledAckDot = styled.span`
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.9);
 `;
 
 // XS one-day: icon over start/end times, centred.

@@ -4,6 +4,8 @@ export type TileProps = {
   row: number;
   data: SchedulerProjectData;
   zoom: number;
+  /** True when this tile's row is a subcontract lane (SUB pill + confirmed/unconfirmed styling, no ack dot). */
+  isSubcontract?: boolean;
   onTileClick?: (data: SchedulerProjectData) => void;
   onDragStart?: (event: SchedulerProjectData, mouseEvent: React.MouseEvent) => void;
   isDragging?: boolean;
@@ -19,4 +21,5 @@ export type StyledTextProps = {
 export type StyledTileWrapperProps = {
   isDraggable?: boolean;
   isDragging?: boolean;
+  $dashed?: boolean;
 };

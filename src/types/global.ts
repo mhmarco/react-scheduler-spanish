@@ -253,7 +253,24 @@ export type SchedulerProjectData = {
    * @optional - if not provided, capacity validation is skipped
    */
   totalPassengers?: number;
+
+  /**
+   * Driver-readiness of an in-house event — drives the 3px left stripe + top-right status dot.
+   * The consumer maps its own driver/notify/ack state onto these four; the acknowledged tier is only meaningful
+   * when a driver-app feature is enabled (otherwise use up to `notificado`).
+   * @optional
+   */
+  readiness?: TileReadiness;
+
+  /**
+   * For subcontract-row events: whether the subcontract is confirmed. Unconfirmed renders grey + dashed.
+   * @optional
+   */
+  subcontractConfirmed?: boolean;
 };
+
+/** In-house driver readiness, worst → best. */
+export type TileReadiness = "sin_chofer" | "sin_avisar" | "notificado" | "confirmado";
 
 /**
  * Event type classification for scheduler items.
