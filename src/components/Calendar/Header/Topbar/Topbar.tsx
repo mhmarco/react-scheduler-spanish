@@ -10,6 +10,7 @@ import {
   NavBtn,
   Today,
   Range,
+  TbDiv,
   ZoomSeg,
   DateLabel,
   Cmd,
@@ -31,9 +32,9 @@ const toggleFullscreen = () => {
   else document.exitFullscreen?.();
 };
 
-// Three-zone toolbar with the ‹ Hoy › nav centred: left = month + Día│Semana│Mes zoom + Ir a fecha; centre =
-// prev/Hoy/next; right = Buscar, Filtros, Pantalla completa. Zoom maps to the fork levels (Día = hourly, Semana =
-// week columns, Mes = day columns).
+// Two-group toolbar matched to the mockup (.toolbar, artifact 91ed97bb): a left group with ‹ Hoy › nav, month
+// label, Día│Semana│Mes zoom, Ir a fecha and Buscar; a right group with Filtros, Pantalla completa and any host
+// toolbarActions. Zoom maps to the fork levels (Día = hourly, Semana = week columns, Mes = day columns).
 const Topbar: FC<TopbarProps> = () => {
   const {
     config,
@@ -58,7 +59,21 @@ const Topbar: FC<TopbarProps> = () => {
   return (
     <Wrapper width={0}>
       <Grp $at="start">
+        <NavigationWrapper>
+          <NavBtn onClick={handleGoPrev} aria-label="Anterior">
+            <Svg>
+              <path d="m15 18-6-6 6-6" />
+            </Svg>
+          </NavBtn>
+          <Today onClick={handleGoToday}>Hoy</Today>
+          <NavBtn onClick={handleGoNext} aria-label="Siguiente">
+            <Svg>
+              <path d="m9 18 6-6-6-6" />
+            </Svg>
+          </NavBtn>
+        </NavigationWrapper>
         <Range>{date.locale(dayjs.locale()).format("MMMM YYYY")}</Range>
+        <TbDiv />
         <ZoomSeg>
           <button className={zoom === 2 ? "on" : ""} onClick={() => setZoom(2)}>
             Día
@@ -81,23 +96,6 @@ const Topbar: FC<TopbarProps> = () => {
             <input type="date" onChange={(e) => e.target.value && goToDate(e.target.value)} />
           </DateLabel>
         )}
-      </Grp>
-      <Grp $at="center">
-        <NavigationWrapper>
-          <NavBtn onClick={handleGoPrev} aria-label="Anterior">
-            <Svg>
-              <path d="m15 18-6-6 6-6" />
-            </Svg>
-          </NavBtn>
-          <Today onClick={handleGoToday}>Hoy</Today>
-          <NavBtn onClick={handleGoNext} aria-label="Siguiente">
-            <Svg>
-              <path d="m9 18 6-6-6-6" />
-            </Svg>
-          </NavBtn>
-        </NavigationWrapper>
-      </Grp>
-      <Grp $at="end">
         <Cmd onClick={focusSearch}>
           <Svg>
             <circle cx="11" cy="11" r="7" />
@@ -106,6 +104,8 @@ const Topbar: FC<TopbarProps> = () => {
           Buscar
           <span className="k">⌘K</span>
         </Cmd>
+      </Grp>
+      <Grp $at="end">
         {config.showFilterButton !== false && filterButtonState >= 0 && (
           <PillBtn $primary={!!filterButtonState} onClick={toggleDisplayActiveUnits}>
             <Svg>

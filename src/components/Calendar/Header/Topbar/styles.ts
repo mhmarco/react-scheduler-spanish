@@ -5,10 +5,11 @@ import { TopbarProps } from "./types";
 // and a right group. Fixed mockup colours where the component theme has no matching token.
 export const Wrapper = styled.div<TopbarProps>`
   width: 100%;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
+  flex-wrap: wrap;
   padding: 9px 16px;
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   background: ${({ theme }) => theme.colors.primary};
@@ -19,8 +20,14 @@ export const Grp = styled.div<{ $at?: "start" | "center" | "end" }>`
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
-  justify-self: ${({ $at }) => $at ?? "start"};
-  justify-content: ${({ $at }) => ($at === "end" ? "flex-end" : $at === "center" ? "center" : "flex-start")};
+  justify-content: ${({ $at }) => ($at === "end" ? "flex-end" : "flex-start")};
+`;
+
+export const TbDiv = styled.span`
+  width: 1px;
+  height: 20px;
+  background: #c8d5cd;
+  margin: 0 3px;
 `;
 
 export const NavigationWrapper = styled.div`
@@ -67,7 +74,7 @@ export const Range = styled.span`
   font-size: 14px;
   font-weight: 750;
   color: #183d3d;
-  margin: 0 4px;
+  margin-left: 4px;
   text-transform: capitalize;
   white-space: nowrap;
 `;
