@@ -10,6 +10,7 @@ import {
 } from "react";
 import dayjs from "dayjs";
 import { Calendar } from "@/components";
+import Overview from "@/components/Overview/Overview";
 import CalendarProvider, { useCalendar } from "@/context/CalendarProvider";
 import LocaleProvider from "@/context/LocaleProvider";
 import { darkTheme, GlobalStyle, theme } from "@/styles";
@@ -188,6 +189,7 @@ const Scheduler = forwardRef<SchedulerRef, SchedulerProps>(function Scheduler(
             onClearFilterData={onClearFilterData}>
             <StyledOutsideWrapper
               showScroll={!!data.length}
+              $footer={appConfig.showOverview !== false && !!data.length}
               id={outsideWrapperId}
               ref={outsideWrapperRef}>
               <StyledInnerWrapper>
@@ -209,6 +211,7 @@ const Scheduler = forwardRef<SchedulerRef, SchedulerProps>(function Scheduler(
                 />
               </StyledInnerWrapper>
             </StyledOutsideWrapper>
+            {appConfig.showOverview !== false && !!data.length && <Overview />}
           </CalendarProvider>
         </LocaleProvider>
       </ThemeProvider>

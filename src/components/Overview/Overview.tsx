@@ -1,6 +1,7 @@
 import { FC, useMemo, useRef, useState } from "react";
 import dayjs from "dayjs";
 import { useCalendar } from "@/context/CalendarProvider";
+import { useLanguage } from "@/context/LocaleProvider";
 import { getVisibleCols } from "@/utils/getCols";
 import {
   StyledOverview,
@@ -16,14 +17,19 @@ import {
   StyledTip
 } from "./styles";
 
-const MONTHS = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"];
-
-// Full-year (Ene–Dic) navigator (§22.8): weekly density bars coloured by worst readiness, a HOY marker, the current
-// viewport window, a hover date readout, and click-to-jump. Density reflects the currently-loaded data only.
+// Full-year navigator (§22.8): weekly density bars coloured by worst readiness, a HOY marker, the current viewport
+// window, a hover date readout, and click-to-jump. Density reflects the currently-loaded data only.
 const Overview: FC = () => {
   const { date, zoom, data, goToDate } = useCalendar();
+  const lang = useLanguage();
   const trackRef = useRef<HTMLDivElement>(null);
   const [cursor, setCursor] = useState<{ left: number; label: string } | null>(null);
+
+  // Localized month abbreviations (respects the dayjs locale set by LocaleProvider from config.lang).
+  const months = useMemo(
+    () => Array.from({ length: 12 }, (_, i) => dayjs().month(i).format("MMM").toUpperCase()),
+    [lang]
+  );
 
   const year = date.year();
   const yearStart = useMemo(() => dayjs(new Date(year, 0, 1)), [year]);
@@ -81,19 +87,19 @@ const Overview: FC = () => {
         }}
         onMouseMove={(e) => {
           const hit = dateAtClientX(e.clientX);
-          if (hit) setCursor({ left: hit.f * 100, label: `${hit.d.date()} ${MONTHS[hit.d.month()]}` });
+          if (hit) setCursor({ left: hit.f * 100, label: `${hit.d.date()} ${months[hit.d.month()]}` });
         }}
         onMouseLeave={() => setCursor(null)}>
         <StyledMonths>
-          {MONTHS.map((m, i) => (
-            <span key={m} style={{ left: `${pct(dayjs(new Date(year, i, 1)))}%` }}>
+          {months.map((m, i) => (
+            <span key={i} style={{ left: `${pct(dayjs(new Date(year, i, 1)))}%` }}>
               {m}
             </span>
           ))}
         </StyledMonths>
-        {MONTHS.map((m, i) =>
+        {months.map((m, i) =>
           i === 0 ? null : (
-            <StyledMTick key={m} style={{ left: `${pct(dayjs(new Date(year, i, 1)))}%` }} />
+            <StyledMTick key={i} style={{ left: `${pct(dayjs(new Date(year, i, 1)))}%` }} />
           )
         )}
         <StyledBars>

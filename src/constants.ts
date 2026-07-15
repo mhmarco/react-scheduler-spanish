@@ -53,3 +53,5 @@ export const middleRowTextYPos = headerWeekHeight / 2 + headerMonthHeight + 1;
 export const buttonWeeksJump = 2;
 export const minutesInHour = 60;
 export const subcontractSeparatorHeight = 21;
+// Height reserved at the bottom of the scroll container for the full-year navigator footer (§22.8).
+export const overviewHeight = 68;

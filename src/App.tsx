@@ -427,6 +427,7 @@ function App() {
           handleToggleDisplayActiveUnits={handleToggleDisplayActiveUnits}
           config={{
             zoom: 1,
+            lang: "es",
             maxRecordsPerPage: maxRecordsPerPage,
             showThemeToggle: true,
             // Mirror the TourHub app's sage/teal config.theme so this dev harness previews the real customer look.

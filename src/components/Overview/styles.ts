@@ -1,8 +1,17 @@
 import styled from "styled-components";
+import { leftColumnWidth, overviewHeight } from "@/constants";
 
-// Full-year navigator ribbon, translated from the locked mockup (artifact 91ed97bb `.overview`). Fixed mockup hexes
-// where the component theme has no matching token (same approach as the toolbar); HOY/window use the `today` token.
+// Full-year navigator ribbon, translated from the locked mockup (artifact 91ed97bb `.overview`). Rendered as a
+// full-width footer pinned to the bottom of the scroll container (the board reserves `overviewHeight` above it).
+// Fixed mockup hexes where the component theme has no matching token; HOY/window use the `today` token.
 export const StyledOverview = styled.div`
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: ${overviewHeight}px;
+  box-sizing: border-box;
+  z-index: 5;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -11,7 +20,10 @@ export const StyledOverview = styled.div`
   background: #f3f7f4;
 `;
 
+// Caption sized to the left column so the track starts at the board's left edge (padding 16 + gap 12 accounted for).
 export const StyledCap = styled.div`
+  width: ${leftColumnWidth - 28}px;
+  flex: none;
   font-size: 10px;
   font-weight: 750;
   letter-spacing: 0.09em;
