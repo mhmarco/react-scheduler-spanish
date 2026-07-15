@@ -26,11 +26,9 @@ import {
 } from "./styles";
 import { TileProps } from "./types";
 
-// Width buckets on the rendered tile (§22.2): wide (w>=248) = title / booking·client / driver; compact (w<248) =
-// booking chip (+client at w>=156), no driver; one-day = both times.
+// Multi-day tiles always render the full info stack (title / booking·client / driver) and let text truncate, so
+// nothing is dropped on narrow tiles. One-day tiles show both time chips once past this width.
 const TIMES_MIN = 34;
-const CLIENT_MIN = 156;
-const WIDE_MIN = 248;
 
 // Readiness → (4px stripe colour, status dot icon + colour). Tokens from the locked mockup (artifact 91ed97bb).
 const READINESS: Record<TileReadiness, { stripe: string; icon: TileIconName; color: string }> = {
@@ -143,9 +141,8 @@ const Tile: FC<TileProps> = ({
     );
   }
 
-  // Multi-day: pin/transfer icon + title; booking·client and a driver line as the tile widens.
-  const isWide = width >= WIDE_MIN;
-  const bk = data.bookingNumber ? <StyledNtBk>{data.bookingNumber}</StyledNtBk> : null;
+  // Multi-day: always show the full info stack (icon+title / booking·client / driver); narrow tiles truncate rather
+  // than drop lines, so no information is hidden.
   return wrapper(
     <>
       <StyledTileTR>
@@ -164,22 +161,13 @@ const Tile: FC<TileProps> = ({
           <StyledNtIco>
             <TileIcon name={isTransfer ? "transfer" : "tour"} />
           </StyledNtIco>
-          {isWide ? (
-            <StyledNtTitle>{data.title}</StyledNtTitle>
-          ) : (
-            <>
-              {bk}
-              {width >= CLIENT_MIN && data.subtitle && <StyledNtClient>{data.subtitle}</StyledNtClient>}
-            </>
-          )}
+          <StyledNtTitle>{data.title}</StyledNtTitle>
         </StyledNtRow>
-        {isWide && (
-          <StyledNtRow>
-            {bk}
-            {data.subtitle && <StyledNtClient>{data.subtitle}</StyledNtClient>}
-          </StyledNtRow>
-        )}
-        {isWide && data.driver && (
+        <StyledNtRow>
+          {data.bookingNumber && <StyledNtBk>{data.bookingNumber}</StyledNtBk>}
+          {data.subtitle && <StyledNtClient>{data.subtitle}</StyledNtClient>}
+        </StyledNtRow>
+        {data.driver && (
           <StyledNtMeta>
             <TileIcon name="person" />
             {data.driver}

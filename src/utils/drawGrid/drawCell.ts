@@ -10,7 +10,7 @@ const getHatchPattern = (ctx: CanvasRenderingContext2D): CanvasPattern | null =>
   tile.height = 12;
   const tctx = tile.getContext("2d");
   if (!tctx) return null;
-  tctx.strokeStyle = "rgba(120, 137, 127, 0.11)";
+  tctx.strokeStyle = "rgba(120, 137, 127, 0.045)";
   tctx.lineWidth = 6;
   tctx.beginPath();
   tctx.moveTo(-3, 15);
