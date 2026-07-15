@@ -17,7 +17,7 @@ import { getCanvasWidth } from "@/utils/getCanvasWidth";
 import { useDragAndDrop } from "@/hooks/useDragAndDrop";
 import { useClickToAdd } from "@/hooks/useClickToAdd";
 import { GridProps } from "./types";
-import { StyledCanvas, StyledInnerWrapper, StyledSpan, StyledWrapper } from "./styles";
+import { StyledCanvas, StyledGhostCanvas, StyledInnerWrapper, StyledSpan, StyledWrapper } from "./styles";
 
 const Grid = forwardRef<HTMLDivElement, GridProps>(function Grid(
   { zoom, rows, data, baseData, onTileClick, onEventDrop, onEventDrag, draggableConfig, onDragStateChange, onTimeRangeSelect, onMultiTimeRangeSelect, clickToAddConfig, separatorRowIndices = [], subcontractSeparatorRow = -1 },
@@ -27,6 +27,10 @@ const Grid = forwardRef<HTMLDivElement, GridProps>(function Grid(
   const { handleScrollNext, handleScrollPrev, date, isLoading, cols, startDate, suppressNextSlideRef } =
     useCalendar();
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const ghostCanvasRef = useRef<HTMLCanvasElement>(null);
+  const prevRowsRef = useRef(rows);
+  const xfadePrevDateRef = useRef(date);
+  const ghostAnimRef = useRef<Animation | null>(null);
   const refRight = useRef<HTMLSpanElement>(null);
   const refLeft = useRef<HTMLSpanElement>(null);
   const gridWrapperRef = useRef<HTMLDivElement>(null);
@@ -163,6 +167,40 @@ const Grid = forwardRef<HTMLDivElement, GridProps>(function Grid(
     return () => window.removeEventListener("resize", onResize);
   }, [handleResize]);
 
+  // Cross-fade the grid BACKGROUND when the row count changes (unit add/remove) so it animates instead of snapping.
+  // Declared before the redraw effect below → runs first while the main canvas still holds the OLD grid: snapshot it
+  // into the ghost, then the redraw effect repaints the main to the new layout and the ghost (old) fades out over it.
+  // Gated to a pure row change (a date jump is handled by the directional slide; skip under reduced-motion).
+  // Compositor-only: one drawImage + one opacity animation on a bitmap — no per-frame redraw.
+  useEffect(() => {
+    const prevRows = prevRowsRef.current;
+    const prevDate = xfadePrevDateRef.current;
+    prevRowsRef.current = rows;
+    xfadePrevDateRef.current = date;
+    if (prevRows === rows) return;
+    if (!date.isSame(prevDate, "day")) return;
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
+    const main = canvasRef.current;
+    const ghost = ghostCanvasRef.current;
+    if (!main || !ghost) return;
+    const gctx = ghost.getContext("2d");
+    if (!gctx) return;
+    ghost.width = main.width;
+    ghost.height = main.height;
+    ghost.style.width = main.style.width;
+    ghost.style.height = main.style.height;
+    gctx.setTransform(1, 0, 0, 1, 0, 0);
+    gctx.clearRect(0, 0, ghost.width, ghost.height);
+    gctx.drawImage(main, 0, 0);
+    ghostAnimRef.current?.cancel();
+    ghost.style.opacity = "1";
+    const anim = ghost.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 260, easing: "ease" });
+    anim.onfinish = () => {
+      ghost.style.opacity = "0";
+    };
+    ghostAnimRef.current = anim;
+  }, [rows, date]);
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -248,6 +286,7 @@ const Grid = forwardRef<HTMLDivElement, GridProps>(function Grid(
           onDragOver={handleCanvasDragOver}
           style={{ userSelect: dragState === "dragging" ? "none" : "auto" }}
         />
+        <StyledGhostCanvas ref={ghostCanvasRef} aria-hidden />
         <TodayColumn zoom={zoom as 0 | 1 | 2} startDate={startDate} />
         <Tiles
           data={data} 
