@@ -51,6 +51,11 @@ const CalendarProvider = ({
   const dayOfYear = dayjs(startDate).dayOfYear();
   const parsedStartDate = parseDay(startDate);
   const outsideWrapper = useRef<HTMLElement | null>(null);
+  // Set true for the one date change caused by a scroll-boundary loadMore, so the grid's directional slide skips it
+  // (boundary loads should be a seamless continuation of the scroll, not an animated jump). Explicit nav leaves it false.
+  const suppressNextSlideRef = useRef(false);
+  // Direction of a pending scroll reposition to apply once the canvas has redrawn for the new date (see the effect).
+  const pendingRepositionRef = useRef<Direction | null>(null);
   const [tilesCoords, setTilesCoords] = useState<Coords[]>([{ x: 0, y: 0 }]);
 
   const moveHorizontalScroll = useCallback(
@@ -107,6 +112,11 @@ const CalendarProvider = ({
           break;
       }
       const load = debounce(() => {
+        // Boundary loads (forward/back from a scroll edge) reposition to keep content in place and must NOT play the
+        // directional slide — they're a continuation of the scroll, not a jump. Both flags are read on the resulting
+        // date-change render (slide skip in Grid, reposition in the effect below), so set them right before setDate.
+        if (direction === "forward" || direction === "back") suppressNextSlideRef.current = true;
+        pendingRepositionRef.current = direction;
         switch (direction) {
           case "back":
             setDate((prev) => prev.subtract(offset, "days"));
@@ -124,6 +134,15 @@ const CalendarProvider = ({
     },
     [onRangeChange, range, zoom]
   );
+
+  // Reposition the horizontal scroll AFTER the grid canvas has redrawn for the new date. This runs in the parent
+  // (after the child Grid's redraw effect), so the scroll snap and the new content land in the same frame — no more
+  // "date shifts, then 200ms later the scroll jumps back" two-step that read as scrolling to the end and back.
+  useEffect(() => {
+    if (!pendingRepositionRef.current) return;
+    moveHorizontalScroll(pendingRepositionRef.current);
+    pendingRepositionRef.current = null;
+  }, [date, moveHorizontalScroll]);
 
   useEffect(() => {
     outsideWrapper.current = document.getElementById(outsideWrapperId);
@@ -164,12 +183,9 @@ const CalendarProvider = ({
 
   const handleScrollNext = useCallback(() => {
     if (isLoading) return;
-
+    // loadMore marks the reposition pending; the [date] effect applies it right after the redraw (no separate timer).
     loadMore("forward");
-    debounce(() => {
-      moveHorizontalScroll("forward");
-    }, 500)();
-  }, [isLoading, loadMore, moveHorizontalScroll]);
+  }, [isLoading, loadMore]);
 
   const handleGoPrev = () => {
     if (isLoading) return;
@@ -183,20 +199,14 @@ const CalendarProvider = ({
   const handleScrollPrev = useCallback(() => {
     if (!isInitialized || isLoading) return;
     loadMore("back");
-    debounce(() => {
-      moveHorizontalScroll("back");
-    }, 500)();
-  }, [isInitialized, isLoading, loadMore, moveHorizontalScroll]);
+  }, [isInitialized, isLoading, loadMore]);
 
   const handleGoToday = useCallback(() => {
     if (isLoading) return;
-
+    // loadMore("middle") sets the date to today AND marks a center reposition; the [date] effect applies it after the
+    // redraw. Not a boundary direction, so the directional slide still plays.
     loadMore("middle");
-    // Snap the scroll instantly; the grid's directional slide provides the motion (avoids a competing smooth scroll).
-    debounce(() => {
-      moveHorizontalScroll("middle", "auto");
-    }, 300)();
-  }, [isLoading, loadMore, moveHorizontalScroll]);
+  }, [isLoading, loadMore]);
 
   const goToDate = useCallback(
     (targetDate: Date | string | number) => {
@@ -207,14 +217,12 @@ const CalendarProvider = ({
       const newDate = dayjs(targetDate).startOf("day");
       if (!newDate.isValid()) return;
 
+      // Mark a center reposition; the [date] effect applies it after the redraw. Explicit nav ⇒ the slide plays.
+      pendingRepositionRef.current = "middle";
       setDate(newDate);
       onRangeChange?.(range);
-      // Snap the scroll instantly; the grid's directional slide provides the motion (avoids a competing smooth scroll).
-      setTimeout(() => {
-        moveHorizontalScroll("middle", "auto");
-      }, 300);
     },
-    [isLoading, moveHorizontalScroll, onRangeChange, range]
+    [isLoading, onRangeChange, range]
   );
 
   const zoomIn = () => changeZoom(zoom + 1);
@@ -258,7 +266,8 @@ const CalendarProvider = ({
         tilesCoords,
         updateTilesCoords,
         recordsThreshold: maxRecordsPerPage,
-        onClearFilterData
+        onClearFilterData,
+        suppressNextSlideRef
       }}>
       {children}
     </Provider>

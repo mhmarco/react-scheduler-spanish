@@ -1,9 +1,10 @@
-import { ReactNode } from "react";
+import { MutableRefObject, ReactNode } from "react";
 import dayjs from "dayjs";
 import { Config, Coords, Day, SchedulerData, ZoomLevel } from "@/types/global";
 import { ParsedDatesRange } from "@/utils/getDatesRange";
 
 export type CalendarContextType = {
+  suppressNextSlideRef?: MutableRefObject<boolean>;
   handleGoNext: () => void;
   handleScrollNext: () => void;
   handleGoPrev: () => void;

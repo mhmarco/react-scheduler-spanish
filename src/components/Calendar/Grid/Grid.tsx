@@ -24,7 +24,8 @@ const Grid = forwardRef<HTMLDivElement, GridProps>(function Grid(
   ref
 ) {
   const isThrottled = useRef(false);
-  const { handleScrollNext, handleScrollPrev, date, isLoading, cols, startDate } = useCalendar();
+  const { handleScrollNext, handleScrollPrev, date, isLoading, cols, startDate, suppressNextSlideRef } =
+    useCalendar();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const refRight = useRef<HTMLSpanElement>(null);
   const refLeft = useRef<HTMLSpanElement>(null);
@@ -66,10 +67,10 @@ const Grid = forwardRef<HTMLDivElement, GridProps>(function Grid(
     }
   }, [dragState, onDragStateChange]);
 
-  // Directional slide whenever the visible range changes (date jump / next-prev / boundary load): the new content
-  // slides in FROM the direction of travel — forward (later date) enters from the right, backward from the left —
-  // with a sleek ease-out. Brief transform + fade; skips first mount; cancels any in-flight slide so rapid nav doesn't
-  // stack. The wide (3×) canvas means the shifted edges reveal real adjacent content, not a blank gap.
+  // Directional slide on EXPLICIT navigation (buttons / jump / Hoy): the new content slides in from the direction of
+  // travel — forward enters from the right, backward from the left — with a sleek ease-out. Boundary scroll-loads are
+  // skipped (suppressNextSlideRef) so they read as a seamless continuation of the scroll, not an animated jump.
+  // `will-change` promotes the layer up front so the transform composites smoothly; cleared on finish.
   const didMountRef = useRef(false);
   const prevDateRef = useRef(date);
   const slideAnimRef = useRef<Animation | null>(null);
@@ -80,17 +81,29 @@ const Grid = forwardRef<HTMLDivElement, GridProps>(function Grid(
       didMountRef.current = true;
       return;
     }
+    if (suppressNextSlideRef?.current) {
+      suppressNextSlideRef.current = false;
+      return;
+    }
+    const el = gridWrapperRef.current;
+    if (!el?.animate) return;
     const dx = date.isAfter(prev) ? 34 : -34;
     slideAnimRef.current?.cancel();
-    slideAnimRef.current =
-      gridWrapperRef.current?.animate?.(
-        [
-          { transform: `translateX(${dx}px)`, opacity: 0.4 },
-          { transform: "translateX(0)", opacity: 1 }
-        ],
-        { duration: 300, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }
-      ) ?? null;
-  }, [date]);
+    el.style.willChange = "transform";
+    const anim = el.animate(
+      [
+        { transform: `translateX(${dx}px)`, opacity: 0.4 },
+        { transform: "translateX(0)", opacity: 1 }
+      ],
+      { duration: 300, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }
+    );
+    const clear = () => {
+      el.style.willChange = "";
+    };
+    anim.onfinish = clear;
+    anim.oncancel = clear;
+    slideAnimRef.current = anim;
+  }, [date, suppressNextSlideRef]);
 
   // Initialize click-to-add hook
   const {
