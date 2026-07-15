@@ -1,11 +1,15 @@
 import styled, { createGlobalStyle, type DefaultTheme } from "styled-components";
 
 export const prefixId = "reactSchedulerOutsideWrapper";
+// Match the TourHub web app's font stack (index.scss) so the planner is typographically consistent with the rest of
+// the app — not the fork's original bundled Inter. Also matches the locked mockup's --font-sans.
+export const fontFamily =
+  "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif";
 
 export const GlobalStyle = createGlobalStyle`
 
   #${prefixId} {
-    font-family: 'Inter', sans-serif;
+    font-family: ${fontFamily};
     box-sizing: border-box;
     line-height: 1.15;
     -webkit-text-size-adjust: 100%;

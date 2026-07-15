@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { fontFamily } from "@/constants";
 
 type WrapperProps = {
   isExpanded: boolean;
@@ -6,7 +7,7 @@ type WrapperProps = {
 
 export const StyledWrapper = styled.div<WrapperProps>`
   box-sizing: border-box;
-  font-family: Inter;
+  font-family: ${fontFamily};
   padding: 0 0.5rem;
   height: 125px;
   position: fixed;

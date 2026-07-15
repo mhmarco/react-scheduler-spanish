@@ -4,6 +4,7 @@ import {
   dayNameYoffset,
   dayNumYOffset,
   dayWidth,
+  fontFamily,
   fonts,
   headerDayHeight,
   headerHeight,
@@ -56,7 +57,7 @@ export const drawDaysOnBottom = (
         bottomText: {
           y: dayNumYPos,
           label: `${day.dayOfMonth}`,
-          font: isToday ? "700 10px Inter" : fonts.bottomRow.number,
+          font: isToday ? `700 10px ${fontFamily}` : fonts.bottomRow.number,
           color: isToday
             ? theme.colors.today
             : getTextStyle(
@@ -80,7 +81,7 @@ export const drawDaysOnBottom = (
       else ctx.rect(cx - pillW / 2, py, pillW, pillH);
       ctx.fill();
       ctx.fillStyle = "#fff";
-      ctx.font = "800 8.5px Inter";
+      ctx.font = `800 8.5px ${fontFamily}`;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText("HOY", cx, py + pillH / 2 + 0.5);

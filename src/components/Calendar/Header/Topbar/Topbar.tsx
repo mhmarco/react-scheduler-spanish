@@ -1,5 +1,7 @@
 import { FC } from "react";
+import dayjs from "dayjs";
 import { useCalendar } from "@/context/CalendarProvider";
+import { useLanguage } from "@/context/LocaleProvider";
 import { outsideWrapperId } from "@/constants";
 import {
   Wrapper,
@@ -34,6 +36,8 @@ const toggleFullscreen = () => {
 const Topbar: FC<TopbarProps> = () => {
   const { config, date, zoom, handleGoNext, handleGoPrev, handleGoToday, setZoom, goToDate, toggleDisplayActiveUnits } =
     useCalendar();
+  // Re-render when the locale settles so the range label reflects dayjs.locale (set async by LocaleProvider).
+  useLanguage();
   const { filterButtonState = -1 } = config;
 
   const focusSearch = () => {
@@ -43,7 +47,7 @@ const Topbar: FC<TopbarProps> = () => {
   return (
     <Wrapper width={0}>
       <Grp $at="start">
-        <Range>{date.format("MMMM YYYY")}</Range>
+        <Range>{date.locale(dayjs.locale()).format("MMMM YYYY")}</Range>
         <ZoomSeg>
           <button className={zoom === 2 ? "on" : ""} onClick={() => setZoom(2)}>
             Día

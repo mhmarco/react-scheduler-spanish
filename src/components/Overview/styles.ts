@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { leftColumnWidth, overviewHeight } from "@/constants";
+import { fontFamily, overviewHeight } from "@/constants";
 
 // Full-year navigator ribbon, translated from the locked mockup (artifact 91ed97bb `.overview`). Rendered as a
 // full-width footer pinned to the bottom of the scroll container (the board reserves `overviewHeight` above it).
@@ -15,14 +15,15 @@ export const StyledOverview = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 9px 16px 11px;
+  padding: 7px 16px 8px;
   border-top: 1px solid #e0e8e3;
   background: #f3f7f4;
+  font-family: ${fontFamily};
 `;
 
-// Caption sized to the left column so the track starts at the board's left edge (padding 16 + gap 12 accounted for).
+// Caption hugs the track (auto width, per the mockup) — the year track has no meaningful column alignment with the
+// month board, so a fixed board-aligned width would just leave the label floating.
 export const StyledCap = styled.div`
-  width: ${leftColumnWidth - 28}px;
   flex: none;
   font-size: 10px;
   font-weight: 750;
@@ -36,10 +37,10 @@ export const StyledCap = styled.div`
 export const StyledTrack = styled.div`
   position: relative;
   flex: 1;
-  height: 46px;
+  height: 40px;
   background: #fff;
   border: 1px solid #c8d5cd;
-  border-radius: 9px;
+  border-radius: 8px;
   overflow: hidden;
   cursor: pointer;
 `;

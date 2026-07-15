@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import { Day } from "@/types/global";
 import {
+  fontFamily,
   fonts,
   headerDayHeight,
   headerHeight,
@@ -47,7 +48,7 @@ export const drawWeeksOnBottom = (
         topText: {
           y: dayNameYPos,
           label: week.isoWeek().toString(),
-          font: isCurrWeek ? "700 14px Inter" : fonts.bottomRow.name,
+          font: isCurrWeek ? `700 14px ${fontFamily}` : fonts.bottomRow.name,
           color: isCurrWeek ? theme.colors.today : getTextStyle({ isCurrent: isCurrWeek }, theme)
         },
         bottomText: {

@@ -1,4 +1,6 @@
-import { prefixId } from "./styles";
+import { fontFamily, prefixId } from "./styles";
+
+export { fontFamily };
 
 export const dayWidth = 50;
 export const headerMonthHeight = 24;
@@ -19,12 +21,12 @@ export const zoom2ButtonJump = 24;
 export const weeksInYear = 52;
 export const navHeight = 44;
 export const fonts = {
-  topRow: "600 14px Inter",
-  middleRow: "400 10px Inter",
+  topRow: `600 14px ${fontFamily}`,
+  middleRow: `400 10px ${fontFamily}`,
   bottomRow: {
-    name: "600 14px Inter",
-    number: "600 10px Inter",
-    hoursInDay: "400 9px Inter"
+    name: `600 14px ${fontFamily}`,
+    number: `600 10px ${fontFamily}`,
+    hoursInDay: `400 9px ${fontFamily}`
   }
 };
 export const screenWidthMultiplier = 3;
@@ -54,4 +56,4 @@ export const buttonWeeksJump = 2;
 export const minutesInHour = 60;
 export const subcontractSeparatorHeight = 21;
 // Height reserved at the bottom of the scroll container for the full-year navigator footer (§22.8).
-export const overviewHeight = 68;
+export const overviewHeight = 58;
