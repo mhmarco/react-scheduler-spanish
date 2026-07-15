@@ -123,28 +123,30 @@ export const StyledNtClient = styled.span`
   opacity: 0.92;
 `;
 
-// CRF-#### booking chip (.nt-bk) — consistent on every tile incl. subcontract.
-export const StyledNtBk = styled.span`
-  flex: none;
-  font-size: 9.5px;
-  font-weight: 800;
+// Booking number — LEAST important (priority: service > client > driver > booking). Faint, tiny, tucked into the
+// tile's bottom-right corner (absolute on the tile, not the floating body, so it just scrolls off with the tile).
+export const StyledNtBkCorner = styled.span`
+  position: absolute;
+  bottom: 3px;
+  right: 8px;
+  z-index: 4;
+  font-size: 8px;
+  font-weight: 700;
   letter-spacing: 0.02em;
   font-variant-numeric: tabular-nums;
-  background: rgba(255, 255, 255, 0.2);
-  color: #fff;
-  padding: 0 5px;
-  border-radius: 4px;
-  margin-right: 5px;
+  color: rgba(255, 255, 255, 0.62);
   white-space: nowrap;
+  pointer-events: none;
 `;
 
-// Driver meta line: person icon + name.
+// Driver meta line: person icon + name. Right padding clears the corner booking on narrow tiles.
 export const StyledNtMeta = styled.div`
   ${truncate}
   display: flex;
   align-items: center;
   gap: 4px;
   min-width: 0;
+  padding-right: 46px;
   opacity: 0.9;
   font-size: 9.5px;
   font-weight: 600;

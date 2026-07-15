@@ -1,7 +1,7 @@
 var xo = Object.defineProperty;
 var bo = (e, n, t) => n in e ? xo(e, n, { enumerable: !0, configurable: !0, writable: !0, value: t }) : e[n] = t;
 var Nn = (e, n, t) => (bo(e, typeof n != "symbol" ? n + "" : n, t), t);
-import { jsx as h, jsxs as W, Fragment as _e } from "react/jsx-runtime";
+import { jsx as h, jsxs as F, Fragment as _e } from "react/jsx-runtime";
 import * as oe from "react";
 import et, { useRef as ge, useContext as Ke, useMemo as ke, useLayoutEffect as Mn, useDebugValue as Hn, createElement as wo, createContext as Nr, useState as pe, useCallback as de, useEffect as ve, forwardRef as kn, useImperativeHandle as Hr } from "react";
 import { createPortal as So } from "react-dom";
@@ -115,8 +115,8 @@ function ko() {
     }
     function u(k) {
       if (typeof k == "object" && k !== null) {
-        var F = k.$$typeof;
-        switch (F) {
+        var W = k.$$typeof;
+        switch (W) {
           case e:
             var ne = k.type;
             switch (ne) {
@@ -137,11 +137,11 @@ function ko() {
                   case s:
                     return K;
                   default:
-                    return F;
+                    return W;
                 }
             }
           case n:
-            return F;
+            return W;
         }
       }
     }
@@ -196,7 +196,7 @@ function ko() {
 })(Co);
 function $o(e) {
   function n(N, z, X, te, S) {
-    for (var I = 0, C = 0, j = 0, J = 0, B, m, G = 0, k = 0, F, ne = F = B = 0, K = 0, ce = 0, fe = 0, ue = 0, ie = X.length, he = ie - 1, ye, V = "", re = "", le = "", Ce = "", Me; K < ie; ) {
+    for (var I = 0, C = 0, j = 0, J = 0, B, m, G = 0, k = 0, W, ne = W = B = 0, K = 0, ce = 0, fe = 0, ue = 0, ie = X.length, he = ie - 1, ye, V = "", re = "", le = "", Ce = "", Me; K < ie; ) {
       if (m = X.charCodeAt(K), K === he && C + J + j + I !== 0 && (C !== 0 && (m = C === 47 ? 10 : 47), J = j = I = 0, ie++, he++), C + J + j + I === 0) {
         if (K === he && (0 < ce && (V = V.replace(y, "")), 0 < V.trim().length)) {
           switch (m) {
@@ -213,13 +213,13 @@ function $o(e) {
         }
         switch (m) {
           case 123:
-            for (V = V.trim(), B = V.charCodeAt(0), F = 1, ue = ++K; K < ie; ) {
+            for (V = V.trim(), B = V.charCodeAt(0), W = 1, ue = ++K; K < ie; ) {
               switch (m = X.charCodeAt(K)) {
                 case 123:
-                  F++;
+                  W++;
                   break;
                 case 125:
-                  F--;
+                  W--;
                   break;
                 case 47:
                   switch (m = X.charCodeAt(K + 1)) {
@@ -253,11 +253,11 @@ function $o(e) {
                   for (; K++ < he && X.charCodeAt(K) !== m; )
                     ;
               }
-              if (F === 0)
+              if (W === 0)
                 break;
               K++;
             }
-            switch (F = X.substring(ue, K), B === 0 && (B = (V = V.replace(f, "").trim()).charCodeAt(0)), B) {
+            switch (W = X.substring(ue, K), B === 0 && (B = (V = V.replace(f, "").trim()).charCodeAt(0)), B) {
               case 64:
                 switch (0 < ce && (V = V.replace(y, "")), m = V.charCodeAt(1), m) {
                   case 100:
@@ -269,28 +269,28 @@ function $o(e) {
                   default:
                     ce = R;
                 }
-                if (F = n(z, ce, F, m, S + 1), ue = F.length, 0 < q && (ce = t(R, V, fe), Me = c(3, F, ce, z, _, Q, ue, m, S, te), V = ce.join(""), Me !== void 0 && (ue = (F = Me.trim()).length) === 0 && (m = 0, F = "")), 0 < ue)
+                if (W = n(z, ce, W, m, S + 1), ue = W.length, 0 < q && (ce = t(R, V, fe), Me = c(3, W, ce, z, _, Q, ue, m, S, te), V = ce.join(""), Me !== void 0 && (ue = (W = Me.trim()).length) === 0 && (m = 0, W = "")), 0 < ue)
                   switch (m) {
                     case 115:
                       V = V.replace(g, i);
                     case 100:
                     case 109:
                     case 45:
-                      F = V + "{" + F + "}";
+                      W = V + "{" + W + "}";
                       break;
                     case 107:
-                      V = V.replace(Z, "$1 $2"), F = V + "{" + F + "}", F = A === 1 || A === 2 && s("@" + F, 3) ? "@-webkit-" + F + "@" + F : "@" + F;
+                      V = V.replace(Z, "$1 $2"), W = V + "{" + W + "}", W = A === 1 || A === 2 && s("@" + W, 3) ? "@-webkit-" + W + "@" + W : "@" + W;
                       break;
                     default:
-                      F = V + F, te === 112 && (F = (re += F, ""));
+                      W = V + W, te === 112 && (W = (re += W, ""));
                   }
                 else
-                  F = "";
+                  W = "";
                 break;
               default:
-                F = n(z, t(z, V, fe), F, te, S + 1);
+                W = n(z, t(z, V, fe), W, te, S + 1);
             }
-            le += F, F = fe = ce = ne = B = 0, V = "", m = X.charCodeAt(++K);
+            le += W, W = fe = ce = ne = B = 0, V = "", m = X.charCodeAt(++K);
             break;
           case 125:
           case 59:
@@ -389,7 +389,7 @@ function $o(e) {
               }
               break;
             case 64:
-              C + j + J + I + ne + F === 0 && (F = 1);
+              C + j + J + I + ne + W === 0 && (W = 1);
               break;
             case 42:
             case 47:
@@ -797,14 +797,14 @@ function Po() {
               case f:
                 return k;
               default:
-                var F = k && k.$$typeof;
-                switch (F) {
+                var W = k && k.$$typeof;
+                switch (W) {
                   case c:
                   case l:
                   case v:
                   case w:
                   case i:
-                    return F;
+                    return W;
                   default:
                     return G;
                 }
@@ -2653,10 +2653,10 @@ const fi = ({
       const B = [], m = C.getTime(), G = j.getTime(), k = a.find((ne) => ne.id === J);
       if (!k)
         return B;
-      const F = [];
+      const W = [];
       for (const ne of k.data)
-        Array.isArray(ne) ? F.push(...ne) : F.push(ne);
-      for (const ne of F) {
+        Array.isArray(ne) ? W.push(...ne) : W.push(ne);
+      for (const ne of W) {
         if (ne.segmentId === I.segmentId)
           continue;
         const K = ne.startDate.getTime(), ce = ne.endDate.getTime();
@@ -2675,11 +2675,11 @@ const fi = ({
     [a]
   ), se = de(
     (I, C, j, J) => {
-      const B = [], m = C.getTime(), G = j.getTime(), k = $(C).format("YYYY-MM-DD"), F = a.find((K) => K.id === J);
-      if (!F)
+      const B = [], m = C.getTime(), G = j.getTime(), k = $(C).format("YYYY-MM-DD"), W = a.find((K) => K.id === J);
+      if (!W)
         return B;
       const ne = [];
-      for (const K of F.data)
+      for (const K of W.data)
         Array.isArray(K) ? ne.push(...K) : ne.push(K);
       for (const K of ne) {
         if (K.segmentId === I.segmentId)
@@ -2707,11 +2707,11 @@ const fi = ({
         const fe = $(I.endDate).diff(I.startDate);
         B = J.snappedDate, m = $(B).add(fe, "milliseconds").toDate();
       }
-      let G = 0, k = "", F;
+      let G = 0, k = "", W;
       for (const fe of e) {
         const ue = Math.max(fe.data.length, 1);
         if (J.snappedResourceIndex < G + ue) {
-          k = fe.id, F = fe.capacity;
+          k = fe.id, W = fe.capacity;
           break;
         }
         G += ue;
@@ -2719,14 +2719,14 @@ const fi = ({
       if (!k)
         return null;
       let ne = !0;
-      F !== void 0 && I.totalPassengers !== void 0 && (ne = I.totalPassengers <= F);
+      W !== void 0 && I.totalPassengers !== void 0 && (ne = I.totalPassengers <= W);
       const K = ee(I, B, m, k), ce = K.length === 0 ? se(I, B, m, k) : [];
       return {
         startDate: B,
         endDate: m,
         resourceId: k,
         resourceIndex: J.snappedResourceIndex,
-        resourceCapacity: F,
+        resourceCapacity: W,
         hasCapacity: ne,
         conflicts: K,
         hasConflict: K.length > 0,
@@ -2776,10 +2776,10 @@ const fi = ({
         resourceId: ""
         // Will be determined from data structure
       };
-      for (const F of e) {
-        for (const ne of F.data)
+      for (const W of e) {
+        for (const ne of W.data)
           if (ne.some((K) => K.segmentId === I.segmentId)) {
-            R.current.resourceId = F.id;
+            R.current.resourceId = W.id;
             break;
           }
         if (R.current.resourceId)
@@ -2788,8 +2788,8 @@ const fi = ({
       L(I), M("potential"), H({ x: J, y: B });
       let G = 100, k = 48;
       if (j) {
-        const F = j.getBoundingClientRect();
-        G = F.width, k = F.height;
+        const W = j.getBoundingClientRect();
+        G = W.width, k = W.height;
       }
       u({ width: G, height: k });
     },
@@ -2807,8 +2807,8 @@ const fi = ({
       }
       (!C || C === document.body) && (C = document.documentElement);
       const j = C.getBoundingClientRect(), J = I.clientY, B = 50, m = 12, G = J - j.top, k = j.bottom - J;
-      let F = !1, ne = 0;
-      G < B && G > 0 ? (F = !0, ne = -m * (1 - G / B)) : k < B && k > 0 && (F = !0, ne = m * (1 - k / B)), F ? (E.current && cancelAnimationFrame(E.current), E.current = requestAnimationFrame(() => {
+      let W = !1, ne = 0;
+      G < B && G > 0 ? (W = !0, ne = -m * (1 - G / B)) : k < B && k > 0 && (W = !0, ne = m * (1 - k / B)), W ? (E.current && cancelAnimationFrame(E.current), E.current = requestAnimationFrame(() => {
         C.scrollTop += ne, v === "dragging" && X(I);
       })) : E.current && (cancelAnimationFrame(E.current), E.current = null);
     },
@@ -2972,32 +2972,32 @@ const fi = ({
     }
   }, [t]), Y = de(
     (m) => {
-      const G = R(), k = Math.floor(m / G), F = $().year(r.year).month(r.month).date(r.dayOfMonth).hour(r.hour).minute(0).second(0).millisecond(0);
+      const G = R(), k = Math.floor(m / G), W = $().year(r.year).month(r.month).date(r.dayOfMonth).hour(r.hour).minute(0).second(0).millisecond(0);
       switch (t) {
         case 0:
-          return F.add(k * 7, "days").toDate();
+          return W.add(k * 7, "days").toDate();
         case 1:
-          return F.add(k, "days").toDate();
+          return W.add(k, "days").toDate();
         case 2:
-          return F.add(k, "hours").toDate();
+          return W.add(k, "hours").toDate();
         default:
-          return F.toDate();
+          return W.toDate();
       }
     },
     [t, r, R]
   ), q = de(
     (m) => {
       const G = lo(m, a), k = Math.floor(G / me);
-      let F = 0;
+      let W = 0;
       for (const ne of e) {
         const K = Math.max(ne.data.length, 1);
-        if (k < F + K)
+        if (k < W + K)
           return {
             resourceId: ne.id,
             resourceIndex: k,
             resourceLabel: ne.label
           };
-        F += K;
+        W += K;
       }
       return null;
     },
@@ -3009,7 +3009,7 @@ const fi = ({
     },
     [R]
   ), se = de(
-    (m, G, k, F = []) => {
+    (m, G, k, W = []) => {
       const ne = [], ce = (n || e).find((ie) => ie.id === m), fe = G.getTime(), ue = k.getTime();
       if (ce) {
         const ie = ce.data[0], he = ie && Array.isArray(ie) ? ce.data.flat() : ce.data;
@@ -3026,7 +3026,7 @@ const fi = ({
           }
         }
       }
-      for (const ie of F) {
+      for (const ie of W) {
         if (ie.resourceId !== m)
           continue;
         const he = ie.startDate.getTime(), ye = ie.endDate.getTime();
@@ -3059,11 +3059,11 @@ const fi = ({
       const G = m.target;
       if (G.closest("[data-segment-id]") || G.closest("[data-multi-select-ui]"))
         return;
-      const k = lt(m.clientX, m.clientY, c.current), F = q(k.y);
-      if (!F)
+      const k = lt(m.clientX, m.clientY, c.current), W = q(k.y);
+      if (!W)
         return;
-      Q.current = { x: m.clientX, y: m.clientY }, _.current = F.resourceIndex;
-      const ne = ee(k.x), K = R(), ce = w(F.resourceIndex);
+      Q.current = { x: m.clientX, y: m.clientY }, _.current = W.resourceIndex;
+      const ne = ee(k.x), K = R(), ce = w(W.resourceIndex);
       L(k), H(k), u({
         x: ne,
         y: ce,
@@ -3075,7 +3075,7 @@ const fi = ({
   ), N = de(
     (m) => {
       H(m);
-      const G = R(), k = ee((p == null ? void 0 : p.x) || 0), F = ee(m.x), ne = w(_.current), K = Math.min(k, F), ce = Math.max(k, F) + G;
+      const G = R(), k = ee((p == null ? void 0 : p.x) || 0), W = ee(m.x), ne = w(_.current), K = Math.min(k, W), ce = Math.max(k, W) + G;
       u({ x: K, y: ne, width: ce - K, height: me });
     },
     [p, R, ee, w]
@@ -3086,7 +3086,7 @@ const fi = ({
       const k = document.getElementById(Fe);
       if (!k || !c.current)
         return;
-      const F = k.getBoundingClientRect(), ne = 60, K = 12, ce = m - (F.left + Ie), fe = F.right - m;
+      const W = k.getBoundingClientRect(), ne = 60, K = 12, ce = m - (W.left + Ie), fe = W.right - m;
       let ue = 0;
       ce < ne ? ue = -K * (1 - Math.max(0, ce) / ne) : fe < ne && (ue = K * (1 - Math.max(0, fe) / ne)), z(), ue !== 0 && (A.current = requestAnimationFrame(() => {
         k.scrollLeft += ue, N(lt(m, G, c.current)), X(m, G);
@@ -3114,7 +3114,7 @@ const fi = ({
         M("idle"), L(null), H(null), u(null);
         return;
       }
-      const F = Math.min(p.x, G.x), ne = Math.max(p.x, G.x), K = Y(F), ce = Y(ne), fe = $(ce).hour(23).minute(59).second(0).millisecond(0).toDate();
+      const W = Math.min(p.x, G.x), ne = Math.max(p.x, G.x), K = Y(W), ce = Y(ne), fe = $(ce).hour(23).minute(59).second(0).millisecond(0).toDate();
       if (f && !f(k.resourceId, K, fe)) {
         M("idle"), L(null), H(null), u(null);
         return;
@@ -3171,15 +3171,15 @@ const fi = ({
     P([]), x(!1), U(!1);
   }, []), j = de((m) => {
     P((G) => {
-      const k = G.filter((F, ne) => ne !== m);
+      const k = G.filter((W, ne) => ne !== m);
       return k.length === 0 && (x(!1), U(!1)), k;
     });
   }, []), J = de(
     (m, G) => {
-      P((k) => k.map((F, ne) => {
+      P((k) => k.map((W, ne) => {
         if (ne !== m)
-          return F;
-        const K = { ...F, ...G }, ce = k.filter((ue, ie) => ie !== m), fe = se(
+          return W;
+        const K = { ...W, ...G }, ce = k.filter((ue, ie) => ie !== m), fe = se(
           K.resourceId,
           K.startDate,
           K.endDate,
@@ -3306,7 +3306,7 @@ const lr = b.span`
     clearSelections: m,
     removeSelection: G,
     updateSelection: k,
-    isMultiSelectActive: F,
+    isMultiSelectActive: W,
     hasUnconfirmedSelections: ne
   } = mi({
     data: r,
@@ -3376,8 +3376,8 @@ const lr = b.span`
     return ie.observe(P.current), () => {
       ie.disconnect();
     };
-  }, [L]), /* @__PURE__ */ W(gi, { id: eo, children: [
-    /* @__PURE__ */ W(
+  }, [L]), /* @__PURE__ */ F(gi, { id: eo, children: [
+    /* @__PURE__ */ F(
       yi,
       {
         ref: (ie) => {
@@ -3434,7 +3434,7 @@ const lr = b.span`
               isSelecting: I === "selecting"
             }
           ),
-          F && J.length > 0 && /* @__PURE__ */ h(
+          W && J.length > 0 && /* @__PURE__ */ h(
             ld,
             {
               selections: J,
@@ -3449,7 +3449,7 @@ const lr = b.span`
         ]
       }
     ),
-    F && ne && J.length > 0 && /* @__PURE__ */ h(
+    W && ne && J.length > 0 && /* @__PURE__ */ h(
       nd,
       {
         selections: J,
@@ -4336,7 +4336,7 @@ const Nt = new Qi(), po = Nr({
   color: ${({ theme: e }) => e.colors.textPrimary};
 `, oa = ({ onTileClick: e }) => {
   const { feelingEmpty: n } = Ve();
-  return /* @__PURE__ */ W(na, { onClick: e, children: [
+  return /* @__PURE__ */ F(na, { onClick: e, children: [
     /* @__PURE__ */ h(ta, {}),
     /* @__PURE__ */ h(ra, { children: n })
   ] });
@@ -4452,7 +4452,7 @@ const la = ({
   }, [J]), {
     visiblePage: G,
     visibleRowsPerItem: k,
-    visibleTotalRows: F,
+    visibleTotalRows: W,
     visibleProjectsPerPerson: ne,
     separatorRowIndices: K
   } = ke(() => {
@@ -4581,7 +4581,7 @@ const la = ({
     re();
     const le = new ResizeObserver(re);
     return le.observe(V), () => le.disconnect();
-  }, []), /* @__PURE__ */ W(sa, { children: [
+  }, []), /* @__PURE__ */ F(sa, { children: [
     /* @__PURE__ */ h(
       wc,
       {
@@ -4603,7 +4603,7 @@ const la = ({
         onCollapseAll: m
       }
     ),
-    /* @__PURE__ */ W(ia, { children: [
+    /* @__PURE__ */ F(ia, { children: [
       /* @__PURE__ */ h(
         Kc,
         {
@@ -4620,7 +4620,7 @@ const la = ({
           data: G,
           baseData: n || e,
           zoom: P,
-          rows: F,
+          rows: W,
           ref: A,
           onTileClick: r,
           onEventDrop: c,
@@ -4808,16 +4808,16 @@ const la = ({
     var f;
     (f = document.querySelector(`#${Fe} input[placeholder]`)) == null || f.focus();
   };
-  return /* @__PURE__ */ W(da, { width: 0, children: [
-    /* @__PURE__ */ W(Gt, { $at: "start", children: [
+  return /* @__PURE__ */ F(da, { width: 0, children: [
+    /* @__PURE__ */ F(Gt, { $at: "start", children: [
       /* @__PURE__ */ h(ha, { children: n.locale($.locale()).format("MMMM YYYY") }),
-      /* @__PURE__ */ W(pa, { children: [
+      /* @__PURE__ */ F(pa, { children: [
         /* @__PURE__ */ h("button", { className: t === 2 ? "on" : "", onClick: () => i(2), children: "Día" }),
         /* @__PURE__ */ h("button", { className: t === 0 ? "on" : "", onClick: () => i(0), children: "Semana" }),
         /* @__PURE__ */ h("button", { className: t === 1 ? "on" : "", onClick: () => i(1), children: "Mes" })
       ] }),
-      /* @__PURE__ */ W(ma, { children: [
-        /* @__PURE__ */ W(it, { children: [
+      /* @__PURE__ */ F(ma, { children: [
+        /* @__PURE__ */ F(it, { children: [
           /* @__PURE__ */ h("path", { d: "M20.5 11.5V7.5A2.5 2.5 0 0 0 18 5H6A2.5 2.5 0 0 0 3.5 7.5V18A2.5 2.5 0 0 0 6 20.5h5" }),
           /* @__PURE__ */ h("path", { d: "M3.5 9.5h17M8 3.5v3M16 3.5v3" }),
           /* @__PURE__ */ h("circle", { cx: "16.7", cy: "16.7", r: "2.7" })
@@ -4826,26 +4826,26 @@ const la = ({
         /* @__PURE__ */ h("input", { type: "date", onChange: (f) => f.target.value && c(f.target.value) })
       ] })
     ] }),
-    /* @__PURE__ */ h(Gt, { $at: "center", children: /* @__PURE__ */ W(ua, { children: [
+    /* @__PURE__ */ h(Gt, { $at: "center", children: /* @__PURE__ */ F(ua, { children: [
       /* @__PURE__ */ h(ur, { onClick: o, "aria-label": "Anterior", children: /* @__PURE__ */ h(it, { children: /* @__PURE__ */ h("path", { d: "m15 18-6-6 6-6" }) }) }),
       /* @__PURE__ */ h(fa, { onClick: s, children: "Hoy" }),
       /* @__PURE__ */ h(ur, { onClick: r, "aria-label": "Siguiente", children: /* @__PURE__ */ h(it, { children: /* @__PURE__ */ h("path", { d: "m9 18 6-6-6-6" }) }) })
     ] }) }),
-    /* @__PURE__ */ W(Gt, { $at: "end", children: [
-      /* @__PURE__ */ W(ga, { onClick: l, children: [
-        /* @__PURE__ */ W(it, { children: [
+    /* @__PURE__ */ F(Gt, { $at: "end", children: [
+      /* @__PURE__ */ F(ga, { onClick: l, children: [
+        /* @__PURE__ */ F(it, { children: [
           /* @__PURE__ */ h("circle", { cx: "11", cy: "11", r: "7" }),
           /* @__PURE__ */ h("path", { d: "m20 20-3.2-3.2" })
         ] }),
         "Buscar",
         /* @__PURE__ */ h("span", { className: "k", children: "⌘K" })
       ] }),
-      a >= 0 && /* @__PURE__ */ W(fr, { $primary: !!a, onClick: d, children: [
+      a >= 0 && /* @__PURE__ */ F(fr, { $primary: !!a, onClick: d, children: [
         /* @__PURE__ */ h(it, { children: /* @__PURE__ */ h("path", { d: "M4 6.5h16l-6 7v4.5l-4 2v-6.5z" }) }),
         "Filtros",
         !!a && /* @__PURE__ */ h(ya, { children: a })
       ] }),
-      /* @__PURE__ */ W(fr, { onClick: va, children: [
+      /* @__PURE__ */ F(fr, { onClick: va, children: [
         /* @__PURE__ */ h(it, { children: /* @__PURE__ */ h("path", { d: "M8 4H5.5A1.5 1.5 0 0 0 4 5.5V8M16 4h2.5A1.5 1.5 0 0 1 20 5.5V8M8 20H5.5A1.5 1.5 0 0 1 4 18.5V16M16 20h2.5a1.5 1.5 0 0 0 1.5-1.5V16" }) }),
         "Pantalla completa"
       ] })
@@ -5055,13 +5055,13 @@ const La = b.div`
     const g = Math.min(1, Math.max(0, (D - u.left) / u.width));
     return { f: g, d: l.add(Math.round(g * f), "day") };
   };
-  return /* @__PURE__ */ W(La, { children: [
-    /* @__PURE__ */ W(Ra, { children: [
+  return /* @__PURE__ */ F(La, { children: [
+    /* @__PURE__ */ F(Ra, { children: [
       "Navegar",
       /* @__PURE__ */ h("br", {}),
       "por fecha"
     ] }),
-    /* @__PURE__ */ W(
+    /* @__PURE__ */ F(
       Na,
       {
         ref: s,
@@ -5082,7 +5082,7 @@ const La = b.div`
           /* @__PURE__ */ h(Ba, { children: w.map((D, u) => /* @__PURE__ */ h(Wa, { $sev: D.sev, style: { height: `${D.h}%` } }, u)) }),
           /* @__PURE__ */ h(ja, { style: { left: `${L}%`, width: `${Z}%` } }),
           M !== null && /* @__PURE__ */ h(Fa, { style: { left: `${M}%` }, children: /* @__PURE__ */ h("span", { children: "HOY" }) }),
-          i && /* @__PURE__ */ W(_e, { children: [
+          i && /* @__PURE__ */ F(_e, { children: [
             /* @__PURE__ */ h(Za, { style: { left: `${i.left}%` } }),
             /* @__PURE__ */ h(Va, { style: { left: `${i.left}%` }, children: i.label })
           ] })
@@ -5221,7 +5221,7 @@ const La = b.div`
       D.current && x(D.current.clientWidth);
     };
     return R(), window.addEventListener("resize", R), () => window.removeEventListener("resize", R);
-  }, []), D.current, /* @__PURE__ */ W(_e, { children: [
+  }, []), D.current, /* @__PURE__ */ F(_e, { children: [
     /* @__PURE__ */ h(ws, {}),
     /* @__PURE__ */ h(vs, { theme: E, children: /* @__PURE__ */ h(ea, { lang: H.lang, translations: H.translations, children: /* @__PURE__ */ h(
       fi,
@@ -5233,7 +5233,7 @@ const La = b.div`
         defaultStartDate: T,
         handleToggleDisplayActiveUnits: d,
         onClearFilterData: a,
-        children: /* @__PURE__ */ W(Xa, { id: ro, children: [
+        children: /* @__PURE__ */ F(Xa, { id: ro, children: [
           /* @__PURE__ */ h(
             Ua,
             {
@@ -5312,7 +5312,7 @@ const La = b.div`
   pagesAmount: s
 }) => {
   const { loadNext: i, loadPrevious: c } = Ve(), d = e === "next" ? `${i} ${o + 2}/${s}` : `${c} ${o}/${s}`;
-  return /* @__PURE__ */ h(qa, { intent: e, children: /* @__PURE__ */ W(Qa, { onClick: n, isVisible: r, children: [
+  return /* @__PURE__ */ h(qa, { intent: e, children: /* @__PURE__ */ F(Qa, { onClick: n, isVisible: r, children: [
     t && /* @__PURE__ */ h(ec, { children: t }),
     /* @__PURE__ */ h(tc, { children: d })
   ] }) });
@@ -5449,13 +5449,13 @@ const La = b.div`
   width: 100%;
   white-space: nowrap;
   overflow: hidden;
-`, hc = (e) => !!e && /^(https?:|data:|blob:|\/)/.test(e), pc = () => /* @__PURE__ */ W("svg", { viewBox: "0 0 24 24", fill: "currentColor", children: [
+`, hc = (e) => !!e && /^(https?:|data:|blob:|\/)/.test(e), pc = () => /* @__PURE__ */ F("svg", { viewBox: "0 0 24 24", fill: "currentColor", children: [
   /* @__PURE__ */ h("rect", { x: "4.5", y: "2.5", width: "15", height: "17.5", rx: "3.4" }),
   /* @__PURE__ */ h("rect", { x: "6.6", y: "4.6", width: "10.8", height: "2.4", rx: ".7", fill: "#fff", fillOpacity: ".5" }),
   /* @__PURE__ */ h("rect", { x: "6.6", y: "8.6", width: "10.8", height: "5", rx: "1.3", fill: "#fff", fillOpacity: ".92" }),
   /* @__PURE__ */ h("circle", { cx: "7.4", cy: "17.4", r: "1.05", fill: "#fff", fillOpacity: ".92" }),
   /* @__PURE__ */ h("circle", { cx: "16.6", cy: "17.4", r: "1.05", fill: "#fff", fillOpacity: ".92" })
-] }), mc = () => /* @__PURE__ */ W("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round", children: [
+] }), mc = () => /* @__PURE__ */ F("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round", children: [
   /* @__PURE__ */ h("rect", { x: "5", y: "3.5", width: "14", height: "17", rx: "1.5" }),
   /* @__PURE__ */ h("path", { d: "M8.5 7h2M13.5 7h2M8.5 11h2M13.5 11h2M8.5 15h2M13.5 15h2M10 20.5v-3h4v3" })
 ] }), gc = ({ id: e, item: n, rows: t, onItemClick: r, isSubcontract: o }) => /* @__PURE__ */ h(
@@ -5466,9 +5466,9 @@ const La = b.div`
     rows: t,
     $isSubcontract: o,
     onClick: () => r == null ? void 0 : r({ id: e, label: n }),
-    children: /* @__PURE__ */ W(lc, { children: [
+    children: /* @__PURE__ */ F(lc, { children: [
       /* @__PURE__ */ h(dc, { $provider: o, children: hc(n.icon) ? /* @__PURE__ */ h(uc, { src: n.icon, alt: "" }) : o ? /* @__PURE__ */ h(mc, {}) : /* @__PURE__ */ h(pc, {}) }),
-      /* @__PURE__ */ W(fc, { children: [
+      /* @__PURE__ */ F(fc, { children: [
         /* @__PURE__ */ h(pr, { isMain: !0, children: n.title }),
         /* @__PURE__ */ h(pr, { children: n.subtitle })
       ] })
@@ -5526,7 +5526,7 @@ const La = b.div`
   isCollapsed: t,
   onToggle: r,
   variant: o = "category"
-}) => /* @__PURE__ */ W(yc, { $variant: o, onClick: r, title: e, children: [
+}) => /* @__PURE__ */ F(yc, { $variant: o, onClick: r, title: e, children: [
   /* @__PURE__ */ h(bc, { $collapsed: t, children: /* @__PURE__ */ h("svg", { width: "12", height: "12", viewBox: "0 0 12 12", fill: "none", children: /* @__PURE__ */ h(
     "path",
     {
@@ -5579,7 +5579,7 @@ const La = b.div`
     if (E.length === 0)
       return null;
     const A = f.has(_.id), R = _.name;
-    return /* @__PURE__ */ W("div", { children: [
+    return /* @__PURE__ */ F("div", { children: [
       /* @__PURE__ */ h(
         mr,
         {
@@ -5595,10 +5595,10 @@ const La = b.div`
   }, Q = e.filter(
     (_) => !_.isSubcontract && (!_.categoryId || !u)
   );
-  return /* @__PURE__ */ W(nc, { children: [
-    /* @__PURE__ */ W(rc, { $height: t, children: [
-      /* @__PURE__ */ W(oc, { children: [
-        /* @__PURE__ */ W(ic, { isFocused: p, children: [
+  return /* @__PURE__ */ F(nc, { children: [
+    /* @__PURE__ */ F(rc, { $height: t, children: [
+      /* @__PURE__ */ F(oc, { children: [
+        /* @__PURE__ */ F(ic, { isFocused: p, children: [
           /* @__PURE__ */ h(
             sc,
             {
@@ -5617,10 +5617,10 @@ const La = b.div`
             title: x ? "Expand all" : "Collapse all",
             onClick: x ? v : M,
             $allCollapsed: x,
-            children: /* @__PURE__ */ h("svg", { width: "16", height: "16", viewBox: "0 0 16 16", fill: "none", children: x ? /* @__PURE__ */ W(_e, { children: [
+            children: /* @__PURE__ */ h("svg", { width: "16", height: "16", viewBox: "0 0 16 16", fill: "none", children: x ? /* @__PURE__ */ F(_e, { children: [
               /* @__PURE__ */ h("path", { d: "M4 6.5L8 3L12 6.5", stroke: "currentColor", strokeWidth: "1.5", strokeLinecap: "round", strokeLinejoin: "round" }),
               /* @__PURE__ */ h("path", { d: "M4 13L8 9.5L12 13", stroke: "currentColor", strokeWidth: "1.5", strokeLinecap: "round", strokeLinejoin: "round" })
-            ] }) : /* @__PURE__ */ W(_e, { children: [
+            ] }) : /* @__PURE__ */ F(_e, { children: [
               /* @__PURE__ */ h("path", { d: "M4 3L8 6.5L12 3", stroke: "currentColor", strokeWidth: "1.5", strokeLinecap: "round", strokeLinejoin: "round" }),
               /* @__PURE__ */ h("path", { d: "M4 9.5L8 13L12 9.5", stroke: "currentColor", strokeWidth: "1.5", strokeLinecap: "round", strokeLinejoin: "round" })
             ] }) })
@@ -5641,7 +5641,7 @@ const La = b.div`
     ] }),
     u ? D.map(U) : Q.map(O),
     u && Q.length > 0 && Q.map(O),
-    T.length > 0 && /* @__PURE__ */ W(_e, { children: [
+    T.length > 0 && /* @__PURE__ */ F(_e, { children: [
       /* @__PURE__ */ h(
         mr,
         {
@@ -5967,28 +5967,28 @@ to{
   height: ${pt}px;
   display: block;
 `, zc = b.canvas``, Bc = {
-  transfer: /* @__PURE__ */ W(_e, { children: [
+  transfer: /* @__PURE__ */ F(_e, { children: [
     /* @__PURE__ */ h("path", { d: "M4 8h13l-3-3" }),
     /* @__PURE__ */ h("path", { d: "M20 16H7l3 3" })
   ] }),
-  sun: /* @__PURE__ */ W(_e, { children: [
+  sun: /* @__PURE__ */ F(_e, { children: [
     /* @__PURE__ */ h("circle", { cx: "12", cy: "12", r: "4" }),
     /* @__PURE__ */ h("path", { d: "M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6" })
   ] }),
-  tour: /* @__PURE__ */ W(_e, { children: [
+  tour: /* @__PURE__ */ F(_e, { children: [
     /* @__PURE__ */ h("path", { d: "M12 21s7-6.4 7-11a7 7 0 1 0-14 0c0 4.6 7 11 7 11z" }),
     /* @__PURE__ */ h("circle", { cx: "12", cy: "10", r: "2.4" })
   ] }),
-  person: /* @__PURE__ */ W(_e, { children: [
+  person: /* @__PURE__ */ F(_e, { children: [
     /* @__PURE__ */ h("circle", { cx: "12", cy: "7.5", r: "3.4" }),
     /* @__PURE__ */ h("path", { d: "M4.5 20c0-4 3.4-6.4 7.5-6.4S19.5 16 19.5 20z" })
   ] }),
   check: /* @__PURE__ */ h("path", { d: "M20 6 9 17l-5-5" }),
-  warn: /* @__PURE__ */ W(_e, { children: [
+  warn: /* @__PURE__ */ F(_e, { children: [
     /* @__PURE__ */ h("path", { d: "M12 3 2 20h20z" }),
     /* @__PURE__ */ h("path", { d: "M12 9v5M12 17h.01" })
   ] }),
-  clock: /* @__PURE__ */ W(_e, { children: [
+  clock: /* @__PURE__ */ F(_e, { children: [
     /* @__PURE__ */ h("circle", { cx: "12", cy: "12", r: "8.5" }),
     /* @__PURE__ */ h("path", { d: "M12 7.5V12l3 2" })
   ] })
@@ -6095,30 +6095,30 @@ to{
   { label: "Sin avisar", stripe: "#D98A22", icon: "warn", color: "#D98A22" },
   { label: "Notificado", stripe: "#2C6BB0", icon: "clock", color: "#2C6BB0" },
   { label: "Confirmado", stripe: "#2E8B63", icon: "check", color: "#2E8B63" }
-], Uc = () => /* @__PURE__ */ W(Wc, { children: [
+], Uc = () => /* @__PURE__ */ F(Wc, { children: [
   /* @__PURE__ */ h(gr, { children: "Leyenda" }),
-  /* @__PURE__ */ W(At, { children: [
+  /* @__PURE__ */ F(At, { children: [
     /* @__PURE__ */ h(Be, { name: "transfer" }),
     " Transfer"
   ] }),
-  /* @__PURE__ */ W(At, { children: [
+  /* @__PURE__ */ F(At, { children: [
     /* @__PURE__ */ h(Be, { name: "sun" }),
     " Gira 1 día"
   ] }),
-  /* @__PURE__ */ W(At, { children: [
+  /* @__PURE__ */ F(At, { children: [
     /* @__PURE__ */ h(Be, { name: "tour" }),
     " Gira multidía"
   ] }),
-  /* @__PURE__ */ W(At, { children: [
+  /* @__PURE__ */ F(At, { children: [
     /* @__PURE__ */ h(Fc, { children: "SUB" }),
     " Subcontrato"
   ] }),
   /* @__PURE__ */ h(jc, {}),
-  /* @__PURE__ */ W(gr, { children: [
+  /* @__PURE__ */ F(gr, { children: [
     "Estado ",
     /* @__PURE__ */ h("em", { children: "franja izq. + punto esq." })
   ] }),
-  Xc.map((e) => /* @__PURE__ */ W(Zc, { children: [
+  Xc.map((e) => /* @__PURE__ */ F(Zc, { children: [
     /* @__PURE__ */ h(Vc, { style: { background: e.stripe } }),
     /* @__PURE__ */ h(Gc, { style: { color: e.color }, children: /* @__PURE__ */ h(Be, { name: e.icon, strokeWidth: e.icon === "check" ? 2.6 : 2.2 }) }),
     e.label
@@ -6146,8 +6146,8 @@ to{
     M.style.letterSpacing = "1px";
     const p = M.getContext("2d");
     p && v(p);
-  }, [c, n, v]), /* @__PURE__ */ W(Rc, { ref: s, children: [
-    (f.showTopbar !== !1 || f.showLegend !== !1) && /* @__PURE__ */ W(Nc, { $width: t, children: [
+  }, [c, n, v]), /* @__PURE__ */ F(Rc, { ref: s, children: [
+    (f.showTopbar !== !1 || f.showLegend !== !1) && /* @__PURE__ */ F(Nc, { $width: t, children: [
       f.showTopbar !== !1 && /* @__PURE__ */ h(xa, { width: t, showThemeToggle: r, toggleTheme: o }),
       f.showLegend !== !1 && /* @__PURE__ */ h(Uc, {})
     ] }),
@@ -6369,23 +6369,24 @@ const Qc = b.button`
   font-weight: 600;
   opacity: 0.92;
 `, sl = b.span`
-  flex: none;
-  font-size: 9.5px;
-  font-weight: 800;
+  position: absolute;
+  bottom: 3px;
+  right: 8px;
+  z-index: 4;
+  font-size: 8px;
+  font-weight: 700;
   letter-spacing: 0.02em;
   font-variant-numeric: tabular-nums;
-  background: rgba(255, 255, 255, 0.2);
-  color: #fff;
-  padding: 0 5px;
-  border-radius: 4px;
-  margin-right: 5px;
+  color: rgba(255, 255, 255, 0.62);
   white-space: nowrap;
+  pointer-events: none;
 `, il = b.div`
   ${vt}
   display: flex;
   align-items: center;
   gap: 4px;
   min-width: 0;
+  padding-right: 46px;
   opacity: 0.9;
   font-size: 9.5px;
   font-weight: 600;
@@ -6488,7 +6489,7 @@ const Qc = b.button`
     backgroundColor: `${n.bgColor ?? v.defaultTile}`,
     width: `${w}px`,
     color: mo(n.bgColor ?? "")
-  }, x = !r && n.readiness ? ll[n.readiness] : null, T = r && n.subcontractConfirmed === !1, P = r ? T ? ul : dl : x == null ? void 0 : x.stripe, O = (U) => /* @__PURE__ */ W(
+  }, x = !r && n.readiness ? ll[n.readiness] : null, T = r && n.subcontractConfirmed === !1, P = r ? T ? ul : dl : x == null ? void 0 : x.stripe, O = (U) => /* @__PURE__ */ F(
     Qc,
     {
       "data-segment-id": n.segmentId,
@@ -6506,27 +6507,25 @@ const Qc = b.button`
     }
   );
   return O(
-    H ? /* @__PURE__ */ W(_e, { children: [
+    H ? /* @__PURE__ */ F(_e, { children: [
       (r || x) && /* @__PURE__ */ h(vr, { $sm: !0, children: r ? /* @__PURE__ */ h(br, { children: "SUB" }) : x && /* @__PURE__ */ h(xr, { $sm: !0, style: { color: x.color }, children: /* @__PURE__ */ h(Be, { name: x.icon, strokeWidth: x.icon === "check" ? 2.6 : 2.2 }) }) }),
-      /* @__PURE__ */ W(al, { children: [
+      /* @__PURE__ */ F(al, { children: [
         /* @__PURE__ */ h(Be, { name: Z ? "transfer" : "sun", strokeWidth: 2.4 }),
-        w >= cl && /* @__PURE__ */ W(_e, { children: [
+        w >= cl && /* @__PURE__ */ F(_e, { children: [
           /* @__PURE__ */ h(wr, { children: $(n.startDate).format("HH:mm") }),
           !Z && /* @__PURE__ */ h(wr, { $end: !0, children: $(n.endDate).format("HH:mm") })
         ] })
       ] })
-    ] }) : /* @__PURE__ */ W(_e, { children: [
+    ] }) : /* @__PURE__ */ F(_e, { children: [
       /* @__PURE__ */ h(vr, { children: r ? /* @__PURE__ */ h(br, { children: "SUB" }) : x && /* @__PURE__ */ h(xr, { style: { color: x.color }, children: /* @__PURE__ */ h(Be, { name: x.icon, strokeWidth: x.icon === "check" ? 2.6 : 2.2 }) }) }),
-      /* @__PURE__ */ W(tl, { children: [
-        /* @__PURE__ */ W(yr, { $pad: !0, children: [
+      n.bookingNumber && /* @__PURE__ */ h(sl, { children: n.bookingNumber }),
+      /* @__PURE__ */ F(tl, { children: [
+        /* @__PURE__ */ F(yr, { $pad: !0, children: [
           /* @__PURE__ */ h(nl, { children: /* @__PURE__ */ h(Be, { name: Z ? "transfer" : "tour" }) }),
           /* @__PURE__ */ h(rl, { children: n.title })
         ] }),
-        /* @__PURE__ */ W(yr, { children: [
-          n.bookingNumber && /* @__PURE__ */ h(sl, { children: n.bookingNumber }),
-          n.subtitle && /* @__PURE__ */ h(ol, { children: n.subtitle })
-        ] }),
-        n.driver && /* @__PURE__ */ W(il, { children: [
+        n.subtitle && /* @__PURE__ */ h(yr, { children: /* @__PURE__ */ h(ol, { children: n.subtitle }) }),
+        n.driver && /* @__PURE__ */ F(il, { children: [
           /* @__PURE__ */ h(Be, { name: "person" }),
           n.driver
         ] })
@@ -6814,44 +6813,44 @@ const Tl = {
     t.passengers && { label: c.passengers, value: String(t.passengers) },
     t.flightNumber && { label: c.flightNumber, value: t.flightNumber }
   ].filter(Boolean);
-  return /* @__PURE__ */ W(gl, { ref: r, $position: o, children: [
-    /* @__PURE__ */ W(yl, { children: [
-      /* @__PURE__ */ W(vl, { children: [
+  return /* @__PURE__ */ F(gl, { ref: r, $position: o, children: [
+    /* @__PURE__ */ F(yl, { children: [
+      /* @__PURE__ */ F(vl, { children: [
         /* @__PURE__ */ h(xl, { children: t.bookingNumber }),
         /* @__PURE__ */ h(bl, { $type: l(), children: f() })
       ] }),
       /* @__PURE__ */ h(wl, { children: t.eventName }),
       t.client && /* @__PURE__ */ h(Sl, { children: t.client })
     ] }),
-    /* @__PURE__ */ W(Cl, { children: [
-      /* @__PURE__ */ W(Ml, { children: [
-        /* @__PURE__ */ W(Cr, { children: [
+    /* @__PURE__ */ F(Cl, { children: [
+      /* @__PURE__ */ F(Ml, { children: [
+        /* @__PURE__ */ F(Cr, { children: [
           /* @__PURE__ */ h(Mr, { children: c.startDate }),
-          /* @__PURE__ */ W(kr, { children: [
+          /* @__PURE__ */ F(kr, { children: [
             /* @__PURE__ */ h($r, { children: t.startDate }),
             " ",
             /* @__PURE__ */ h(Dr, { children: t.startTime })
           ] })
         ] }),
-        d && t.endDate && /* @__PURE__ */ W(Cr, { $isEnd: !0, children: [
+        d && t.endDate && /* @__PURE__ */ F(Cr, { $isEnd: !0, children: [
           /* @__PURE__ */ h(Mr, { children: c.endDate }),
-          /* @__PURE__ */ W(kr, { children: [
+          /* @__PURE__ */ F(kr, { children: [
             /* @__PURE__ */ h($r, { children: t.endDate }),
             " ",
             /* @__PURE__ */ h(Dr, { children: t.endTime })
           ] })
         ] })
       ] }),
-      y.length > 0 && /* @__PURE__ */ h(kl, { children: y.map((w, v) => /* @__PURE__ */ W($l, { children: [
+      y.length > 0 && /* @__PURE__ */ h(kl, { children: y.map((w, v) => /* @__PURE__ */ F($l, { children: [
         /* @__PURE__ */ h(Dl, { children: w.label }),
         /* @__PURE__ */ h(El, { children: w.value })
       ] }, v)) }),
-      (t.serviceNotes || t.reservationNotes) && /* @__PURE__ */ W(_l, { children: [
-        t.serviceNotes && /* @__PURE__ */ W(Er, { children: [
+      (t.serviceNotes || t.reservationNotes) && /* @__PURE__ */ F(_l, { children: [
+        t.serviceNotes && /* @__PURE__ */ F(Er, { children: [
           /* @__PURE__ */ h(_r, { children: c.serviceNotes }),
           /* @__PURE__ */ h(Tr, { children: t.serviceNotes })
         ] }),
-        t.reservationNotes && /* @__PURE__ */ W(Er, { children: [
+        t.reservationNotes && /* @__PURE__ */ F(Er, { children: [
           /* @__PURE__ */ h(_r, { children: c.reservationNotes }),
           /* @__PURE__ */ h(Tr, { children: t.reservationNotes })
         ] })
@@ -7096,7 +7095,7 @@ const Pl = b.div`
     const D = $(r.startDate).format("MMM D, HH:mm"), u = $(r.endDate).format("HH:mm");
     return `${D} - ${u}`;
   };
-  return /* @__PURE__ */ W(Pl, { children: [
+  return /* @__PURE__ */ F(Pl, { children: [
     p.map((D) => /* @__PURE__ */ h(
       zl,
       {
@@ -7118,7 +7117,7 @@ const Pl = b.div`
         }
       }
     ),
-    r && s === "dragging" && !c && /* @__PURE__ */ W(_e, { children: [
+    r && s === "dragging" && !c && /* @__PURE__ */ F(_e, { children: [
       /* @__PURE__ */ h(
         Rl,
         {
@@ -7158,7 +7157,7 @@ const Pl = b.div`
     ),
     r && o && r.hasConflict && r.conflicts && r.conflicts.length > 0 && s === "dragging" && (() => {
       const D = M(400, 300);
-      return /* @__PURE__ */ W(
+      return /* @__PURE__ */ F(
         Pr,
         {
           style: {
@@ -7166,7 +7165,7 @@ const Pl = b.div`
             top: `${D.y}px`
           },
           children: [
-            /* @__PURE__ */ W(Ir, { children: [
+            /* @__PURE__ */ F(Ir, { children: [
               /* @__PURE__ */ h(Or, { children: "!" }),
               r.conflicts.length,
               " ",
@@ -7176,15 +7175,15 @@ const Pl = b.div`
             ] }),
             /* @__PURE__ */ h(Yr, { children: r.conflicts.map((u, g) => {
               const x = $(r.startDate).format("YYYY-MM-DD"), T = $(r.endDate).format("YYYY-MM-DD"), P = $(u.event.startDate).format("YYYY-MM-DD"), O = $(u.event.endDate).format("YYYY-MM-DD"), U = $(u.conflictStart).format("YYYY-MM-DD"), Q = $(u.conflictEnd).format("YYYY-MM-DD"), _ = x !== T, E = P !== O, A = U !== Q, R = _ ? $(r.startDate).format("MMM D, h:mm A") : $(r.startDate).format("h:mm A"), Y = _ ? $(r.endDate).format("MMM D, h:mm A") : $(r.endDate).format("h:mm A"), q = E ? $(u.event.startDate).format("MMM D, h:mm A") : $(u.event.startDate).format("h:mm A"), ee = E ? $(u.event.endDate).format("MMM D, h:mm A") : $(u.event.endDate).format("h:mm A"), se = A ? $(u.conflictStart).format("MMM D, h:mm A") : $(u.conflictStart).format("h:mm A"), ae = A ? $(u.conflictEnd).format("MMM D, h:mm A") : $(u.conflictEnd).format("h:mm A"), N = A ? "" : $(u.conflictStart).format("MMM D"), z = r.startDate.getTime(), X = r.endDate.getTime(), te = u.event.startDate.getTime(), S = u.event.endDate.getTime(), I = z >= te && z < S, C = X > te && X <= S, j = z <= te && X >= S, J = te <= z && S >= X;
-              let B = !1, m = !1, G = !1, k = !1, F = "";
-              return j || J ? (B = !0, m = !0, G = !0, k = !0, F = `⚠️ ${a.conflicts.changeBoth}`) : I && C ? (B = !0, m = !0, G = !0, k = !0, F = `⚠️ ${a.conflicts.changeBoth}`) : I ? (B = !0, k = !0, F = `⚠️ ${a.conflicts.changeStart}`) : C && (m = !0, G = !0, F = `⚠️ ${a.conflicts.changeEnd}`), /* @__PURE__ */ W(Ut, { children: [
-                /* @__PURE__ */ W(Kt, { children: [
+              let B = !1, m = !1, G = !1, k = !1, W = "";
+              return j || J ? (B = !0, m = !0, G = !0, k = !0, W = `⚠️ ${a.conflicts.changeBoth}`) : I && C ? (B = !0, m = !0, G = !0, k = !0, W = `⚠️ ${a.conflicts.changeBoth}`) : I ? (B = !0, k = !0, W = `⚠️ ${a.conflicts.changeStart}`) : C && (m = !0, G = !0, W = `⚠️ ${a.conflicts.changeEnd}`), /* @__PURE__ */ F(Ut, { children: [
+                /* @__PURE__ */ F(Kt, { children: [
                   a.conflicts.conflictsWith,
                   ": ",
                   u.event.title,
                   u.event.subtitle && ` - ${u.event.subtitle}`
                 ] }),
-                /* @__PURE__ */ W(at, { children: [
+                /* @__PURE__ */ F(at, { children: [
                   /* @__PURE__ */ h("strong", { children: e.title }),
                   " ",
                   a.conflicts.movingTo,
@@ -7196,7 +7195,7 @@ const Pl = b.div`
                   " ",
                   m ? /* @__PURE__ */ h("span", { style: { color: "#D32F2F", fontWeight: 700 }, children: Y }) : Y
                 ] }),
-                /* @__PURE__ */ W(at, { children: [
+                /* @__PURE__ */ F(at, { children: [
                   /* @__PURE__ */ h("strong", { children: u.event.title }),
                   " ",
                   a.conflicts.currentlyAt,
@@ -7208,7 +7207,7 @@ const Pl = b.div`
                   " ",
                   k ? /* @__PURE__ */ h("span", { style: { color: "#D32F2F", fontWeight: 700 }, children: ee }) : ee
                 ] }),
-                /* @__PURE__ */ W(Lr, { children: [
+                /* @__PURE__ */ F(Lr, { children: [
                   a.conflicts.conflictTime,
                   ": ",
                   N && `${N}, `,
@@ -7216,13 +7215,13 @@ const Pl = b.div`
                   " - ",
                   ae
                 ] }),
-                F && /* @__PURE__ */ h(at, { style: {
+                W && /* @__PURE__ */ h(at, { style: {
                   backgroundColor: "#FFEBEE",
                   color: "#C62828",
                   fontWeight: 600,
                   marginTop: "6px",
                   border: "1px solid #EF5350"
-                }, children: F })
+                }, children: W })
               ] }, g);
             }) })
           ]
@@ -7231,7 +7230,7 @@ const Pl = b.div`
     })(),
     r && o && !r.hasConflict && r.nearbyEvents && r.nearbyEvents.length > 0 && s === "dragging" && (() => {
       const D = M(400, 400);
-      return /* @__PURE__ */ W(
+      return /* @__PURE__ */ F(
         Pr,
         {
           style: {
@@ -7240,23 +7239,23 @@ const Pl = b.div`
             borderColor: "#4CAF50"
           },
           children: [
-            /* @__PURE__ */ W(Ir, { style: { color: "#2E7D32" }, children: [
+            /* @__PURE__ */ F(Ir, { style: { color: "#2E7D32" }, children: [
               /* @__PURE__ */ h(Or, { style: { backgroundColor: "#4CAF50" }, children: "✓" }),
               r.nearbyEvents.length,
               " ",
               r.nearbyEvents.length > 1 ? a.conflicts.nearbyEvents : a.conflicts.nearbyEvent
             ] }),
-            /* @__PURE__ */ W(Yr, { children: [
+            /* @__PURE__ */ F(Yr, { children: [
               (() => {
                 const u = r.nearbyEvents.some((P) => P.position === "before"), g = r.nearbyEvents.some((P) => P.position === "after"), x = $(r.startDate).format("h:mm A"), T = $(r.endDate).format("h:mm A");
-                return /* @__PURE__ */ W(Ut, { style: { backgroundColor: "#F1F8E9", borderLeftColor: "#8BC34A" }, children: [
-                  /* @__PURE__ */ W(Kt, { style: { color: "#33691E" }, children: [
+                return /* @__PURE__ */ F(Ut, { style: { backgroundColor: "#F1F8E9", borderLeftColor: "#8BC34A" }, children: [
+                  /* @__PURE__ */ F(Kt, { style: { color: "#33691E" }, children: [
                     a.conflicts.yourEvent,
                     ": ",
                     e.title,
                     e.subtitle && ` - ${e.subtitle}`
                   ] }),
-                  /* @__PURE__ */ W(at, { style: { fontWeight: 600 }, children: [
+                  /* @__PURE__ */ F(at, { style: { fontWeight: 600 }, children: [
                     $(r.startDate).format("MMM D"),
                     ":",
                     " ",
@@ -7276,12 +7275,12 @@ const Pl = b.div`
               })(),
               r.nearbyEvents.map((u, g) => {
                 const x = $(u.event.startDate).format("YYYY-MM-DD"), T = $(u.event.endDate).format("YYYY-MM-DD"), P = x !== T, O = P ? $(u.event.startDate).format("MMM D, h:mm A") : $(u.event.startDate).format("h:mm A"), U = P ? $(u.event.endDate).format("MMM D, h:mm A") : $(u.event.endDate).format("h:mm A"), Q = $(u.event.startDate).format("MMM D"), _ = Math.floor(u.timeGap / (1e3 * 60 * 60)), E = Math.floor(u.timeGap % (1e3 * 60 * 60) / (1e3 * 60)), A = _ > 0 ? `${_}h ${E}m` : `${E}m`, R = u.position === "after", Y = u.position === "before";
-                return /* @__PURE__ */ W(Ut, { style: { backgroundColor: "#E8F5E9", borderLeftColor: "#4CAF50" }, children: [
-                  /* @__PURE__ */ W(Kt, { style: { color: "#1B5E20" }, children: [
+                return /* @__PURE__ */ F(Ut, { style: { backgroundColor: "#E8F5E9", borderLeftColor: "#4CAF50" }, children: [
+                  /* @__PURE__ */ F(Kt, { style: { color: "#1B5E20" }, children: [
                     u.event.title,
                     u.event.subtitle && ` - ${u.event.subtitle}`
                   ] }),
-                  /* @__PURE__ */ W(at, { children: [
+                  /* @__PURE__ */ F(at, { children: [
                     !P && `${Q}: `,
                     R ? /* @__PURE__ */ h("span", { style: { color: "#2E7D32", fontWeight: 700 }, children: O }) : O,
                     " ",
@@ -7289,7 +7288,7 @@ const Pl = b.div`
                     " ",
                     Y ? /* @__PURE__ */ h("span", { style: { color: "#2E7D32", fontWeight: 700 }, children: U }) : U
                   ] }),
-                  /* @__PURE__ */ W(Lr, { style: { backgroundColor: "#C8E6C9", borderColor: "#4CAF50", color: "#1B5E20" }, children: [
+                  /* @__PURE__ */ F(Lr, { style: { backgroundColor: "#C8E6C9", borderColor: "#4CAF50", color: "#1B5E20" }, children: [
                     A,
                     " ",
                     u.position === "before" ? a.conflicts.before : a.conflicts.after
@@ -7315,7 +7314,7 @@ const Pl = b.div`
           width: `${t.width}px`,
           color: Z
         },
-        children: /* @__PURE__ */ h(Ol, { children: /* @__PURE__ */ W(Ll, { children: [
+        children: /* @__PURE__ */ h(Ol, { children: /* @__PURE__ */ F(Ll, { children: [
           /* @__PURE__ */ h(Ar, { $bold: !0, children: e.title }),
           e.subtitle && /* @__PURE__ */ h(Ar, { children: e.subtitle }),
           e.description && /* @__PURE__ */ h(Yl, { children: e.description })
@@ -7474,21 +7473,21 @@ const ed = b.div`
   const o = Ve().multiSelect, s = ke(() => e.filter((M) => M.hasConflict).length, [e]), i = e.length === 1 ? (o == null ? void 0 : o.selectionPending) || "selection pending" : (o == null ? void 0 : o.selectionsPending) || "selection(s) pending", c = `${(o == null ? void 0 : o.clickToRemove) || "Click × on selections to remove"} • ${(o == null ? void 0 : o.pressEscToClear) || "Press Esc to clear all"}`, d = (o == null ? void 0 : o.clearAll) || "Clear All", a = e.length === 1 ? (o == null ? void 0 : o.confirmSelection) || "Confirm Selection" : (o == null ? void 0 : o.confirmSelections) || "Confirm Selections", l = e.length === 1 ? (o == null ? void 0 : o.confirmWithConflict) || "Confirm with Conflict" : (o == null ? void 0 : o.confirmWithConflicts) || "Confirm with Conflicts", f = s === 1 ? (o == null ? void 0 : o.conflictWarning) || "1 selection has conflicts" : ((v = o == null ? void 0 : o.conflictsWarning) == null ? void 0 : v.replace("{count}", String(s))) || `${s} selections have conflicts`;
   if (e.length === 0)
     return null;
-  const y = s > 0, w = /* @__PURE__ */ W(Ul, { $hasConflicts: y, "data-multi-select-ui": !0, children: [
-    /* @__PURE__ */ W(Kl, { children: [
-      /* @__PURE__ */ W(Jl, { $hasConflicts: y, children: [
+  const y = s > 0, w = /* @__PURE__ */ F(Ul, { $hasConflicts: y, "data-multi-select-ui": !0, children: [
+    /* @__PURE__ */ F(Kl, { children: [
+      /* @__PURE__ */ F(Jl, { $hasConflicts: y, children: [
         e.length,
         " ",
         i
       ] }),
-      y && /* @__PURE__ */ W(ql, { children: [
+      y && /* @__PURE__ */ F(ql, { children: [
         "⚠️ ",
         f
       ] }),
       /* @__PURE__ */ h(Ql, { children: c })
     ] }),
-    /* @__PURE__ */ W(ed, { children: [
-      /* @__PURE__ */ W(Rr, { variant: "secondary", onClick: t, children: [
+    /* @__PURE__ */ F(ed, { children: [
+      /* @__PURE__ */ F(Rr, { variant: "secondary", onClick: t, children: [
         "✕ ",
         d
       ] }),
@@ -7703,7 +7702,7 @@ ${g.conflicts.map((T) => {
     if (!g)
       return null;
     const x = g.selection.hasConflict || !1, T = c === g.index, P = T ? g.x + a.x : g.x, O = T ? g.y + a.y : g.y;
-    return /* @__PURE__ */ W(
+    return /* @__PURE__ */ F(
       od,
       {
         $hasConflict: x,

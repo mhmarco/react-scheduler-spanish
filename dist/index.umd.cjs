@@ -893,23 +893,24 @@ to{
   font-weight: 600;
   opacity: 0.92;
 `,Sc=w.span`
-  flex: none;
-  font-size: 9.5px;
-  font-weight: 800;
+  position: absolute;
+  bottom: 3px;
+  right: 8px;
+  z-index: 4;
+  font-size: 8px;
+  font-weight: 700;
   letter-spacing: 0.02em;
   font-variant-numeric: tabular-nums;
-  background: rgba(255, 255, 255, 0.2);
-  color: #fff;
-  padding: 0 5px;
-  border-radius: 4px;
-  margin-right: 5px;
+  color: rgba(255, 255, 255, 0.62);
   white-space: nowrap;
+  pointer-events: none;
 `,Cc=w.div`
   ${et}
   display: flex;
   align-items: center;
   gap: 4px;
   min-width: 0;
+  padding-right: 46px;
   opacity: 0.9;
   font-size: 9.5px;
   font-weight: 600;
@@ -975,7 +976,7 @@ to{
   font-variant-numeric: tabular-nums;
   background: ${({$end:e})=>e?"rgba(255,255,255,0.72)":"rgba(255,255,255,0.95)"};
   color: ${({$end:e})=>e?"#3A4C46":"#183D3D"};
-`,Mc=34,$c={sin_chofer:{stripe:"#9AA4B2",icon:"warn",color:"#9AA4B2"},sin_avisar:{stripe:"#D98A22",icon:"warn",color:"#D98A22"},notificado:{stripe:"#2C6BB0",icon:"clock",color:"#2C6BB0"},confirmado:{stripe:"#2E8B63",icon:"check",color:"#2E8B63"}},Dc="#3E8E5A",Ec="#D98A22",_c=({row:e,data:n,zoom:t,isSubcontract:r=!1,onTileClick:o,onDragStart:s,isDragging:i=!1,isDraggable:l=!0,yOffset:u=0})=>{const{date:c}=Le(),d=fn(c,t),{y:h,x:v,width:S}=gc(e,d.startDate,d.endDate,n.startDate,n.endDate,t),{colors:x}=Dt(),M=p.useRef(null),g=D(n.startDate).isSame(D(n.endDate),"day"),N=n.eventType===yt.Tour,V=n.eventType===yt.Transfer,z=g&&(N||V),E=K=>{M.current={x:K.clientX,y:K.clientY},l&&s&&(K.preventDefault(),s(n,K))},f=K=>{if(M.current){const R=Math.abs(K.clientX-M.current.x),T=Math.abs(K.clientY-M.current.y);Math.sqrt(R*R+T*T)<=5&&(o==null||o(n)),M.current=null}else o==null||o(n)},y={left:`${v}px`,top:`${h+u}px`,backgroundColor:`${n.bgColor??x.defaultTile}`,width:`${S}px`,color:Ir(n.bgColor??"")},b=!r&&n.readiness?$c[n.readiness]:null,A=r&&n.subcontractConfirmed===!1,O=r?A?Ec:Dc:b==null?void 0:b.stripe,Y=K=>a.jsxs(mc,{"data-segment-id":n.segmentId,style:y,onClick:f,onMouseDown:E,onDragStart:R=>R.preventDefault(),isDraggable:l,isDragging:i,$unconfirmed:A,children:[O&&a.jsx(yc,{style:{background:O}}),K]});return Y(z?a.jsxs(a.Fragment,{children:[(r||b)&&a.jsx(Lr,{$sm:!0,children:r?a.jsx(Fr,{children:"SUB"}):b&&a.jsx(Nr,{$sm:!0,style:{color:b.color},children:a.jsx(He,{name:b.icon,strokeWidth:b.icon==="check"?2.6:2.2})})}),a.jsxs(kc,{children:[a.jsx(He,{name:V?"transfer":"sun",strokeWidth:2.4}),S>=Mc&&a.jsxs(a.Fragment,{children:[a.jsx(Hr,{children:D(n.startDate).format("HH:mm")}),!V&&a.jsx(Hr,{$end:!0,children:D(n.endDate).format("HH:mm")})]})]})]}):a.jsxs(a.Fragment,{children:[a.jsx(Lr,{children:r?a.jsx(Fr,{children:"SUB"}):b&&a.jsx(Nr,{style:{color:b.color},children:a.jsx(He,{name:b.icon,strokeWidth:b.icon==="check"?2.6:2.2})})}),a.jsxs(vc,{children:[a.jsxs(Yr,{$pad:!0,children:[a.jsx(xc,{children:a.jsx(He,{name:V?"transfer":"tour"})}),a.jsx(bc,{children:n.title})]}),a.jsxs(Yr,{children:[n.bookingNumber&&a.jsx(Sc,{children:n.bookingNumber}),n.subtitle&&a.jsx(wc,{children:n.subtitle})]}),n.driver&&a.jsxs(Cc,{children:[a.jsx(He,{name:"person"}),n.driver]})]})]}))},zr=(e,n)=>{let t=0;for(const r of n)e>=r&&t++;return t*Ee},Tc=w.div`
+`,Mc=34,$c={sin_chofer:{stripe:"#9AA4B2",icon:"warn",color:"#9AA4B2"},sin_avisar:{stripe:"#D98A22",icon:"warn",color:"#D98A22"},notificado:{stripe:"#2C6BB0",icon:"clock",color:"#2C6BB0"},confirmado:{stripe:"#2E8B63",icon:"check",color:"#2E8B63"}},Dc="#3E8E5A",Ec="#D98A22",_c=({row:e,data:n,zoom:t,isSubcontract:r=!1,onTileClick:o,onDragStart:s,isDragging:i=!1,isDraggable:l=!0,yOffset:u=0})=>{const{date:c}=Le(),d=fn(c,t),{y:h,x:v,width:S}=gc(e,d.startDate,d.endDate,n.startDate,n.endDate,t),{colors:x}=Dt(),M=p.useRef(null),g=D(n.startDate).isSame(D(n.endDate),"day"),N=n.eventType===yt.Tour,V=n.eventType===yt.Transfer,z=g&&(N||V),E=K=>{M.current={x:K.clientX,y:K.clientY},l&&s&&(K.preventDefault(),s(n,K))},f=K=>{if(M.current){const R=Math.abs(K.clientX-M.current.x),T=Math.abs(K.clientY-M.current.y);Math.sqrt(R*R+T*T)<=5&&(o==null||o(n)),M.current=null}else o==null||o(n)},y={left:`${v}px`,top:`${h+u}px`,backgroundColor:`${n.bgColor??x.defaultTile}`,width:`${S}px`,color:Ir(n.bgColor??"")},b=!r&&n.readiness?$c[n.readiness]:null,A=r&&n.subcontractConfirmed===!1,O=r?A?Ec:Dc:b==null?void 0:b.stripe,Y=K=>a.jsxs(mc,{"data-segment-id":n.segmentId,style:y,onClick:f,onMouseDown:E,onDragStart:R=>R.preventDefault(),isDraggable:l,isDragging:i,$unconfirmed:A,children:[O&&a.jsx(yc,{style:{background:O}}),K]});return Y(z?a.jsxs(a.Fragment,{children:[(r||b)&&a.jsx(Lr,{$sm:!0,children:r?a.jsx(Fr,{children:"SUB"}):b&&a.jsx(Nr,{$sm:!0,style:{color:b.color},children:a.jsx(He,{name:b.icon,strokeWidth:b.icon==="check"?2.6:2.2})})}),a.jsxs(kc,{children:[a.jsx(He,{name:V?"transfer":"sun",strokeWidth:2.4}),S>=Mc&&a.jsxs(a.Fragment,{children:[a.jsx(Hr,{children:D(n.startDate).format("HH:mm")}),!V&&a.jsx(Hr,{$end:!0,children:D(n.endDate).format("HH:mm")})]})]})]}):a.jsxs(a.Fragment,{children:[a.jsx(Lr,{children:r?a.jsx(Fr,{children:"SUB"}):b&&a.jsx(Nr,{style:{color:b.color},children:a.jsx(He,{name:b.icon,strokeWidth:b.icon==="check"?2.6:2.2})})}),n.bookingNumber&&a.jsx(Sc,{children:n.bookingNumber}),a.jsxs(vc,{children:[a.jsxs(Yr,{$pad:!0,children:[a.jsx(xc,{children:a.jsx(He,{name:V?"transfer":"tour"})}),a.jsx(bc,{children:n.title})]}),n.subtitle&&a.jsx(Yr,{children:a.jsx(wc,{children:n.subtitle})}),n.driver&&a.jsxs(Cc,{children:[a.jsx(He,{name:"person"}),n.driver]})]})]}))},zr=(e,n)=>{let t=0;for(const r of n)e>=r&&t++;return t*Ee},Tc=w.div`
   position: absolute;
   left: 0;
   right: 0;

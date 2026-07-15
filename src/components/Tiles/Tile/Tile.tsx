@@ -15,7 +15,7 @@ import {
   StyledNtIco,
   StyledNtTitle,
   StyledNtClient,
-  StyledNtBk,
+  StyledNtBkCorner,
   StyledNtMeta,
   StyledTileTR,
   StyledDotWrap,
@@ -163,6 +163,7 @@ const Tile: FC<TileProps> = ({
           )
         )}
       </StyledTileTR>
+      {data.bookingNumber && <StyledNtBkCorner>{data.bookingNumber}</StyledNtBkCorner>}
       <StyledNt>
         <StyledNtRow $pad>
           <StyledNtIco>
@@ -170,10 +171,11 @@ const Tile: FC<TileProps> = ({
           </StyledNtIco>
           <StyledNtTitle>{data.title}</StyledNtTitle>
         </StyledNtRow>
-        <StyledNtRow>
-          {data.bookingNumber && <StyledNtBk>{data.bookingNumber}</StyledNtBk>}
-          {data.subtitle && <StyledNtClient>{data.subtitle}</StyledNtClient>}
-        </StyledNtRow>
+        {data.subtitle && (
+          <StyledNtRow>
+            <StyledNtClient>{data.subtitle}</StyledNtClient>
+          </StyledNtRow>
+        )}
         {data.driver && (
           <StyledNtMeta>
             <TileIcon name="person" />
