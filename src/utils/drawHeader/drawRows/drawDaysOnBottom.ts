@@ -31,8 +31,8 @@ export const drawDaysOnBottom = (
     const day = parseDay(
       dayjs(`${startDate.year}-${startDate.month + 1}-${startDate.dayOfMonth}`).add(i, "days")
     );
-    // HOY marker in the primary (monthly) view (§22.3): the current-day header cell reads "HOY" in bold teal over
-    // a teal wash, distinct from the generic current-day tint — so today is unmistakable.
+    // HOY marker in the primary (monthly) view (§22.3): a filled teal "HOY" pill replaces the day name over a teal
+    // wash, with the day number teal-bold — so today is unmistakable.
     const isToday = day.isCurrentDay;
     drawRow(
       {
@@ -47,11 +47,9 @@ export const drawDaysOnBottom = (
           : getBoxFillStyle({ isCurrent: false, isBusinessDay: day.isBusinessDay }, theme),
         topText: {
           y: dayNameYPos,
-          label: isToday ? "HOY" : day.dayName.toUpperCase(),
-          font: isToday ? "700 14px Inter" : fonts.bottomRow.name,
-          color: isToday
-            ? theme.colors.today
-            : getTextStyle({ isCurrent: false, isBusinessDay: day.isBusinessDay }, theme)
+          label: isToday ? "" : day.dayName.toUpperCase(),
+          font: fonts.bottomRow.name,
+          color: getTextStyle({ isCurrent: false, isBusinessDay: day.isBusinessDay }, theme)
         },
         bottomText: {
           y: dayNumYPos,
@@ -67,6 +65,25 @@ export const drawDaysOnBottom = (
       },
       theme
     );
+
+    if (isToday) {
+      const pillW = 30;
+      const pillH = 13;
+      const cx = xPos + dayWidth / 2;
+      const py = dayNameYPos - pillH / 2;
+      ctx.save();
+      ctx.fillStyle = theme.colors.today;
+      ctx.beginPath();
+      if (ctx.roundRect) ctx.roundRect(cx - pillW / 2, py, pillW, pillH, 5);
+      else ctx.rect(cx - pillW / 2, py, pillW, pillH);
+      ctx.fill();
+      ctx.fillStyle = "#fff";
+      ctx.font = "800 8.5px Inter";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText("HOY", cx, py + pillH / 2 + 0.5);
+      ctx.restore();
+    }
 
     xPos += dayWidth;
   }

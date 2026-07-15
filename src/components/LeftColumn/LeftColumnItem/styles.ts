@@ -26,13 +26,22 @@ export const StyledInnerWrapper = styled.div`
   align-items: center;
 `;
 
-export const StyledImageWrapper = styled.div`
-  margin-right: 0.5rem;
-  width: 1.5rem;
-  height: 1.5rem;
+export const StyledImageWrapper = styled.div<{ $provider?: boolean }>`
+  margin-right: 0.625rem;
+  width: 27px;
+  height: 27px;
   border-radius: 50%;
   overflow: hidden;
   flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  background: ${({ theme, $provider }) =>
+    $provider ? theme.colors.subcontractBg : theme.colors.accent + "1A"};
+  color: ${({ theme, $provider }) => ($provider ? theme.colors.subcontractText : theme.colors.accent)};
+  & svg {
+    width: 17px;
+    height: 17px;
+  }
 `;
 export const StyledImage = styled.img`
   object-fit: cover;

@@ -196,6 +196,13 @@ export const createDemoData = (): SchedulerData => {
       ]
     },
     {
+      id: "demo-bus-2",
+      label: { icon: "🚎", title: "Bus 15", subtitle: "21 Pax | SJB19004" },
+      capacity: 21,
+      categoryId: "bus",
+      data: []
+    },
+    {
       id: "demo-sub-1",
       label: { icon: "🏢", title: "Alpha Transport", subtitle: "Subcontrato" },
       capacity: 20,
