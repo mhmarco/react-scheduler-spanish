@@ -66,6 +66,24 @@ const Grid = forwardRef<HTMLDivElement, GridProps>(function Grid(
     }
   }, [dragState, onDragStateChange]);
 
+  // Soft fade-in whenever the visible range changes (date jump / next-prev / boundary load) so the repaint reads as a
+  // smooth transition rather than a hard snap. Opacity-only → no effect on layout or hit-testing. Skips first mount;
+  // cancels any in-flight fade so rapid navigation doesn't stack animations and flicker.
+  const didMountRef = useRef(false);
+  const fadeAnimRef = useRef<Animation | null>(null);
+  useEffect(() => {
+    if (!didMountRef.current) {
+      didMountRef.current = true;
+      return;
+    }
+    fadeAnimRef.current?.cancel();
+    fadeAnimRef.current =
+      gridWrapperRef.current?.animate?.([{ opacity: 0.35 }, { opacity: 1 }], {
+        duration: 240,
+        easing: "ease-out"
+      }) ?? null;
+  }, [date]);
+
   // Initialize click-to-add hook
   const {
     selectionState,
