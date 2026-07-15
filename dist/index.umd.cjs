@@ -743,7 +743,7 @@ to{
   flex: 0 1 auto;
   min-width: 0;
   font-size: 12px;
-  font-weight: 650;
+  font-weight: 550;
 `,ec=k.span`
   ${Je}
   flex: 0 1 auto;
