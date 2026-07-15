@@ -4,7 +4,9 @@ import { headerHeight, leftColumnWidth } from "@/constants";
 export const StyledOuterWrapper = styled.div`
   position: sticky;
   top: 0;
-  z-index: 1;
+  /* Rows must scroll BEHIND the day-header. Tiles now isolate their internal z-indexes (stripe 3 / cluster 6), but as a
+     defensive margin keep the header above the tiles' escaping max (6) in case a host stacking context defeats them. */
+  z-index: 10;
 `;
 
 // Topbar + Legend are pinned to the visible viewport (sticky left, viewport-minus-left-column width) so they stay in

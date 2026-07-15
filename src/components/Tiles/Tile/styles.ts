@@ -34,6 +34,9 @@ export const StyledTileWrapper = styled.button<StyledTileWrapperProps>`
   height: ${tileHeight}px;
   border-radius: 7px;
   overflow: hidden;
+  /* Isolate so the stripe (z 3) and top-right cluster (z 6) stay contained in the tile instead of escaping to the
+     grid level and painting OVER the sticky day-header on vertical scroll. */
+  isolation: isolate;
   outline: none;
   border: none;
   text-align: left;
