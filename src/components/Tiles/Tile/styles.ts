@@ -211,13 +211,3 @@ export const StyledXsTime = styled.span<{ $end?: boolean }>`
   background: ${({ $end }) => ($end ? "rgba(255,255,255,0.72)" : "rgba(255,255,255,0.95)")};
   color: ${({ $end }) => ($end ? "#3A4C46" : "#183D3D")};
 `;
-
-export const StyledXsCorner = styled.span`
-  position: absolute;
-  right: 2px;
-  top: 2px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  border: 1.5px solid #fff;
-`;

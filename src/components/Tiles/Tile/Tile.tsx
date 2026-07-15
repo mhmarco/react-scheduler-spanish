@@ -21,8 +21,7 @@ import {
   StyledDotWrap,
   StyledSubPill,
   StyledNtXs,
-  StyledXsTime,
-  StyledXsCorner
+  StyledXsTime
 } from "./styles";
 import { TileProps } from "./types";
 
@@ -118,13 +117,22 @@ const Tile: FC<TileProps> = ({
     </StyledTileWrapper>
   );
 
-  // One-day: type icon over start/end time chips + a corner status dot.
+  // One-day: type icon over start/end time chips. Same top-right status cluster as multi-day (SUB pill or a white
+  // dot-wrap with the coloured status icon), sized down for the small tile.
   if (isOneDayEvent) {
     return wrapper(
       <>
-        {isSubcontract && (
+        {(isSubcontract || rd) && (
           <StyledTileTR $sm>
-            <StyledSubPill>SUB</StyledSubPill>
+            {isSubcontract ? (
+              <StyledSubPill>SUB</StyledSubPill>
+            ) : (
+              rd && (
+                <StyledDotWrap $sm style={{ color: rd.color }}>
+                  <TileIcon name={rd.icon} strokeWidth={rd.icon === "check" ? 2.6 : 2.2} />
+                </StyledDotWrap>
+              )
+            )}
           </StyledTileTR>
         )}
         <StyledNtXs>
@@ -135,7 +143,6 @@ const Tile: FC<TileProps> = ({
               {!isTransfer && <StyledXsTime $end>{dayjs(data.endDate).format("HH:mm")}</StyledXsTime>}
             </>
           )}
-          {rd && <StyledXsCorner style={{ background: rd.color }} />}
         </StyledNtXs>
       </>
     );
