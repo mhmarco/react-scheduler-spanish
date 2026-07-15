@@ -14,6 +14,7 @@ import {
   StyledTileBody,
   StyledTileLines,
   StyledLine,
+  StyledBookingChip,
   StyledReadinessStripe,
   StyledTileTR,
   StyledSubPill,
@@ -21,10 +22,11 @@ import {
 } from "./styles";
 import { TileProps } from "./types";
 
-// Width buckets (px, on the actual rendered tile) — content scales up with available room (plan §4/§22.6).
+// Width buckets (px, on the actual rendered tile) — the locked §22.2 / §17.B6 thresholds:
+// wide (w>=248) = title / booking·client / driver; compact (w<248) = booking chip (+client at w>=156), NO driver.
 const TIMES_MIN = 34; // one-day: show start/end times under the type icon
-const SUBTITLE_MIN = 90; // multi-day: add the client line
-const DRIVER_MIN = 150; // multi-day: add the driver line
+const CLIENT_MIN = 156; // compact: add the client line
+const WIDE_MIN = 248; // wide bucket: title + booking·client + driver line
 
 // Readiness stripe/dot palette (§22.4: muted / warn / info / ok).
 const READINESS_COLOR: Record<TileReadiness, string> = {
@@ -32,6 +34,13 @@ const READINESS_COLOR: Record<TileReadiness, string> = {
   sin_avisar: "#E0A83C",
   notificado: "#3B82F6",
   confirmado: "#2FA36B"
+};
+// Icon-in-circle glyphs so the four states are distinguishable without colour (§22.2).
+const READINESS_GLYPH: Record<TileReadiness, string> = {
+  sin_chofer: "○",
+  sin_avisar: "!",
+  notificado: "→",
+  confirmado: "✓"
 };
 const SUB_CONFIRMED = "#3E8E5A";
 const SUB_UNCONFIRMED = "#9AA5A0";
@@ -119,7 +128,11 @@ const Tile: FC<TileProps> = ({
         {isSubcontract ? (
           <StyledSubPill>SUB</StyledSubPill>
         ) : (
-          data.readiness && <StyledAckDot style={{ background: READINESS_COLOR[data.readiness] }} />
+          data.readiness && (
+            <StyledAckDot style={{ background: READINESS_COLOR[data.readiness] }}>
+              {READINESS_GLYPH[data.readiness]}
+            </StyledAckDot>
+          )
         )}
       </StyledTileTR>
     </>
@@ -151,7 +164,10 @@ const Tile: FC<TileProps> = ({
     );
   }
 
-  // Multi-day: icon + title, adding client and driver as the tile widens. True ellipsis, no sticky fade-mask clip.
+  // Multi-day content by width bucket (§22.2). Booking chip appears on every tile (incl. subcontract). Wide tiles
+  // lead with the title; compact tiles use the booking # as the identifier. True ellipsis, no sticky fade clip.
+  const isWide = width >= WIDE_MIN;
+  const bookingChip = data.bookingNumber ? <StyledBookingChip>{data.bookingNumber}</StyledBookingChip> : null;
   return (
     <StyledTileWrapper
       data-segment-id={data.segmentId}
@@ -166,9 +182,21 @@ const Tile: FC<TileProps> = ({
       <StyledTileBody>
         <StyledTileIcon>{icon}</StyledTileIcon>
         <StyledTileLines>
-          <StyledLine bold>{data.title}</StyledLine>
-          {width >= SUBTITLE_MIN && data.subtitle && <StyledLine>{data.subtitle}</StyledLine>}
-          {width >= DRIVER_MIN && data.driver && <StyledLine>{data.driver}</StyledLine>}
+          {isWide ? (
+            <>
+              <StyledLine bold>{data.title}</StyledLine>
+              <StyledLine>
+                {bookingChip}
+                {data.subtitle}
+              </StyledLine>
+              {data.driver && <StyledLine>{data.driver}</StyledLine>}
+            </>
+          ) : (
+            <>
+              <StyledLine>{bookingChip}</StyledLine>
+              {width >= CLIENT_MIN && data.subtitle && <StyledLine>{data.subtitle}</StyledLine>}
+            </>
+          )}
         </StyledTileLines>
       </StyledTileBody>
     </StyledTileWrapper>

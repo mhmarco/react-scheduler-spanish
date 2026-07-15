@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { leftColumnWidth, tileHeight } from "@/constants";
+import { tileHeight } from "@/constants";
 import { marginPaddingReset, truncate } from "@/styles";
 import { StyledTextProps, StyledTileWrapperProps } from "./types";
 
@@ -32,32 +32,6 @@ export const StyledTextWrapper = styled.div`
   line-height: 12px;
 `;
 
-// Compact wrapper for single-day events
-export const StyledOneDayWrapper = styled.div`
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 4px;
-`;
-
-// Clean label for single-day events
-export const StyledOneDayLabel = styled.span<{ $type: "tour" | "transfer" }>`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.85);
-  color: ${({ $type }) => ($type === "tour" ? "#374151" : "#374151")};
-  font-size: 9px;
-  font-weight: 600;
-  padding: 4px 8px;
-  border-radius: 3px;
-  letter-spacing: 0.3px;
-  line-height: 1;
-  border-left: 2px solid ${({ $type }) => ($type === "tour" ? "#10b981" : "#3b82f6")};
-  white-space: nowrap;
-`;
-
 export const StyledText = styled.p<StyledTextProps>`
   ${marginPaddingReset}
   ${truncate}
@@ -69,17 +43,6 @@ export const StyledText = styled.p<StyledTextProps>`
       margin: 0 3px;
     }
   }
-`;
-
-export const StyledDescription = styled.p`
-  ${marginPaddingReset}
-  ${truncate}
-`;
-
-export const StyledStickyWrapper = styled.div`
-  position: sticky;
-  left: ${leftColumnWidth + 16}px;
-  overflow: hidden;
 `;
 
 // --- Redesigned adaptive tile chrome (width-bucketed; plan §4/§22.6) ---
@@ -125,10 +88,19 @@ export const StyledSubPill = styled.span`
   color: #fff;
 `;
 
+// In-house ack indicator: an icon-in-circle (§22.2) — a per-state glyph so the four states read without relying
+// on colour alone (the left stripe carries the colour redundantly).
 export const StyledAckDot = styled.span`
-  width: 7px;
-  height: 7px;
+  width: 11px;
+  height: 11px;
   border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  font-weight: 800;
+  line-height: 1;
+  color: #fff;
   box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.9);
 `;
 
@@ -183,39 +155,19 @@ export const StyledLine = styled.span<{ bold?: boolean }>`
   opacity: ${({ bold }) => (bold ? 1 : 0.9)};
 `;
 
-export const StyledOneDayText = styled.span`
-  ${truncate}
-  font-size: 10px;
-  font-weight: 600;
-  min-width: 0;
-  flex: 1;
-`;
-
-export const StyledOneDayBadge = styled.span<{ $type: "tour" | "transfer" }>`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.95);
-  color: ${({ $type }) => ($type === "tour" ? "#15803d" : "#1d4ed8")};
-  font-size: 9px;
+// Booking-number chip (§22.2 .nt-bk) — the consistent CRF-#### identifier, shown on every tile incl. subcontract.
+export const StyledBookingChip = styled.span`
+  display: inline-block;
+  font-size: 8.5px;
   font-weight: 700;
-  padding: 3px 5px;
-  border-radius: 3px;
-  text-transform: uppercase;
   letter-spacing: 0.3px;
-  flex-shrink: 0;
   line-height: 1;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  padding: 2px 4px;
+  margin-right: 4px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.16);
+  font-variant-numeric: tabular-nums;
   white-space: nowrap;
+  vertical-align: middle;
 `;
 
-export const StyledBadgeIcon = styled.span`
-  font-size: 10px;
-  line-height: 1;
-`;
-
-export const StyledTileContent = styled.div`
-  display: flex;
-  overflow: hidden;
-  min-width: 0;
-`;

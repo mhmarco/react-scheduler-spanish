@@ -425,7 +425,19 @@ function App() {
           isLoading={false}
           onTileClick={handleTileClick}
           handleToggleDisplayActiveUnits={handleToggleDisplayActiveUnits}
-          config={{ zoom: 0, maxRecordsPerPage: maxRecordsPerPage, showThemeToggle: true }}
+          config={{
+            zoom: 1,
+            maxRecordsPerPage: maxRecordsPerPage,
+            showThemeToggle: true,
+            // Mirror the TourHub app's sage/teal config.theme so this dev harness previews the real customer look.
+            theme: {
+              light: {
+                primary: "#EFF4F1", secondary: "#E4EDE9", tertiary: "#D3E2DA", accent: "#5C8374",
+                border: "#D5DED9", hover: "#E4EDE9", defaultTile: "#5C8374", currentDay: "#DDEEE8",
+                subcontractBg: "#EEF4EF", subcontractBorder: "#3E8E5A", subcontractText: "#2C6B43"
+              }
+            }
+          }}
           onItemClick={(data) => console.log("clicked: ", data)}
           onEventDrop={handleEventDrop}
           onEventDrag={handleEventDrag}

@@ -34,12 +34,12 @@ export const drawMonthsOnTop = (ctx: CanvasRenderingContext2D, startDate: Day, t
         label:
           dayjs(`${startDate.year}-${startDate.month + 1}-${startDate.dayOfMonth}`)
             .month(startMonthIndex)
-            .format("MMMM")
+            .format("MMMM YYYY")
             .toUpperCase() 
             + "                                                                                                 " +
           ` ${dayjs(`${startDate.year}-${startDate.month + 1}-${startDate.dayOfMonth}`)
             .month(startMonthIndex)
-            .format("MMMM")
+            .format("MMMM YYYY")
             .toUpperCase()}`,
         font: fonts.topRow
       },

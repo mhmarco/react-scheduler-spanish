@@ -31,6 +31,9 @@ export const drawDaysOnBottom = (
     const day = parseDay(
       dayjs(`${startDate.year}-${startDate.month + 1}-${startDate.dayOfMonth}`).add(i, "days")
     );
+    // HOY marker in the primary (monthly) view (§22.3): the current-day header cell reads "HOY" in bold teal over
+    // a teal wash, distinct from the generic current-day tint — so today is unmistakable.
+    const isToday = day.isCurrentDay;
     drawRow(
       {
         ctx,
@@ -39,34 +42,27 @@ export const drawDaysOnBottom = (
         width: dayWidth,
         height: headerDayHeight,
         isBottomRow: true,
-        fillStyle: getBoxFillStyle(
-          {
-            isCurrent: day.isCurrentDay,
-            isBusinessDay: day.isBusinessDay
-          },
-          theme
-        ),
+        fillStyle: isToday
+          ? theme.colors.today + "26"
+          : getBoxFillStyle({ isCurrent: false, isBusinessDay: day.isBusinessDay }, theme),
         topText: {
           y: dayNameYPos,
-          label: day.dayName.toUpperCase(),
-          font: fonts.bottomRow.name,
-          color: getTextStyle(
-            { isCurrent: day.isCurrentDay, isBusinessDay: day.isBusinessDay },
-            theme
-          )
+          label: isToday ? "HOY" : day.dayName.toUpperCase(),
+          font: isToday ? "700 14px Inter" : fonts.bottomRow.name,
+          color: isToday
+            ? theme.colors.today
+            : getTextStyle({ isCurrent: false, isBusinessDay: day.isBusinessDay }, theme)
         },
         bottomText: {
           y: dayNumYPos,
           label: `${day.dayOfMonth}`,
-          font: fonts.bottomRow.number,
-          color: getTextStyle(
-            {
-              isCurrent: day.isCurrentDay,
-              isBusinessDay: day.isBusinessDay,
-              variant: "bottomRow"
-            },
-            theme
-          )
+          font: isToday ? "700 10px Inter" : fonts.bottomRow.number,
+          color: isToday
+            ? theme.colors.today
+            : getTextStyle(
+                { isCurrent: false, isBusinessDay: day.isBusinessDay, variant: "bottomRow" },
+                theme
+              )
         }
       },
       theme

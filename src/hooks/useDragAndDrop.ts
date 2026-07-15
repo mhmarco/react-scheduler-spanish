@@ -93,10 +93,10 @@ export const useDragAndDrop = ({
       // Calculate date based on X position and zoom level
       let cellWidth: number;
       switch (zoom) {
-        case 0: // Weekly view
+        case 0: // Yearly view (week-wide columns)
           cellWidth = singleDayWidth * 7; // Week width
           break;
-        case 1: // Daily view
+        case 1: // Monthly view (day columns)
           cellWidth = dayWidth;
           break;
         case 2: // Hourly view
