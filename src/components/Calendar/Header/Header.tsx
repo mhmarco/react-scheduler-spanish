@@ -7,7 +7,7 @@ import { drawHeader } from "@/utils/drawHeader/drawHeader";
 import { resizeCanvas } from "@/utils/resizeCanvas";
 import { getCanvasWidth } from "@/utils/getCanvasWidth";
 import { HeaderProps } from "./types";
-import { StyledCanvas, StyledOuterWrapper, StyledWrapper } from "./styles";
+import { StyledCanvas, StyledOuterWrapper, StyledPinned, StyledWrapper } from "./styles";
 import Topbar from "./Topbar";
 import Legend from "@/components/Legend/Legend";
 
@@ -55,10 +55,14 @@ const Header = forwardRef<HTMLDivElement, HeaderProps>(function Header(
 
   return (
     <StyledOuterWrapper ref={ref}>
-      {config.showTopbar !== false && (
-        <Topbar width={topBarWidth} showThemeToggle={showThemeToggle} toggleTheme={toggleTheme} />
+      {(config.showTopbar !== false || config.showLegend !== false) && (
+        <StyledPinned $width={topBarWidth}>
+          {config.showTopbar !== false && (
+            <Topbar width={topBarWidth} showThemeToggle={showThemeToggle} toggleTheme={toggleTheme} />
+          )}
+          {config.showLegend !== false && <Legend />}
+        </StyledPinned>
       )}
-      {config.showLegend !== false && <Legend />}
       <StyledWrapper id={canvasHeaderWrapperId}>
         <StyledCanvas ref={canvasRef} />
       </StyledWrapper>

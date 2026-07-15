@@ -28,8 +28,9 @@ const toggleFullscreen = () => {
   else document.exitFullscreen?.();
 };
 
-// Toolbar matching the mockup (artifact 91ed97bb): ‹ Hoy › nav, range, Día│Semana│Mes zoom, Ir a fecha, Buscar,
-// Filtros, Pantalla completa. Zoom maps to the fork levels (Día = hourly, Semana = week columns, Mes = day columns).
+// Three-zone toolbar with the ‹ Hoy › nav centred: left = month + Día│Semana│Mes zoom + Ir a fecha; centre =
+// prev/Hoy/next; right = Buscar, Filtros, Pantalla completa. Zoom maps to the fork levels (Día = hourly, Semana =
+// week columns, Mes = day columns).
 const Topbar: FC<TopbarProps> = () => {
   const { config, date, zoom, handleGoNext, handleGoPrev, handleGoToday, setZoom, goToDate, toggleDisplayActiveUnits } =
     useCalendar();
@@ -41,20 +42,7 @@ const Topbar: FC<TopbarProps> = () => {
 
   return (
     <Wrapper width={0}>
-      <Grp>
-        <NavigationWrapper>
-          <NavBtn onClick={handleGoPrev} aria-label="Anterior">
-            <Svg>
-              <path d="m15 18-6-6 6-6" />
-            </Svg>
-          </NavBtn>
-          <Today onClick={handleGoToday}>Hoy</Today>
-          <NavBtn onClick={handleGoNext} aria-label="Siguiente">
-            <Svg>
-              <path d="m9 18 6-6-6-6" />
-            </Svg>
-          </NavBtn>
-        </NavigationWrapper>
+      <Grp $at="start">
         <Range>{date.format("MMMM YYYY")}</Range>
         <ZoomSeg>
           <button className={zoom === 2 ? "on" : ""} onClick={() => setZoom(2)}>
@@ -76,6 +64,23 @@ const Topbar: FC<TopbarProps> = () => {
           Ir a fecha
           <input type="date" onChange={(e) => e.target.value && goToDate(e.target.value)} />
         </DateLabel>
+      </Grp>
+      <Grp $at="center">
+        <NavigationWrapper>
+          <NavBtn onClick={handleGoPrev} aria-label="Anterior">
+            <Svg>
+              <path d="m15 18-6-6 6-6" />
+            </Svg>
+          </NavBtn>
+          <Today onClick={handleGoToday}>Hoy</Today>
+          <NavBtn onClick={handleGoNext} aria-label="Siguiente">
+            <Svg>
+              <path d="m9 18 6-6-6-6" />
+            </Svg>
+          </NavBtn>
+        </NavigationWrapper>
+      </Grp>
+      <Grp $at="end">
         <Cmd onClick={focusSearch}>
           <Svg>
             <circle cx="11" cy="11" r="7" />
@@ -84,8 +89,6 @@ const Topbar: FC<TopbarProps> = () => {
           Buscar
           <span className="k">⌘K</span>
         </Cmd>
-      </Grp>
-      <Grp>
         {filterButtonState >= 0 && (
           <PillBtn $primary={!!filterButtonState} onClick={toggleDisplayActiveUnits}>
             <Svg>
