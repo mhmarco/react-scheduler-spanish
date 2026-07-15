@@ -1,7 +1,7 @@
 import { ThemeProvider } from "styled-components";
 import {
   forwardRef,
-  useEffect,
+  useLayoutEffect,
   useImperativeHandle,
   useMemo,
   useRef,
@@ -159,7 +159,9 @@ const Scheduler = forwardRef<SchedulerRef, SchedulerProps>(function Scheduler(
     []
   );
 
-  useEffect(() => {
+  // Measure width in a layout effect (before paint) so the pinned toolbar never paints one frame at 0 width and then
+  // snaps to full — the "strange resize" seen on every mount, incl. each Vista Diaria → Planner switch.
+  useLayoutEffect(() => {
     const handleResize = () => {
       if (outsideWrapperRef.current) {
         setTopBarWidth(outsideWrapperRef.current.clientWidth);
@@ -173,7 +175,6 @@ const Scheduler = forwardRef<SchedulerRef, SchedulerProps>(function Scheduler(
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  if (!outsideWrapperRef.current) null;
   return (
     <>
       <GlobalStyle />
