@@ -18,6 +18,7 @@ import GroupHeader from "./GroupHeader";
 const LeftColumn: FC<LeftColumnProps> = ({
   data,
   categories,
+  headerHeight,
   rows,
   onLoadNext,
   onLoadPrevious,
@@ -89,7 +90,7 @@ const LeftColumn: FC<LeftColumnProps> = ({
 
   return (
     <StyledWrapper>
-      <StyledLeftColumnHeader>
+      <StyledLeftColumnHeader $height={headerHeight}>
         <StyledHeaderActions>
           <StyledInputWrapper isFocused={isInputFocused}>
             <StyledInput

@@ -1,4 +1,13 @@
-import { ChangeEvent, FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  FC,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState
+} from "react";
 import debounce from "lodash.debounce";
 import { useCalendar } from "@/context/CalendarProvider";
 import {
@@ -116,6 +125,10 @@ export const Calendar: FC<CalendarProps> = ({
     config: { includeTakenHoursOnWeekendsInDayView, showTooltip, showThemeToggle }
   } = useCalendar();
   const gridRef = useRef<HTMLDivElement>(null);
+  // The left column's top spacer must match the calendar header block (Topbar + Legend + canvas header),
+  // whose height varies with zoom and the showTopbar/showLegend toggles — measure it instead of hardcoding.
+  const headerBlockRef = useRef<HTMLDivElement>(null);
+  const [headerBlockHeight, setHeaderBlockHeight] = useState(124);
   const {
     page,
     projectsPerPerson,
@@ -397,9 +410,20 @@ export const Calendar: FC<CalendarProps> = ({
     }
   }, [data, searchPhrase]);
 
+  useLayoutEffect(() => {
+    const el = headerBlockRef.current;
+    if (!el) return;
+    const measure = () => setHeaderBlockHeight(el.offsetHeight);
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   return (
     <StyledOuterWrapper>
       <LeftColumn
+        headerHeight={headerBlockHeight}
         data={effectivePage}
         categories={effectiveCategories}
         pageNum={currentPageNum}
@@ -418,6 +442,7 @@ export const Calendar: FC<CalendarProps> = ({
       />
       <StyledInnerWrapper>
         <Header
+          ref={headerBlockRef}
           zoom={zoom}
           topBarWidth={topBarWidth}
           showThemeToggle={showThemeToggle}

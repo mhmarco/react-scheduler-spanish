@@ -3,6 +3,7 @@ import { PaginatedSchedulerData, SchedulerCategory, SchedulerItemClickData } fro
 export type LeftColumnProps = {
   data: PaginatedSchedulerData;
   categories?: SchedulerCategory[];
+  headerHeight: number;
   rows: number[];
   pageNum: number;
   pagesAmount: number;
@@ -20,4 +21,8 @@ export type LeftColumnProps = {
 
 export type StyledInputWrapperProps = {
   isFocused: boolean;
+};
+
+export type StyledLeftColumnHeaderProps = {
+  $height: number;
 };

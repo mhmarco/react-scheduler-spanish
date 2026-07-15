@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { leftColumnWidth } from "@/constants";
-import { StyledInputWrapperProps } from "./types";
+import { StyledInputWrapperProps, StyledLeftColumnHeaderProps } from "./types";
 
 export const StyledWrapper = styled.div`
   min-width: ${leftColumnWidth + "px"};
@@ -13,11 +13,11 @@ export const StyledWrapper = styled.div`
   z-index: 2;
 `;
 
-export const StyledLeftColumnHeader = styled.div`
+export const StyledLeftColumnHeader = styled.div<StyledLeftColumnHeaderProps>`
   padding-bottom: 4px;
   position: sticky;
   top: 0;
-  height: 124px;
+  height: ${({ $height }) => $height}px;
   display: flex;
   flex-direction: column;
   justify-content: end;
