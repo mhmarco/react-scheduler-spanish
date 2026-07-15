@@ -60,6 +60,11 @@ export type Config = {
    * @default true
    */
   showLegend?: boolean;
+  /**
+   * show the full-year navigator ribbon (density bars + HOY + viewport window + click-to-jump) below the legend
+   * @default true
+   */
+  showOverview?: boolean;
   theme?: Theme;
 };
 
