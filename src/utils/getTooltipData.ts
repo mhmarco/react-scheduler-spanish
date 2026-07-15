@@ -73,6 +73,9 @@ export const getTooltipData = (
       flightNumber: reservation.flightNumber,
       serviceNotes: reservation.serviceNotes,
       reservationNotes: reservation.reservationNotes,
+      departureAddress: reservation.departureAddress,
+      destinationAddress: reservation.destinationAddress,
+      returnAddress: reservation.returnAddress,
       isOneDayEvent,
       passengers: reservation.totalPassengers
     }

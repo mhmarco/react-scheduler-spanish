@@ -13,7 +13,8 @@ export const StyledGroupHeader = styled.div<{ $variant: "category" | "subcontrac
     $variant === "subcontract" ? theme.colors.subcontractBorder + "24" : theme.colors.accent + "14"};
   border-left: 3px solid
     ${({ theme, $variant }) => ($variant === "subcontract" ? theme.colors.subcontractBorder : "transparent")};
-  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
+  border-bottom: 1px solid
+    ${({ theme, $variant }) => ($variant === "subcontract" ? theme.colors.subcontractBorder : theme.colors.border)};
   cursor: pointer;
   user-select: none;
   transition: background 0.15s ease;

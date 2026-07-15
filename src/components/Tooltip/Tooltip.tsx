@@ -38,6 +38,9 @@ const defaultTranslations = {
   flightNumber: "Flight",
   serviceNotes: "Service Notes",
   reservationNotes: "Reservation Notes",
+  salida: "Salida",
+  destino: "Destino",
+  regreso: "Regreso",
   tour: "Tour",
   transfer: "Transfer",
   oneDay: "One-day",
@@ -156,6 +159,31 @@ const Tooltip: FC<TooltipProps> = ({ tooltipData }) => {
               </StyledDetailItem>
             ))}
           </StyledDetails>
+        )}
+
+        {(reservationData.departureAddress ||
+          reservationData.destinationAddress ||
+          reservationData.returnAddress) && (
+          <StyledNotesSection>
+            {reservationData.departureAddress && (
+              <StyledNoteItem>
+                <StyledNoteLabel>{t.salida}</StyledNoteLabel>
+                <StyledNoteText>{reservationData.departureAddress}</StyledNoteText>
+              </StyledNoteItem>
+            )}
+            {reservationData.destinationAddress && (
+              <StyledNoteItem>
+                <StyledNoteLabel>{t.destino}</StyledNoteLabel>
+                <StyledNoteText>{reservationData.destinationAddress}</StyledNoteText>
+              </StyledNoteItem>
+            )}
+            {reservationData.returnAddress && (
+              <StyledNoteItem>
+                <StyledNoteLabel>{t.regreso}</StyledNoteLabel>
+                <StyledNoteText>{reservationData.returnAddress}</StyledNoteText>
+              </StyledNoteItem>
+            )}
+          </StyledNotesSection>
         )}
 
         {(reservationData.serviceNotes || reservationData.reservationNotes) && (

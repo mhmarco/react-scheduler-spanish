@@ -57,17 +57,26 @@ export const StyledTileWrapper = styled.button<StyledTileWrapperProps>`
   }};
   opacity: ${({ isDragging }) => (isDragging ? 0.3 : 1)};
   transition: opacity 0.2s ease;
-  /* Motion (gated on reduced-motion): fade/scale a newly-mounted tile in, and glide survivors to a new row when a
-     unit/group above them is added, removed, or collapsed. Transition ONLY top — left/width recompute on every
-     horizontal scroll-load, so animating them would cause spurious sliding; top derives from row index alone. */
+  /* Motion (gated on reduced-motion): fade/scale a newly-mounted tile in; glide survivors to a new row when a
+     unit/group above them is added/removed/collapsed (top only — left/width recompute on horizontal scroll-load);
+     and a subtle lift + deeper shadow on hover. transform/box-shadow are transitioned so the hover lift and the
+     exit shrink are smooth. translateY (not scale) on hover to avoid blurring the sticky floating text body. */
   @media (prefers-reduced-motion: no-preference) {
     animation: ${tileIn} 180ms ease-out;
-    transition: opacity 0.2s ease, top 220ms cubic-bezier(0.16, 1, 0.3, 1);
+    transition: opacity 0.2s ease, top 220ms cubic-bezier(0.16, 1, 0.3, 1), transform 160ms ease,
+      box-shadow 160ms ease;
+    &:hover:not(:active) {
+      transform: translateY(-1.5px);
+      box-shadow: 0 6px 13px -3px rgba(12, 26, 23, 0.42), 0 0 0 0.5px rgba(12, 26, 23, 0.16);
+    }
   }
   ${({ $unconfirmed }) =>
     $unconfirmed &&
     `background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.14) 0 6px, transparent 6px 12px);
-     box-shadow: 0 0 0 1.5px #D98A22, 0 2px 5px -1px rgba(12,26,23,0.28);`}
+     box-shadow: 0 0 0 1.5px #D98A22, 0 2px 5px -1px rgba(12,26,23,0.28);
+     @media (prefers-reduced-motion: no-preference) {
+       &:hover:not(:active) { box-shadow: 0 0 0 1.5px #D98A22, 0 6px 13px -3px rgba(12,26,23,0.42); }
+     }`}
   ${({ $exiting }) => $exiting && "opacity: 0; transform: scale(0.96); pointer-events: none;"}
 `;
 

@@ -548,6 +548,12 @@ export declare type SchedulerProjectData = {
      * @tooltip Displayed in notes section with styled background
      */
     reservationNotes?: string;
+    /** Departure / pickup (salida). Free text, may be multi-sentence. Only shown in the tooltip if set. @optional */
+    departureAddress?: string;
+    /** Destination (destino). Free text, may be multi-sentence. Only shown in the tooltip if set. @optional */
+    destinationAddress?: string;
+    /** Return (regreso). Free text, may be multi-sentence. Only shown in the tooltip if set. @optional */
+    returnAddress?: string;
     /**
      * Controls whether this event can be dragged. If false, drag operations will not be initiated.
      * @optional

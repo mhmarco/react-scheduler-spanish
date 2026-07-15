@@ -2,7 +2,7 @@ import { FC, useMemo, useRef, useState } from "react";
 import dayjs from "dayjs";
 import { useCalendar } from "@/context/CalendarProvider";
 import { useLanguage } from "@/context/LocaleProvider";
-import { getVisibleCols } from "@/utils/getCols";
+import { getDatesRange } from "@/utils/getDatesRange";
 import {
   StyledOverview,
   StyledCap,
@@ -13,6 +13,7 @@ import {
   StyledBar,
   StyledHoy,
   StyledWin,
+  StyledGhost,
   StyledCursor,
   StyledTip
 } from "./styles";
@@ -23,7 +24,7 @@ const Overview: FC = () => {
   const { date, zoom, data, goToDate } = useCalendar();
   const lang = useLanguage();
   const trackRef = useRef<HTMLDivElement>(null);
-  const [cursor, setCursor] = useState<{ left: number; label: string } | null>(null);
+  const [cursor, setCursor] = useState<{ left: number; d: dayjs.Dayjs } | null>(null);
 
   // Localized month abbreviations (respects the dayjs locale set by LocaleProvider from config.lang).
   const months = useMemo(
@@ -61,9 +62,17 @@ const Overview: FC = () => {
   const today = dayjs();
   const hoyPct = today.year() === year ? pct(today) : null;
 
-  const halfDays = zoom === 1 ? getVisibleCols(1) / 2 : zoom === 0 ? (getVisibleCols(0) * 7) / 2 : 0.5;
-  const winLeft = Math.max(0, pct(date.subtract(halfDays, "day")));
-  const winWidth = Math.min(100, pct(date.add(halfDays, "day"))) - winLeft;
+  // The window spans exactly the LOADED/rendered range (getDatesRange = the extent emitted to onRangeChange, i.e. the
+  // dates actually fetched/drawn), centred on `center`. Same helper drives the green current-window and the hover
+  // ghost, so the ghost is always identical in span to the window a click would load (goToDate recenters on hover).
+  const winFor = (center: dayjs.Dayjs) => {
+    const { startDate, endDate } = getDatesRange(center, zoom);
+    const left = Math.max(0, pct(startDate));
+    return { left, width: Math.min(100, pct(endDate)) - left, startDate, endDate };
+  };
+  const win = winFor(date);
+  const ghost = cursor ? winFor(cursor.d) : null;
+  const fmt = (d: dayjs.Dayjs) => `${d.date()} ${months[d.month()]}`;
 
   const dateAtClientX = (clientX: number) => {
     const rect = trackRef.current?.getBoundingClientRect();
@@ -87,7 +96,7 @@ const Overview: FC = () => {
         }}
         onMouseMove={(e) => {
           const hit = dateAtClientX(e.clientX);
-          if (hit) setCursor({ left: hit.f * 100, label: `${hit.d.date()} ${months[hit.d.month()]}` });
+          if (hit) setCursor({ left: hit.f * 100, d: hit.d });
         }}
         onMouseLeave={() => setCursor(null)}>
         <StyledMonths>
@@ -107,16 +116,17 @@ const Overview: FC = () => {
             <StyledBar key={i} $sev={b.sev} style={{ height: `${b.h}%` }} />
           ))}
         </StyledBars>
-        <StyledWin style={{ left: `${winLeft}%`, width: `${winWidth}%` }} />
+        <StyledWin style={{ left: `${win.left}%`, width: `${win.width}%` }} />
         {hoyPct !== null && (
           <StyledHoy style={{ left: `${hoyPct}%` }}>
             <span>HOY</span>
           </StyledHoy>
         )}
-        {cursor && (
+        {cursor && ghost && (
           <>
+            <StyledGhost style={{ left: `${ghost.left}%`, width: `${ghost.width}%` }} />
             <StyledCursor style={{ left: `${cursor.left}%` }} />
-            <StyledTip style={{ left: `${cursor.left}%` }}>{cursor.label}</StyledTip>
+            <StyledTip style={{ left: `${cursor.left}%` }}>{`${fmt(ghost.startDate)} – ${fmt(ghost.endDate)}`}</StyledTip>
           </>
         )}
       </StyledTrack>

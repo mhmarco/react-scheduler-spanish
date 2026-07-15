@@ -122,6 +122,19 @@ export const StyledWin = styled.div`
   pointer-events: none;
 `;
 
+// Hover preview: a dashed, translucent-neutral window showing the range a click would load. Distinct from the solid
+// green current-window so both read at a glance.
+export const StyledGhost = styled.div`
+  position: absolute;
+  top: 16px;
+  bottom: 0;
+  background: rgba(58, 76, 70, 0.06);
+  border: 1.4px dashed #7d938b;
+  border-radius: 6px;
+  z-index: 1;
+  pointer-events: none;
+`;
+
 export const StyledCursor = styled.div`
   position: absolute;
   top: 16px;

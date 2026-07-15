@@ -121,24 +121,27 @@ const Tiles: FC<TilesProps> = ({
     timersRef.current.push(timer);
   }, [liveMap]);
 
-  return (
-    <>
-      {nodes}
-      {exiting.map((e) => (
-        <Tile
-          key={`exit-${e.project.segmentId}`}
-          row={e.absoluteRow}
-          data={e.project}
-          zoom={zoom}
-          isSubcontract={e.isSubcontract}
-          yOffset={e.yOffset}
-          isDragging={false}
-          isDraggable={false}
-          exiting
-        />
-      ))}
-    </>
-  );
+  // Render live + exiting tiles as ONE array keyed by segmentId, so React PRESERVES the node when a tile goes
+  // live → exiting (same key, same array) and the $exiting opacity/scale transition fades it out. Two separate
+  // array-children ({nodes}{exiting}) would remount the exiting tile at opacity 0 and tileIn would fade it back IN.
+  // Filter out any that reappeared in liveMap this render to avoid a duplicate key.
+  const exitingEls = exiting
+    .filter((e) => !liveMap.has(e.project.segmentId))
+    .map((e) => (
+      <Tile
+        key={e.project.segmentId}
+        row={e.absoluteRow}
+        data={e.project}
+        zoom={zoom}
+        isSubcontract={e.isSubcontract}
+        yOffset={e.yOffset}
+        isDragging={false}
+        isDraggable={false}
+        exiting
+      />
+    ));
+
+  return <>{[...nodes, ...exitingEls]}</>;
 };
 
 export default Tiles;

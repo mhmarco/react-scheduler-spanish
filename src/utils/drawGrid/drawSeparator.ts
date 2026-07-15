@@ -15,8 +15,9 @@ export const drawSeparator = (
   ctx.fillStyle = theme.mode === "dark" ? theme.colors.primary + "80" : theme.colors.primary;
   ctx.fillRect(0, y, width, subcontractSeparatorHeight);
 
-  ctx.strokeStyle = theme.colors.border;
-  ctx.lineWidth = 1;
+  // Amber line so the subcontract boundary reads as the subcontract lane (matches the group divider + rows + pills).
+  ctx.strokeStyle = theme.colors.subcontractBorder;
+  ctx.lineWidth = 2;
   ctx.setLineDash([]);
   ctx.beginPath();
   ctx.moveTo(0, midY + 0.5);
