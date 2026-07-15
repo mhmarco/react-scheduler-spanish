@@ -198,7 +198,8 @@ export const Calendar: FC<CalendarProps> = ({
     visibleRowsPerItem,
     visibleTotalRows,
     visibleProjectsPerPerson,
-    separatorRowIndices
+    separatorRowIndices,
+    subcontractSeparatorRow
   } = useMemo(() => {
     const groups = buildGroupedPage(effectivePage, effectiveCategories);
     const hasCategoryHeaders = (effectiveCategories?.length ?? 0) > 0;
@@ -213,6 +214,7 @@ export const Calendar: FC<CalendarProps> = ({
     const separatorRowIndices: number[] = [];
 
     let currentRow = 0;
+    let subcontractSeparatorRow = -1;
 
     for (const group of groups) {
       const needsHeader =
@@ -227,6 +229,7 @@ export const Calendar: FC<CalendarProps> = ({
         const isCollapsed = collapsedGroups.has(groupId);
 
         separatorRowIndices.push(currentRow);
+        if (group.type === "subcontract") subcontractSeparatorRow = currentRow;
 
         if (!isCollapsed) {
           for (const item of group.items) {
@@ -256,7 +259,8 @@ export const Calendar: FC<CalendarProps> = ({
       visibleRowsPerItem,
       visibleTotalRows,
       visibleProjectsPerPerson,
-      separatorRowIndices
+      separatorRowIndices,
+      subcontractSeparatorRow
     };
   }, [effectivePage, effectiveCategories, page, collapsedGroups, rowsPerItem, projectsPerPerson]);
 
@@ -464,6 +468,7 @@ export const Calendar: FC<CalendarProps> = ({
             onMultiTimeRangeSelect={onMultiTimeRangeSelect}
             clickToAddConfig={clickToAddConfig}
             separatorRowIndices={separatorRowIndices}
+            subcontractSeparatorRow={subcontractSeparatorRow}
           />
         ) : (
           <StyledEmptyBoxWrapper width={topBarWidth}>

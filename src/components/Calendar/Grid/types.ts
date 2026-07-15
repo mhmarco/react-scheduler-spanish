@@ -31,6 +31,8 @@ export type GridProps = {
   clickToAddConfig?: ClickToAddConfig;
   /** Row indices where group separators should be drawn */
   separatorRowIndices?: number[];
+  /** The separator row index that starts the subcontract group (drawn amber). -1 when there is no subcontract group. */
+  subcontractSeparatorRow?: number;
 };
 
 export type StyledSpanProps = {

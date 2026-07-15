@@ -13,7 +13,8 @@ export const drawGrid = (
   cols: number,
   parsedStartDate: Day,
   theme: Theme,
-  separatorRowIndices: number[] = []
+  separatorRowIndices: number[] = [],
+  subcontractSeparatorRow = -1
 ) => {
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   const canvasWrapper = document.getElementById(canvasWrapperId);
@@ -31,8 +32,8 @@ export const drawGrid = (
       break;
   }
 
-  // Draw all separators
+  // Draw all separators; only the subcontract one gets the amber line.
   for (let i = 0; i < separatorRowIndices.length; i++) {
-    drawSeparator(ctx, i, separatorRowIndices[i], theme);
+    drawSeparator(ctx, i, separatorRowIndices[i], theme, separatorRowIndices[i] === subcontractSeparatorRow);
   }
 };
