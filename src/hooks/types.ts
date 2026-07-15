@@ -305,7 +305,7 @@ export type TimeRangeSelectionData = {
   resourceId: string;
   /** Label information of the resource (title, subtitle, icon from your SchedulerRow.label) */
   resourceLabel: {
-    icon: string;
+    icon?: string;
     title: string;
     subtitle: string;
   };

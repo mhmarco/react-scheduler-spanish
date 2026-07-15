@@ -1,43 +1,34 @@
 import styled from "styled-components";
 
+// Group header matched to the mockup .bd-group .gh — a flat tinted band, uppercase sage (or gold for subcontract).
 export const StyledGroupHeader = styled.div<{ $variant: "category" | "subcontract" }>`
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 0 10px 0 0;
+  gap: 5px;
+  padding: 0 11px 0 9px;
   height: 21px;
-  background: ${({ theme }) =>
-    theme.mode === "dark"
-      ? `linear-gradient(90deg, ${theme.colors.primary} 0%, ${theme.colors.background} 100%)`
-      : `linear-gradient(90deg, #F3F4F6 0%, ${theme.colors.background} 100%)`};
-  border-top: 1px solid ${({ theme }) => theme.colors.border};
+  color: ${({ theme, $variant }) =>
+    $variant === "subcontract" ? theme.colors.subcontractText : theme.colors.accent};
+  background: ${({ theme, $variant }) =>
+    $variant === "subcontract" ? theme.colors.subcontractBg : theme.colors.accent + "14"};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   cursor: pointer;
   user-select: none;
   transition: background 0.15s ease;
 
   &:hover {
-    background: ${({ theme }) =>
-      theme.mode === "dark"
-        ? theme.colors.secondary
-        : "#EBEDF0"};
+    background: ${({ theme, $variant }) =>
+      $variant === "subcontract" ? theme.colors.subcontractBg : theme.colors.accent + "22"};
   }
 `;
 
-export const StyledAccent = styled.div<{ $variant: "category" | "subcontract" }>`
-  width: 3px;
-  height: 100%;
-  flex-shrink: 0;
-  background: ${({ theme, $variant }) =>
-    $variant === "subcontract" ? theme.colors.subcontractBorder : theme.colors.accent};
-  border-radius: 0 2px 2px 0;
-`;
-
 export const StyledLabel = styled.span<{ $variant: "category" | "subcontract" }>`
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.3px;
+  font-size: 9.5px;
+  font-weight: 750;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
   color: ${({ theme, $variant }) =>
-    $variant === "subcontract" ? theme.colors.subcontractText : theme.colors.textPrimary};
+    $variant === "subcontract" ? theme.colors.subcontractText : theme.colors.accent};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -46,18 +37,12 @@ export const StyledLabel = styled.span<{ $variant: "category" | "subcontract" }>
 `;
 
 export const StyledCount = styled.span<{ $variant: "category" | "subcontract" }>`
-  font-size: 0.625rem;
-  font-weight: 500;
+  font-size: 9.5px;
+  font-weight: 700;
+  opacity: 0.75;
   color: ${({ theme, $variant }) =>
-    $variant === "subcontract" ? theme.colors.subcontractBorder : theme.colors.accent};
-  background: ${({ theme, $variant }) =>
-    $variant === "subcontract"
-      ? theme.colors.subcontractBorder + "18"
-      : theme.colors.accent + "14"};
-  padding: 1px 6px;
-  border-radius: 10px;
+    $variant === "subcontract" ? theme.colors.subcontractText : theme.colors.accent};
   flex-shrink: 0;
-  line-height: 1.4;
 `;
 
 export const StyledChevron = styled.div<{ $collapsed: boolean }>`
@@ -65,7 +50,12 @@ export const StyledChevron = styled.div<{ $collapsed: boolean }>`
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: ${({ theme }) => theme.colors.placeholder};
+  color: inherit;
+  opacity: 0.85;
   transition: transform 0.2s ease;
   transform: rotate(${({ $collapsed }) => ($collapsed ? "-90deg" : "0deg")});
+  & svg {
+    width: 11px;
+    height: 11px;
+  }
 `;

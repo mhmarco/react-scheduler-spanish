@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 import dayjs from "dayjs";
-import { ReservationType, SchedulerCategory, SchedulerData, SchedulerProjectData } from "@/types/global";
+import { ReservationType, SchedulerCategory, SchedulerData, SchedulerProjectData, TileReadiness } from "@/types/global";
 import { ParsedDatesRange } from "@/utils/getDatesRange";
 
 const secondsInWorkDay = 28800;
@@ -74,9 +74,11 @@ export const generateProjects = (
 
 /** Test categories: ordered by maxPassengers in the UI */
 export const mockCategories: SchedulerCategory[] = [
-  { id: "hiace", name: "Hiace", minPassengers: 1, maxPassengers: 14 },
-  { id: "rosa", name: "Rosa", minPassengers: 15, maxPassengers: 28 },
-  { id: "bus", name: "Bus", minPassengers: 29, maxPassengers: 45 }
+  { id: "p5", name: "5 Pax", minPassengers: 1, maxPassengers: 5 },
+  { id: "p8", name: "8 Pax", minPassengers: 6, maxPassengers: 8 },
+  { id: "p17", name: "17 Pax", minPassengers: 9, maxPassengers: 17 },
+  { id: "p21", name: "21 Pax", minPassengers: 18, maxPassengers: 21 },
+  { id: "p22", name: "22 Pax", minPassengers: 22, maxPassengers: 45 }
 ];
 
 export const createMockData = (
@@ -164,52 +166,100 @@ export const createDemoData = (): SchedulerData => {
     ...o
   });
 
+  const TF = ReservationType.Transfer;
+  const cTf = "#3E6DB5"; // transfer blue
+  const cTour = "#2C7A69"; // multi-day tour green
+  const cOne = "#96473F"; // one-day tour maroon
+  const cAlert = "#C6483D"; // alert red
+  const cSubOk = "#3E8E5A"; // subcontract confirmed
+  const cSubNo = "#7E8A85"; // subcontract unconfirmed
+  const tf = (off: number, h: number, m: number, bk: string, readiness: TileReadiness, alert = false) =>
+    ev({ startDate: d(off, h, m), endDate: d(off, h, m), title: "Transfer", subtitle: "AMADEUS", bgColor: alert ? cAlert : cTf, eventType: TF, bookingNumber: bk, readiness });
+
   return [
     {
-      id: "demo-hiace-1",
-      label: { icon: "🚐", title: "Hiace #1", subtitle: "14 Pax | SJB1001" },
-      capacity: 14,
-      categoryId: "hiace",
+      id: "u-h1",
+      label: { title: "H-1", subtitle: "5 Pax | SJB16703" },
+      capacity: 5,
+      categoryId: "p5",
       data: [
-        ev({ startDate: d(0, 8), endDate: d(0, 17), title: "MANUEL ANTONIO", subtitle: "AMADEUS", bgColor: "#3B82F6", driver: "Maria Garcia", readiness: "confirmado" }),
-        ev({ startDate: d(2, 14), endDate: d(2, 14), title: "SJO → Hotel", subtitle: "Traslado", bgColor: "#8B5CF6", eventType: ReservationType.Transfer, flightNumber: "AA1234", readiness: "sin_chofer" }),
-        ev({ startDate: d(4), endDate: d(5, 20), title: "TORTUGUERO", subtitle: "GECKO TRAILS", bgColor: "#0EA5E9", driver: "John Smith", readiness: "notificado" })
+        tf(-3, 6, 30, "CRF-06726", "confirmado"),
+        tf(0, 9, 15, "CRF-09726", "notificado"),
+        tf(3, 14, 0, "CRF-14726", "sin_avisar", true),
+        tf(6, 7, 45, "CRF-07826", "confirmado"),
+        tf(11, 6, 0, "CRF-06826", "confirmado"),
+        tf(16, 13, 30, "CRF-13726", "confirmado"),
+        tf(20, 7, 15, "CRF-07926", "confirmado")
       ]
     },
     {
-      id: "demo-rosa-1",
-      label: { icon: "🚌", title: "Rosa #1", subtitle: "28 Pax | SJB2001" },
-      capacity: 28,
-      categoryId: "rosa",
+      id: "u-foton",
+      label: { title: "FOTON", subtitle: "8 Pax | SJB17785" },
+      capacity: 8,
+      categoryId: "p8",
       data: [
-        ev({ startDate: d(1), endDate: d(5, 18), title: "MONTEVERDE + ARENAL", subtitle: "SWISS TRAVEL", bgColor: "#F97316", driver: "Ana Martinez", readiness: "confirmado" }),
-        ev({ startDate: d(8), endDate: d(14, 16), title: "COMBO 7 DÍAS PACÍFICO", subtitle: "TAM TOURS", bgColor: "#14B8A6", driver: "Robert Brown", readiness: "sin_avisar" })
+        ev({ startDate: d(3), endDate: d(4, 18), title: "ZZ-VOLCÁN", subtitle: "AMADEUS", bgColor: cTour, bookingNumber: "CRF-07726", readiness: "sin_avisar" }),
+        ev({ startDate: d(12), endDate: d(13, 17), title: "IRAZÚ", subtitle: "AMADEUS", bgColor: cTour, bookingNumber: "CRF-16726", readiness: "confirmado" })
       ]
     },
     {
-      id: "demo-bus-1",
-      label: { icon: "🚎", title: "Bus #1", subtitle: "45 Pax | SJB3001" },
-      capacity: 45,
-      categoryId: "bus",
+      id: "u-rosa-randal",
+      label: { title: "ROSA / RANDAL", subtitle: "17 Pax | AB7212" },
+      capacity: 17,
+      categoryId: "p17",
       data: [
-        ev({ startDate: d(2), endDate: d(4, 19), title: "GUANACASTE", subtitle: "COLONIAL TOURS", bgColor: "#6366F1", readiness: "sin_chofer" })
+        ev({ startDate: d(-3), endDate: d(1, 18), title: "AVENTURA", subtitle: "AMADEUS", bgColor: cTour, driver: "Randall D.", bookingNumber: "CRF-09126", readiness: "confirmado" }),
+        ev({ startDate: d(15), endDate: d(20, 18), title: "CARIBE SUR", subtitle: "AMADEUS", bgColor: cTour, driver: "Randall D.", bookingNumber: "CRF-20726", readiness: "confirmado" })
       ]
     },
     {
-      id: "demo-bus-2",
-      label: { icon: "🚎", title: "Bus 15", subtitle: "21 Pax | SJB19004" },
+      id: "u-rosa-sun",
+      label: { title: "ROSA SUN LONG", subtitle: "17 Pax | SJB20284" },
+      capacity: 17,
+      categoryId: "p17",
+      data: [
+        ev({ startDate: d(-2, 8), endDate: d(-2, 16), title: "IRAZÚ + CARTAGO", subtitle: "AMADEUS", bgColor: cOne, bookingNumber: "CRF-01726", readiness: "notificado" }),
+        ev({ startDate: d(2), endDate: d(4, 18), title: "MONTEVERDE", subtitle: "AMADEUS", bgColor: cTour, driver: "Wilber V.", bookingNumber: "CRF-12726", readiness: "confirmado" }),
+        ev({ startDate: d(9), endDate: d(11, 18), title: "TORTUGUERO", subtitle: "BUEN PASEO", bgColor: cOne, bookingNumber: "CRF-14726", readiness: "notificado" })
+      ]
+    },
+    {
+      id: "u-bus15",
+      label: { title: "Bus 15", subtitle: "21 Pax | SJB19004" },
       capacity: 21,
-      categoryId: "bus",
+      categoryId: "p21",
       data: []
     },
     {
-      id: "demo-sub-1",
-      label: { icon: "🏢", title: "Alpha Transport", subtitle: "Subcontrato" },
-      capacity: 20,
+      id: "u-bus22",
+      label: { title: "Bus 22", subtitle: "22 Pax | SJB20515" },
+      capacity: 22,
+      categoryId: "p22",
+      data: [
+        ev({ startDate: d(2, 7), endDate: d(2, 16), title: "POÁS", subtitle: "AMADEUS", bgColor: cOne, bookingNumber: "CRF-07026", readiness: "confirmado" }),
+        ev({ startDate: d(2, 9, 30), endDate: d(2, 18), title: "LA PAZ", subtitle: "AMADEUS", bgColor: cOne, bookingNumber: "CRF-09026", readiness: "confirmado" }),
+        tf(16, 10, 0, "CRF-10726", "confirmado")
+      ]
+    },
+    {
+      id: "u-sub-tierraverde",
+      label: { title: "Tierra Verde", subtitle: "Proveedor · 3 unid." },
+      capacity: 40,
       isSubcontract: true,
       data: [
-        ev({ startDate: d(0), endDate: d(3, 18), title: "RÍO CELESTE", subtitle: "Confirmado", bgColor: "#3E8E5A", subcontractConfirmed: true }),
-        ev({ startDate: d(6), endDate: d(8, 17), title: "NICOYA", subtitle: "Sin confirmar", bgColor: "#707070", subcontractConfirmed: false })
+        ev({ startDate: d(-3), endDate: d(0, 18), title: "TIERRA VERDE", subtitle: "AMADEUS", bgColor: cSubOk, bookingNumber: "CRF-11726", subcontractConfirmed: true }),
+        ev({ startDate: d(1), endDate: d(3, 18), title: "ARENAL", subtitle: "AMADEUS", bgColor: cSubOk, bookingNumber: "CRF-15726", subcontractConfirmed: true }),
+        ev({ startDate: d(6), endDate: d(8, 18), title: "TIERRA VERDE", subtitle: "AMADEUS", bgColor: cSubOk, bookingNumber: "CRF-22726", subcontractConfirmed: true }),
+        ev({ startDate: d(11), endDate: d(13, 18), title: "TIERRA VERDE", subtitle: "AMADEUS", bgColor: cSubOk, bookingNumber: "CRF-14926", subcontractConfirmed: true })
+      ]
+    },
+    {
+      id: "u-sub-ocasional",
+      label: { title: "Ocasional", subtitle: "Ad-hoc · comparte…" },
+      capacity: 30,
+      isSubcontract: true,
+      data: [
+        ev({ startDate: d(-2), endDate: d(1, 18), title: "Transportes ABC", subtitle: "Keneth C.", bgColor: cSubNo, bookingNumber: "CRF-18726", subcontractConfirmed: false })
       ]
     }
   ];

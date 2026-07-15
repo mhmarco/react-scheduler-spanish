@@ -44,7 +44,9 @@ export const drawDaysOnBottom = (
         isBottomRow: true,
         fillStyle: isToday
           ? theme.colors.today + "26"
-          : getBoxFillStyle({ isCurrent: false, isBusinessDay: day.isBusinessDay }, theme),
+          : day.isBusinessDay
+          ? theme.colors.gridBackground
+          : theme.colors.primary,
         topText: {
           y: dayNameYPos,
           label: isToday ? "" : day.dayName.toUpperCase(),

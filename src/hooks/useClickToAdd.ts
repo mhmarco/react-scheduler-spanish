@@ -117,7 +117,7 @@ export const useClickToAdd = ({
     ): {
       resourceId: string;
       resourceIndex: number;
-      resourceLabel: { icon: string; title: string; subtitle: string };
+      resourceLabel: { icon?: string; title: string; subtitle: string };
     } | null => {
       const adjustedY = adjustYForSeparators(y, separatorRowIndices);
       const resourceIndex = Math.floor(adjustedY / boxHeight);

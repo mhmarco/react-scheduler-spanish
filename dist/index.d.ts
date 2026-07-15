@@ -810,7 +810,8 @@ export declare type SchedulerRow = {
 };
 
 declare type SchedulerRowLabel = {
-    icon: string;
+    /** Optional image URL. When absent, the left column renders a default bus-front (or provider) glyph. */
+    icon?: string;
     title: string;
     subtitle: string;
 };
@@ -873,7 +874,7 @@ export declare type TimeRangeSelectionData = {
     resourceId: string;
     /** Label information of the resource (title, subtitle, icon from your SchedulerRow.label) */
     resourceLabel: {
-        icon: string;
+        icon?: string;
         title: string;
         subtitle: string;
     };

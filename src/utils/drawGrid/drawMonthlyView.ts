@@ -23,7 +23,17 @@ export const drawMonthlyView = (
         "days"
       );
       const isCurrentDay = date.isSame(dayjs(), "day");
-      drawCell(ctx, y * dayWidth, i * boxHeight + yOffset, dayWidth, getIsBusinessDay(date), isCurrentDay, theme);
+      const isPast = date.isBefore(dayjs(), "day");
+      drawCell(
+        ctx,
+        y * dayWidth,
+        i * boxHeight + yOffset,
+        dayWidth,
+        getIsBusinessDay(date),
+        isCurrentDay,
+        theme,
+        isPast
+      );
     }
   }
 };

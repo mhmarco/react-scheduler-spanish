@@ -104,7 +104,8 @@ export type PaginatedSchedulerRow = {
 };
 
 export type SchedulerRowLabel = {
-  icon: string;
+  /** Optional image URL. When absent, the left column renders a default bus-front (or provider) glyph. */
+  icon?: string;
   title: string;
   subtitle: string;
 };

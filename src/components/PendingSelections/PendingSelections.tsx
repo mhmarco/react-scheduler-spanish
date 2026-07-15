@@ -139,7 +139,7 @@ const PendingSelections: FC<PendingSelectionsProps> = ({
 
   // Get resource info from Y position
   const getResourceFromY = useCallback(
-    (y: number): { resourceId: string; resourceLabel: { icon: string; title: string; subtitle: string } } | null => {
+    (y: number): { resourceId: string; resourceLabel: { icon?: string; title: string; subtitle: string } } | null => {
       let currentRow = 0;
       for (const person of data) {
         const rowsInPerson = Math.max(person.data.length, 1);

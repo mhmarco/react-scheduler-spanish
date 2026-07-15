@@ -1,11 +1,5 @@
 import { FC } from "react";
-import {
-  StyledGroupHeader,
-  StyledAccent,
-  StyledLabel,
-  StyledCount,
-  StyledChevron
-} from "./styles";
+import { StyledGroupHeader, StyledLabel, StyledCount, StyledChevron } from "./styles";
 import { GroupHeaderProps } from "./types";
 
 const GroupHeader: FC<GroupHeaderProps> = ({
@@ -17,7 +11,6 @@ const GroupHeader: FC<GroupHeaderProps> = ({
 }) => {
   return (
     <StyledGroupHeader $variant={variant} onClick={onToggle} title={label}>
-      <StyledAccent $variant={variant} />
       <StyledChevron $collapsed={isCollapsed}>
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
           <path
