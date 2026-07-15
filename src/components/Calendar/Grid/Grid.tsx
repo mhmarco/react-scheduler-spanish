@@ -87,7 +87,7 @@ const Grid = forwardRef<HTMLDivElement, GridProps>(function Grid(
     }
     const el = gridWrapperRef.current;
     if (!el?.animate) return;
-    const dx = date.isAfter(prev) ? 34 : -34;
+    const dx = date.isAfter(prev) ? 48 : -48;
     slideAnimRef.current?.cancel();
     el.style.willChange = "transform";
     const anim = el.animate(
@@ -95,7 +95,7 @@ const Grid = forwardRef<HTMLDivElement, GridProps>(function Grid(
         { transform: `translateX(${dx}px)`, opacity: 0.4 },
         { transform: "translateX(0)", opacity: 1 }
       ],
-      { duration: 300, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }
+      { duration: 600, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }
     );
     const clear = () => {
       el.style.willChange = "";

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { tileHeight } from "@/constants";
+import { leftColumnWidth, tileHeight } from "@/constants";
 import { marginPaddingReset, truncate } from "@/styles";
 import { StyledTextProps, StyledTileWrapperProps } from "./types";
 
@@ -33,7 +33,9 @@ export const StyledTileWrapper = styled.button<StyledTileWrapperProps>`
   position: absolute;
   height: ${tileHeight}px;
   border-radius: 7px;
-  overflow: hidden;
+  /* NO overflow:hidden — it would make the tile the sticky scroll-container and break the floating text (the multi-day
+     body sticks to the visible-left as a wide event scrolls). The rounded bg still clips the hatch; the stripe rounds
+     its own left corners to sit inside the radius. */
   /* Isolate so the stripe (z 3) and top-right cluster (z 6) stay contained in the tile instead of escaping to the
      grid level and painting OVER the sticky day-header on vertical scroll. */
   isolation: isolate;
@@ -63,14 +65,21 @@ export const StyledRStripe = styled.span`
   top: 0;
   bottom: 0;
   width: 4px;
+  border-radius: 7px 0 0 7px;
   z-index: 3;
   pointer-events: none;
 `;
 
-// Standard tile body: two stacked rows (title row + meta row).
+// Standard tile body: two stacked rows (title row + meta row). Sticky-left so the text floats at the visible-left of a
+// wide multi-day event as it scrolls (restores the original StyledStickyWrapper behavior). fit-content + max-width give
+// it room to shift left within the tile while still truncating on narrow tiles; requires no overflow:hidden ancestor.
 export const StyledNt = styled.div`
-  width: 100%;
+  position: sticky;
+  left: ${leftColumnWidth + 4}px;
+  width: fit-content;
+  max-width: 100%;
   height: 100%;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: center;

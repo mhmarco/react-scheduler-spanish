@@ -203,10 +203,12 @@ const CalendarProvider = ({
 
   const handleGoToday = useCallback(() => {
     if (isLoading) return;
-    // loadMore("middle") sets the date to today AND marks a center reposition; the [date] effect applies it after the
-    // redraw. Not a boundary direction, so the directional slide still plays.
-    loadMore("middle");
-  }, [isLoading, loadMore]);
+    // Update immediately (like next/prev/goToDate) — routing through loadMore added a 300ms debounce that made Hoy feel
+    // laggy vs the rest and desynced its slide/reposition. Mark a center reposition; the [date] effect applies it.
+    pendingRepositionRef.current = "middle";
+    setDate(dayjs());
+    onRangeChange?.(range);
+  }, [isLoading, onRangeChange, range]);
 
   const goToDate = useCallback(
     (targetDate: Date | string | number) => {

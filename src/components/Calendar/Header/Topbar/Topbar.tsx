@@ -2,7 +2,7 @@ import { FC } from "react";
 import dayjs from "dayjs";
 import { useCalendar } from "@/context/CalendarProvider";
 import { useLanguage } from "@/context/LocaleProvider";
-import { outsideWrapperId } from "@/constants";
+import { outsideWrapperId, schedulerBodyId } from "@/constants";
 import {
   Wrapper,
   Grp,
@@ -25,7 +25,8 @@ const Svg: FC<{ children: React.ReactNode; sw?: number }> = ({ children, sw = 2 
 );
 
 const toggleFullscreen = () => {
-  const el = document.getElementById(outsideWrapperId);
+  // Target the body wrapper (board + footer), not just the scroll-area, so the navigator footer stays visible.
+  const el = document.getElementById(schedulerBodyId);
   if (!document.fullscreenElement) el?.requestFullscreen?.();
   else document.exitFullscreen?.();
 };

@@ -43,8 +43,10 @@ export const drawDaysOnBottom = (
         width: dayWidth,
         height: headerDayHeight,
         isBottomRow: true,
+        // OPAQUE today fill (currentDay, same as the grid's today column) — the old `today+"26"` was 15% alpha, so
+        // events scrolling under the header showed through the HOY cell.
         fillStyle: isToday
-          ? theme.colors.today + "26"
+          ? theme.colors.currentDay
           : day.isBusinessDay
           ? theme.colors.gridBackground
           : theme.colors.primary,

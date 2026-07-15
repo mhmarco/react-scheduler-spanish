@@ -15,11 +15,11 @@ import CalendarProvider, { useCalendar } from "@/context/CalendarProvider";
 import LocaleProvider from "@/context/LocaleProvider";
 import { darkTheme, GlobalStyle, theme } from "@/styles";
 import { Config, SchedulerCategory, SchedulerData, ZoomLevel } from "@/types/global";
-import { outsideWrapperId } from "@/constants";
+import { outsideWrapperId, schedulerBodyId } from "@/constants";
 import { isAvailableZoom } from "@/types/guards";
 import { EventDropData, EventDragData, DraggableConfig } from "@/hooks/types";
 import { SchedulerProps, SchedulerRef } from "./types";
-import { StyledInnerWrapper, StyledOutsideWrapper } from "./styles";
+import { StyledBody, StyledInnerWrapper, StyledOutsideWrapper } from "./styles";
 
 type SchedulerContentProps = {
   data: SchedulerData;
@@ -187,6 +187,7 @@ const Scheduler = forwardRef<SchedulerRef, SchedulerProps>(function Scheduler(
             defaultStartDate={defaultStartDate}
             handleToggleDisplayActiveUnits={handleToggleDisplayActiveUnits}
             onClearFilterData={onClearFilterData}>
+            <StyledBody id={schedulerBodyId}>
             <StyledOutsideWrapper
               showScroll={!!data.length}
               $footer={appConfig.showOverview !== false && !!data.length}
@@ -212,6 +213,7 @@ const Scheduler = forwardRef<SchedulerRef, SchedulerProps>(function Scheduler(
               </StyledInnerWrapper>
             </StyledOutsideWrapper>
             {appConfig.showOverview !== false && !!data.length && <Overview />}
+            </StyledBody>
           </CalendarProvider>
         </LocaleProvider>
       </ThemeProvider>

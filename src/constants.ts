@@ -57,3 +57,6 @@ export const minutesInHour = 60;
 export const subcontractSeparatorHeight = 21;
 // Height reserved at the bottom of the scroll container for the full-year navigator footer (§22.8).
 export const overviewHeight = 58;
+// Wraps the board scroll-area + the navigator footer; the fullscreen toggle targets THIS (not just the board) so the
+// footer stays visible in fullscreen.
+export const schedulerBodyId = "reactSchedulerBody";
