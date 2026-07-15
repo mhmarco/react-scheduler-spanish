@@ -847,7 +847,7 @@ declare type Theme = {
 };
 
 /** In-house driver readiness, worst → best. */
-declare type TileReadiness = "sin_chofer" | "sin_avisar" | "notificado" | "confirmado";
+export declare type TileReadiness = "sin_chofer" | "sin_avisar" | "notificado" | "confirmado";
 
 /**
  * Data provided to consumer when a time range is selected on the calendar.
