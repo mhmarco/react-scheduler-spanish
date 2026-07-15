@@ -35,8 +35,18 @@ const toggleFullscreen = () => {
 // prev/Hoy/next; right = Buscar, Filtros, Pantalla completa. Zoom maps to the fork levels (Día = hourly, Semana =
 // week columns, Mes = day columns).
 const Topbar: FC<TopbarProps> = () => {
-  const { config, date, zoom, handleGoNext, handleGoPrev, handleGoToday, setZoom, goToDate, toggleDisplayActiveUnits } =
-    useCalendar();
+  const {
+    config,
+    date,
+    zoom,
+    handleGoNext,
+    handleGoPrev,
+    handleGoToday,
+    setZoom,
+    goToDate,
+    toggleDisplayActiveUnits,
+    toolbarActions
+  } = useCalendar();
   // Re-render when the locale settles so the range label reflects dayjs.locale (set async by LocaleProvider).
   useLanguage();
   const { filterButtonState = -1 } = config;
@@ -113,6 +123,9 @@ const Topbar: FC<TopbarProps> = () => {
             Pantalla completa
           </PillBtn>
         )}
+        {/* Host-provided controls (the app's rich Ir a fecha / Filtros / Pantalla completa live here, replacing the
+            gated built-ins above so there's a single toolbar). */}
+        {toolbarActions}
       </Grp>
     </Wrapper>
   );

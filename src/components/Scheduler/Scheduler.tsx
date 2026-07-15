@@ -104,6 +104,7 @@ const Scheduler = forwardRef<SchedulerRef, SchedulerProps>(function Scheduler(
     onTileClick,
     handleToggleDisplayActiveUnits,
     onClearFilterData,
+    toolbarActions,
     onItemClick,
     isLoading,
     onEventDrop,
@@ -187,7 +188,8 @@ const Scheduler = forwardRef<SchedulerRef, SchedulerProps>(function Scheduler(
             onRangeChange={onRangeChange}
             defaultStartDate={defaultStartDate}
             handleToggleDisplayActiveUnits={handleToggleDisplayActiveUnits}
-            onClearFilterData={onClearFilterData}>
+            onClearFilterData={onClearFilterData}
+            toolbarActions={toolbarActions}>
             <StyledBody id={schedulerBodyId}>
             <StyledOutsideWrapper
               showScroll={!!data.length}

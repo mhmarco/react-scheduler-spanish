@@ -29,6 +29,8 @@ export type CalendarContextType = {
   dayOfYear: number;
   recordsThreshold: number;
   config: Config;
+  /** Host-provided controls rendered in the toolbar's right zone (e.g. the app's Filtros / Ir a fecha / fullscreen). */
+  toolbarActions?: ReactNode;
 };
 
 export type CalendarProviderProps = {
@@ -40,4 +42,5 @@ export type CalendarProviderProps = {
   onRangeChange?: (range: ParsedDatesRange) => void;
   handleToggleDisplayActiveUnits?: () => void;
   onClearFilterData?: () => void;
+  toolbarActions?: ReactNode;
 };

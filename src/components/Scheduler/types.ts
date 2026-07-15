@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 import {
   Config,
   SchedulerCategory,
@@ -87,6 +88,8 @@ export type SchedulerProps = {
   onTileClick?: (data: SchedulerProjectData) => void;
   handleToggleDisplayActiveUnits?: () => void;
   onClearFilterData?: () => void;
+  /** Host controls rendered in the component toolbar's right zone (app's Ir a fecha / Filtros / Pantalla completa). */
+  toolbarActions?: ReactNode;
   onItemClick?: (data: SchedulerItemClickData) => void;
   /**
    * Callback invoked when an event is dropped after dragging.

@@ -37,7 +37,8 @@ const CalendarProvider = ({
   defaultStartDate = dayjs(),
   onRangeChange,
   handleToggleDisplayActiveUnits,
-  onClearFilterData
+  onClearFilterData,
+  toolbarActions
 }: CalendarProviderProps) => {
   const { zoom: configZoom, maxRecordsPerPage = 50 } = config;
   const [zoom, setZoom] = useState<ZoomLevel>(configZoom);
@@ -269,7 +270,8 @@ const CalendarProvider = ({
         updateTilesCoords,
         recordsThreshold: maxRecordsPerPage,
         onClearFilterData,
-        suppressNextSlideRef
+        suppressNextSlideRef,
+        toolbarActions
       }}>
       {children}
     </Provider>
