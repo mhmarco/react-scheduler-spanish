@@ -1,7 +1,15 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import dayjs from "dayjs";
 import { Coords } from "@/types/global";
-import { boxHeight, dayWidth, singleDayWidth, subcontractSeparatorHeight, zoom2ColumnWidth } from "@/constants";
+import {
+  boxHeight,
+  dayWidth,
+  leftColumnWidth,
+  outsideWrapperId,
+  singleDayWidth,
+  subcontractSeparatorHeight,
+  zoom2ColumnWidth
+} from "@/constants";
 import { adjustYForSeparators } from "@/utils/adjustYForSeparators";
 import { clientToGridCoords } from "@/utils/dragAndDrop";
 import {
@@ -58,6 +66,8 @@ export const useClickToAdd = ({
   const mouseDownPosition = useRef<Coords | null>(null);
   const startResourceIndex = useRef<number | null>(null);
   const rafRef = useRef<number | null>(null);
+  // Separate RAF loop for horizontal edge auto-scroll while dragging out a selection.
+  const scrollRafRef = useRef<number | null>(null);
 
   /**
    * Get cell width based on zoom level
@@ -291,6 +301,63 @@ export const useClickToAdd = ({
   );
 
   /**
+   * Recompute selectionEnd + box from a grid position (shared by mouse move and the auto-scroll loop).
+   */
+  const applySelectionAt = useCallback(
+    (gridCoords: Coords) => {
+      setSelectionEnd(gridCoords);
+      const cellWidth = getCellWidth();
+      const startX = getSnappedX(selectionStart?.x || 0);
+      const endX = getSnappedX(gridCoords.x);
+      const rowY = getRowY(startResourceIndex.current!);
+      const minX = Math.min(startX, endX);
+      const maxX = Math.max(startX, endX) + cellWidth;
+      setSelectionBox({ x: minX, y: rowY, width: maxX - minX, height: boxHeight });
+    },
+    [selectionStart, getCellWidth, getSnappedX, getRowY]
+  );
+
+  const stopSelectionAutoScroll = useCallback(() => {
+    if (scrollRafRef.current) {
+      cancelAnimationFrame(scrollRafRef.current);
+      scrollRafRef.current = null;
+    }
+  }, []);
+
+  /**
+   * Horizontal edge auto-scroll while selecting: near the left/right edge of the board, scroll the timeline (speed
+   * scales with edge proximity) and re-extend the selection from the held cursor so the range grows across off-screen
+   * dates. Left zone starts after the sticky left column; single-row selection ⇒ horizontal only.
+   */
+  const handleSelectionAutoScroll = useCallback(
+    (clientX: number, clientY: number) => {
+      const container = document.getElementById(outsideWrapperId);
+      if (!container || !gridRef.current) return;
+
+      const rect = container.getBoundingClientRect();
+      const zone = 60;
+      const maxSpeed = 12;
+      const distLeft = clientX - (rect.left + leftColumnWidth);
+      const distRight = rect.right - clientX;
+
+      let delta = 0;
+      if (distLeft < zone) delta = -maxSpeed * (1 - Math.max(0, distLeft) / zone);
+      else if (distRight < zone) delta = maxSpeed * (1 - Math.max(0, distRight) / zone);
+
+      stopSelectionAutoScroll();
+      if (delta === 0) return;
+
+      scrollRafRef.current = requestAnimationFrame(() => {
+        container.scrollLeft += delta;
+        // The grid moved under the stationary cursor → its content date advances; re-extend the selection.
+        applySelectionAt(clientToGridCoords(clientX, clientY, gridRef.current!));
+        handleSelectionAutoScroll(clientX, clientY);
+      });
+    },
+    [gridRef, applySelectionAt, stopSelectionAutoScroll]
+  );
+
+  /**
    * Handle mouse move during selection
    */
   const handleMouseMove = useCallback(
@@ -303,27 +370,11 @@ export const useClickToAdd = ({
       if (rafRef.current) {
         cancelAnimationFrame(rafRef.current);
       }
+      rafRef.current = requestAnimationFrame(() => applySelectionAt(gridCoords));
 
-      rafRef.current = requestAnimationFrame(() => {
-        setSelectionEnd(gridCoords);
-
-        const cellWidth = getCellWidth();
-        const startX = getSnappedX(selectionStart?.x || 0);
-        const endX = getSnappedX(gridCoords.x);
-        const rowY = getRowY(startResourceIndex.current!);
-
-        const minX = Math.min(startX, endX);
-        const maxX = Math.max(startX, endX) + cellWidth;
-
-        setSelectionBox({
-          x: minX,
-          y: rowY,
-          width: maxX - minX,
-          height: boxHeight
-        });
-      });
+      handleSelectionAutoScroll(e.clientX, e.clientY);
     },
-    [selectionState, gridRef, selectionStart, getCellWidth, getSnappedX, getRowY]
+    [selectionState, gridRef, applySelectionAt, handleSelectionAutoScroll]
   );
 
   /**
@@ -332,6 +383,7 @@ export const useClickToAdd = ({
   const handleMouseUp = useCallback(
     (e: MouseEvent) => {
       if (selectionState !== "selecting") return;
+      stopSelectionAutoScroll();
       if (!gridRef.current || !selectionStart || !mouseDownPosition.current) {
         setSelectionState("idle");
         setSelectionStart(null);
@@ -431,7 +483,8 @@ export const useClickToAdd = ({
       zoom,
       isMultiSelectActive,
       detectConflicts,
-      pendingSelections
+      pendingSelections,
+      stopSelectionAutoScroll
     ]
   );
 
@@ -534,6 +587,7 @@ export const useClickToAdd = ({
     (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         if (selectionState === "selecting") {
+          stopSelectionAutoScroll();
           setSelectionState("idle");
           setSelectionStart(null);
           setSelectionEnd(null);
@@ -548,7 +602,7 @@ export const useClickToAdd = ({
         }
       }
     },
-    [selectionState, isMultiSelectActive, pendingSelections.length]
+    [selectionState, isMultiSelectActive, pendingSelections.length, stopSelectionAutoScroll]
   );
 
   /**
@@ -589,14 +643,16 @@ export const useClickToAdd = ({
         cancelAnimationFrame(rafRef.current);
         rafRef.current = null;
       }
+      stopSelectionAutoScroll();
     };
-  }, []);
+  }, [stopSelectionAutoScroll]);
 
   /**
    * Cancel selection if dragging starts
    */
   useEffect(() => {
     if (isDragging && selectionState === "selecting") {
+      stopSelectionAutoScroll();
       setSelectionState("idle");
       setSelectionStart(null);
       setSelectionEnd(null);
@@ -604,7 +660,7 @@ export const useClickToAdd = ({
       mouseDownPosition.current = null;
       startResourceIndex.current = null;
     }
-  }, [isDragging, selectionState]);
+  }, [isDragging, selectionState, stopSelectionAutoScroll]);
 
   return {
     selectionState,

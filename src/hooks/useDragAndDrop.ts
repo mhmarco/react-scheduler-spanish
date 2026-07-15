@@ -497,7 +497,7 @@ export const useDragAndDrop = ({
       
       // Define scroll zones (50px from top/bottom of visible area)
       const scrollZone = 50;
-      const scrollSpeed = 5; // pixels per frame
+      const scrollSpeed = 12; // pixels per frame (near the edge); scales down toward the zone's inner boundary
       
       const distanceFromTop = mouseY - rect.top;
       const distanceFromBottom = rect.bottom - mouseY;
