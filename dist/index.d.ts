@@ -119,6 +119,21 @@ export declare type Config = {
      * @default true
      */
     showOverview?: boolean;
+    /**
+     * show the toolbar's built-in "Ir a fecha" button. Set false when the host app owns date-jump.
+     * @default true
+     */
+    showJumpToDate?: boolean;
+    /**
+     * show the toolbar's built-in "Filtros" button. Set false when the host app renders its own (richer) filter panel.
+     * @default true
+     */
+    showFilterButton?: boolean;
+    /**
+     * show the toolbar's built-in "Pantalla completa" button. Set false when the host app owns fullscreen.
+     * @default true
+     */
+    showFullscreenButton?: boolean;
     theme?: Theme;
 };
 

@@ -60,15 +60,17 @@ const Topbar: FC<TopbarProps> = () => {
             Mes
           </button>
         </ZoomSeg>
-        <DateLabel>
-          <Svg>
-            <path d="M20.5 11.5V7.5A2.5 2.5 0 0 0 18 5H6A2.5 2.5 0 0 0 3.5 7.5V18A2.5 2.5 0 0 0 6 20.5h5" />
-            <path d="M3.5 9.5h17M8 3.5v3M16 3.5v3" />
-            <circle cx="16.7" cy="16.7" r="2.7" />
-          </Svg>
-          Ir a fecha
-          <input type="date" onChange={(e) => e.target.value && goToDate(e.target.value)} />
-        </DateLabel>
+        {config.showJumpToDate !== false && (
+          <DateLabel>
+            <Svg>
+              <path d="M20.5 11.5V7.5A2.5 2.5 0 0 0 18 5H6A2.5 2.5 0 0 0 3.5 7.5V18A2.5 2.5 0 0 0 6 20.5h5" />
+              <path d="M3.5 9.5h17M8 3.5v3M16 3.5v3" />
+              <circle cx="16.7" cy="16.7" r="2.7" />
+            </Svg>
+            Ir a fecha
+            <input type="date" onChange={(e) => e.target.value && goToDate(e.target.value)} />
+          </DateLabel>
+        )}
       </Grp>
       <Grp $at="center">
         <NavigationWrapper>
@@ -94,7 +96,7 @@ const Topbar: FC<TopbarProps> = () => {
           Buscar
           <span className="k">⌘K</span>
         </Cmd>
-        {filterButtonState >= 0 && (
+        {config.showFilterButton !== false && filterButtonState >= 0 && (
           <PillBtn $primary={!!filterButtonState} onClick={toggleDisplayActiveUnits}>
             <Svg>
               <path d="M4 6.5h16l-6 7v4.5l-4 2v-6.5z" />
@@ -103,12 +105,14 @@ const Topbar: FC<TopbarProps> = () => {
             {!!filterButtonState && <Badge>{filterButtonState}</Badge>}
           </PillBtn>
         )}
-        <PillBtn onClick={toggleFullscreen}>
-          <Svg>
-            <path d="M8 4H5.5A1.5 1.5 0 0 0 4 5.5V8M16 4h2.5A1.5 1.5 0 0 1 20 5.5V8M8 20H5.5A1.5 1.5 0 0 1 4 18.5V16M16 20h2.5a1.5 1.5 0 0 0 1.5-1.5V16" />
-          </Svg>
-          Pantalla completa
-        </PillBtn>
+        {config.showFullscreenButton !== false && (
+          <PillBtn onClick={toggleFullscreen}>
+            <Svg>
+              <path d="M8 4H5.5A1.5 1.5 0 0 0 4 5.5V8M16 4h2.5A1.5 1.5 0 0 1 20 5.5V8M8 20H5.5A1.5 1.5 0 0 1 4 18.5V16M16 20h2.5a1.5 1.5 0 0 0 1.5-1.5V16" />
+            </Svg>
+            Pantalla completa
+          </PillBtn>
+        )}
       </Grp>
     </Wrapper>
   );
