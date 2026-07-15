@@ -47,7 +47,7 @@ const defaultTranslations = {
   passengers: "Pax"
 };
 
-const Tooltip: FC<TooltipProps> = ({ tooltipData }) => {
+const Tooltip: FC<TooltipProps> = ({ tooltipData, visible = true }) => {
   const { mouseCoords, reservationData } = tooltipData;
   const tooltipRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState<TooltipPosition>("below");
@@ -113,7 +113,7 @@ const Tooltip: FC<TooltipProps> = ({ tooltipData }) => {
   ].filter(Boolean) as { label: string; value: string }[];
 
   return (
-    <StyledTooltipWrapper ref={tooltipRef} $position={position}>
+    <StyledTooltipWrapper ref={tooltipRef} $position={position} $visible={visible}>
       <StyledHeader>
         <StyledHeaderTop>
           <StyledBookingId>{reservationData.bookingNumber}</StyledBookingId>

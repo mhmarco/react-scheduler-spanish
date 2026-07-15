@@ -57,14 +57,14 @@ export const StyledTileWrapper = styled.button<StyledTileWrapperProps>`
   }};
   opacity: ${({ isDragging }) => (isDragging ? 0.3 : 1)};
   transition: opacity 0.2s ease;
-  /* Motion (gated on reduced-motion): fade/scale a newly-mounted tile in; glide survivors to a new row when a
-     unit/group above them is added/removed/collapsed (top only — left/width recompute on horizontal scroll-load);
-     and a subtle lift + deeper shadow on hover. transform/box-shadow are transitioned so the hover lift and the
-     exit shrink are smooth. translateY (not scale) on hover to avoid blurring the sticky floating text body. */
+  /* Motion (gated on reduced-motion): fade/scale a newly-mounted tile in, fade a removed one out, and a subtle lift
+     on hover. Only transform/opacity/box-shadow are transitioned — NOT top: transitioning top animated a LAYOUT
+     property on every displaced tile on unit add/remove (reflow+paint per frame across many nodes = the reported
+     lag), and it made the tiles glide while the canvas grid lane snaps. Tiles now snap to their new row in lockstep
+     with the canvas; the enter/exit fades + the left-column rowIn carry the motion. */
   @media (prefers-reduced-motion: no-preference) {
     animation: ${tileIn} 180ms ease-out;
-    transition: opacity 0.2s ease, top 220ms cubic-bezier(0.16, 1, 0.3, 1), transform 160ms ease,
-      box-shadow 160ms ease;
+    transition: opacity 0.2s ease, transform 160ms ease, box-shadow 160ms ease;
     &:hover:not(:active) {
       transform: translateY(-1.5px);
       box-shadow: 0 6px 13px -3px rgba(12, 26, 23, 0.42), 0 0 0 0.5px rgba(12, 26, 23, 0.16);

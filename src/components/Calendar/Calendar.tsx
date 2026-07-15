@@ -277,8 +277,8 @@ export const Calendar: FC<CalendarProps> = ({
         if (!gridRef.current) return;
         const { tile, segmentId } = getTileElement(e);
         if (!segmentId || !tile) {
+          // Hide via the visible flag only — keep tooltipData so the card holds its position/content while it fades.
           setIsVisible(false);
-          setTooltipData(initialTooltipData);
           return;
         }
         const reservation = getReservation(segmentId, schedulerData);
@@ -373,8 +373,8 @@ export const Calendar: FC<CalendarProps> = ({
 
   const handleMouseLeave = useCallback(() => {
     debouncedHandleMouseOver.current.cancel();
+    // Fade out in place — don't reset tooltipData or the card would jump to (0,0) during the transition.
     setIsVisible(false);
-    setTooltipData(initialTooltipData);
   }, []);
 
   useEffect(() => {
@@ -475,8 +475,11 @@ export const Calendar: FC<CalendarProps> = ({
             {isLoading ? <Loader isLoading={isLoading} position="left" /> : <EmptyBox />}
           </StyledEmptyBoxWrapper>
         )}
-        {showTooltip && isVisible && !isDragging && tooltipData?.resourceIndex > -1 && (
-          <Tooltip tooltipData={tooltipData} />
+        {/* Kept mounted so the fade plays both directions; `visible` drives it. Dropped the resourceIndex>-1 guard —
+            it's vestigial (Tooltip ignores resourceIndex) and buggy (separator-band offset makes it -1 for the bottom
+            subcontract tiles, so those events showed no tooltip). Empty-space hovers are still suppressed upstream. */}
+        {showTooltip && (
+          <Tooltip tooltipData={tooltipData} visible={isVisible && !isDragging} />
         )}
       </StyledInnerWrapper>
     </StyledOuterWrapper>

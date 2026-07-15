@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { marginPaddingReset } from "@/styles";
 
-export const StyledTooltipWrapper = styled.div<{ $position?: "above" | "below" }>`
+export const StyledTooltipWrapper = styled.div<{ $position?: "above" | "below"; $visible?: boolean }>`
   position: absolute;
   width: 240px;
   background: ${({ theme }) => theme.colors.background};
@@ -10,6 +10,10 @@ export const StyledTooltipWrapper = styled.div<{ $position?: "above" | "below" }
   z-index: 1000;
   pointer-events: none;
   font-size: 12px;
+  /* Kept mounted (opacity-driven) so the fade plays BOTH directions. */
+  opacity: ${({ $visible }) => ($visible ? 1 : 0)};
+  transform: translateY(${({ $visible }) => ($visible ? "0" : "3px")});
+  transition: opacity 150ms ease, transform 150ms ease;
 `;
 
 export const StyledHeader = styled.div`
@@ -21,6 +25,7 @@ export const StyledHeaderTop = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
   margin-bottom: 4px;
 `;
 
@@ -29,9 +34,14 @@ export const StyledBookingId = styled.span`
   font-weight: 600;
   color: ${({ theme }) => theme.colors.accent};
   letter-spacing: 0.5px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 export const StyledTypeBadge = styled.span<{ $type: "tour" | "transfer" | "oneday" }>`
+  flex-shrink: 0;
   background: ${({ $type }) => ($type === "transfer" ? "#dbeafe" : "#dcfce7")};
   color: ${({ $type }) => ($type === "transfer" ? "#1e40af" : "#166534")};
   font-size: 9px;
@@ -55,6 +65,7 @@ export const StyledClient = styled.div`
   font-size: 11px;
   color: ${({ theme }) => theme.colors.placeholder};
   margin-top: 2px;
+  overflow-wrap: anywhere;
 `;
 
 export const StyledBody = styled.div`
@@ -98,13 +109,15 @@ export const StyledTimeHour = styled.span`
 
 export const StyledDetails = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 8px;
   padding-top: 10px;
   border-top: 1px solid ${({ theme }) => theme.colors.border};
 `;
 
-export const StyledDetailItem = styled.div``;
+export const StyledDetailItem = styled.div`
+  min-width: 0;
+`;
 
 export const StyledDetailLabel = styled.div`
   font-size: 9px;
@@ -118,9 +131,9 @@ export const StyledDetailValue = styled.div`
   font-size: 11px;
   font-weight: 500;
   color: ${({ theme }) => theme.colors.textPrimary};
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 `;
 
 export const StyledNotesSection = styled.div`

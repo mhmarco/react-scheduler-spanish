@@ -21,7 +21,9 @@ export const StyledWrapper = styled.div<StyledLeftColumnItemWrapperProps>`
     ${({ theme, $isSubcontract }) => ($isSubcontract ? theme.colors.subcontractBorder : "transparent")};
   background-color: ${({ theme, $isSubcontract }) =>
     $isSubcontract ? theme.colors.subcontractBg : "transparent"};
-  transition: 0.5s ease;
+  /* Scope the transition to paint-only props. It was transition:0.5s ease (= transition:all), which animated the row
+     height (a LAYOUT property) for 500ms on every add/remove/collapse — layout thrash that made rowIn hitch. */
+  transition: background-color 0.15s ease, border-color 0.15s ease;
   @media (prefers-reduced-motion: no-preference) {
     animation: ${rowIn} 200ms ease-out;
   }

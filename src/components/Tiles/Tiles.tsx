@@ -1,5 +1,5 @@
 import { FC, useEffect, useMemo, useRef, useState } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { boxHeight, subcontractSeparatorHeight } from "@/constants";
 import { SchedulerProjectData } from "@/types/global";
 import { Tile } from "..";
@@ -15,6 +15,11 @@ const getSepOffset = (rowIndex: number, separatorRowIndices: number[]): number =
   return count * subcontractSeparatorHeight;
 };
 
+const dispoIn = keyframes`
+  from { opacity: 0; }
+  to { opacity: 1; }
+`;
+
 // "DISPONIBLE" watermark on a unit row with no events (mockup 91ed97bb .dispo).
 const StyledDispo = styled.div`
   position: absolute;
@@ -29,6 +34,9 @@ const StyledDispo = styled.div`
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: #93b1a6;
+  @media (prefers-reduced-motion: no-preference) {
+    animation: ${dispoIn} 200ms ease-out;
+  }
   pointer-events: none;
 `;
 
