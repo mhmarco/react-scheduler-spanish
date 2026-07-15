@@ -48,7 +48,8 @@ const Tile: FC<TileProps> = ({
   onDragStart,
   isDragging = false,
   isDraggable = true,
-  yOffset = 0
+  yOffset = 0,
+  exiting = false
 }) => {
   const { date } = useCalendar();
   const datesRange = getDatesRange(date, zoom);
@@ -111,7 +112,8 @@ const Tile: FC<TileProps> = ({
       onDragStart={(e) => e.preventDefault()}
       isDraggable={isDraggable}
       isDragging={isDragging}
-      $unconfirmed={unconfirmedSub}>
+      $unconfirmed={unconfirmedSub}
+      $exiting={exiting}>
       {stripeColor && <StyledRStripe style={{ background: stripeColor }} />}
       {children}
     </StyledTileWrapper>
@@ -135,7 +137,7 @@ const Tile: FC<TileProps> = ({
             )}
           </StyledTileTR>
         )}
-        <StyledNtXs>
+        <StyledNtXs $transfer={isTransfer}>
           <TileIcon name={isTransfer ? "transfer" : "sun"} strokeWidth={2.4} />
           {width >= TIMES_MIN && (
             <>

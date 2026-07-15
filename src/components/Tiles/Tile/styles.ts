@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { leftColumnWidth, tileHeight } from "@/constants";
 import { marginPaddingReset, truncate } from "@/styles";
 import { StyledTextProps, StyledTileWrapperProps } from "./types";
@@ -28,6 +28,11 @@ export const StyledText = styled.p<StyledTextProps>`
 
 // --- Tile chrome, matched pixel-for-pixel to the locked mockup (artifact 91ed97bb .tile/.nt/…) ---
 
+const tileIn = keyframes`
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: none; }
+`;
+
 export const StyledTileWrapper = styled.button<StyledTileWrapperProps>`
   ${marginPaddingReset}
   position: absolute;
@@ -52,10 +57,18 @@ export const StyledTileWrapper = styled.button<StyledTileWrapperProps>`
   }};
   opacity: ${({ isDragging }) => (isDragging ? 0.3 : 1)};
   transition: opacity 0.2s ease;
+  /* Motion (gated on reduced-motion): fade/scale a newly-mounted tile in, and glide survivors to a new row when a
+     unit/group above them is added, removed, or collapsed. Transition ONLY top — left/width recompute on every
+     horizontal scroll-load, so animating them would cause spurious sliding; top derives from row index alone. */
+  @media (prefers-reduced-motion: no-preference) {
+    animation: ${tileIn} 180ms ease-out;
+    transition: opacity 0.2s ease, top 220ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
   ${({ $unconfirmed }) =>
     $unconfirmed &&
     `background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.14) 0 6px, transparent 6px 12px);
      box-shadow: 0 0 0 1.5px #D98A22, 0 2px 5px -1px rgba(12,26,23,0.28);`}
+  ${({ $exiting }) => $exiting && "opacity: 0; transform: scale(0.96); pointer-events: none;"}
 `;
 
 // 4px left readiness stripe (in-house state / subcontract confirmed-unconfirmed). Colour set inline.
@@ -189,15 +202,16 @@ export const StyledSubPill = styled.span`
   font-weight: 850;
   letter-spacing: 0.04em;
   background: rgba(255, 255, 255, 0.95);
-  color: #b4791e;
+  color: ${({ theme }) => theme.colors.subcontractText};
   padding: 1px 4px;
   border-radius: 4px;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
   white-space: nowrap;
 `;
 
-// One-day tile (.nt.xs.two): type icon over start/end time chips + corner status dot.
-export const StyledNtXs = styled.div`
+// One-day tile (.nt.xs.two): type icon over start/end time chips + corner status dot. The transfer glyph is the hero
+// element on a transfer tile (only one time chip below it), so it renders larger than the one-day-tour sun icon.
+export const StyledNtXs = styled.div<{ $transfer?: boolean }>`
   width: 100%;
   height: 100%;
   display: flex;
@@ -208,8 +222,8 @@ export const StyledNtXs = styled.div`
   padding: 3px 2px;
   position: relative;
   & svg {
-    width: 12px;
-    height: 12px;
+    width: ${({ $transfer }) => ($transfer ? "18px" : "12px")};
+    height: ${({ $transfer }) => ($transfer ? "18px" : "12px")};
     color: #fff;
     filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.32));
   }

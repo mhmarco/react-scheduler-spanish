@@ -10,7 +10,9 @@ export const StyledGroupHeader = styled.div<{ $variant: "category" | "subcontrac
   color: ${({ theme, $variant }) =>
     $variant === "subcontract" ? theme.colors.subcontractText : theme.colors.accent};
   background: ${({ theme, $variant }) =>
-    $variant === "subcontract" ? theme.colors.subcontractBg : theme.colors.accent + "14"};
+    $variant === "subcontract" ? theme.colors.subcontractBorder + "24" : theme.colors.accent + "14"};
+  border-left: 3px solid
+    ${({ theme, $variant }) => ($variant === "subcontract" ? theme.colors.subcontractBorder : "transparent")};
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   cursor: pointer;
   user-select: none;
@@ -18,7 +20,7 @@ export const StyledGroupHeader = styled.div<{ $variant: "category" | "subcontrac
 
   &:hover {
     background: ${({ theme, $variant }) =>
-      $variant === "subcontract" ? theme.colors.subcontractBg : theme.colors.accent + "22"};
+      $variant === "subcontract" ? theme.colors.subcontractBorder + "33" : theme.colors.accent + "22"};
   }
 `;
 

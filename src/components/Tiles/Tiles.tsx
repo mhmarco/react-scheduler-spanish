@@ -1,8 +1,11 @@
-import { FC, useCallback } from "react";
+import { FC, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { boxHeight, subcontractSeparatorHeight } from "@/constants";
+import { SchedulerProjectData } from "@/types/global";
 import { Tile } from "..";
-import { PlacedTiles, TilesProps } from "./types";
+import { TilesProps } from "./types";
+
+type ExitDesc = { project: SchedulerProjectData; absoluteRow: number; yOffset: number; isSubcontract: boolean };
 
 const getSepOffset = (rowIndex: number, separatorRowIndices: number[]): number => {
   let count = 0;
@@ -38,9 +41,10 @@ const Tiles: FC<TilesProps> = ({
   draggingEventId,
   separatorRowIndices = []
 }) => {
-  const placeTiles = useCallback((): PlacedTiles => {
+  const { nodes, liveMap } = useMemo(() => {
+    const liveMap = new Map<string, ExitDesc>();
     let rows = 0;
-    return data
+    const nodes = data
       .map((person, personIndex) => {
         if (personIndex > 0) {
           rows += Math.max(data[personIndex - 1].data.length, 1);
@@ -59,6 +63,12 @@ const Tiles: FC<TilesProps> = ({
             const isTileDraggable = isDraggable ? isDraggable(project) : false;
             const absoluteRow = rowIndex + rows;
             const yOffset = getSepOffset(absoluteRow, separatorRowIndices);
+            liveMap.set(project.segmentId, {
+              project,
+              absoluteRow,
+              yOffset,
+              isSubcontract: !!person.isSubcontract
+            });
 
             return (
               <Tile
@@ -78,9 +88,57 @@ const Tiles: FC<TilesProps> = ({
         );
       })
       .flat(2);
+    return { nodes, liveMap };
   }, [data, onTileClick, zoom, onDragStart, isDraggable, draggingEventId, separatorRowIndices]);
 
-  return <>{placeTiles()}</>;
+  // Exit animation: keep a just-removed tile mounted with `exiting` for a beat so it fades out before unmounting.
+  // Timers drop only their own batch and are cleared on unmount, so overlapping removals don't cancel each other.
+  const prevMapRef = useRef<Map<string, ExitDesc>>(new Map());
+  const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const [exiting, setExiting] = useState<ExitDesc[]>([]);
+
+  useEffect(() => () => timersRef.current.forEach(clearTimeout), []);
+
+  useEffect(() => {
+    const prev = prevMapRef.current;
+    prevMapRef.current = liveMap;
+    const removed: ExitDesc[] = [];
+    prev.forEach((desc, id) => {
+      if (!liveMap.has(id)) removed.push(desc);
+    });
+    setExiting((cur) => {
+      let next = cur.filter((e) => !liveMap.has(e.project.segmentId));
+      for (const r of removed) {
+        if (!next.some((e) => e.project.segmentId === r.project.segmentId)) next = [...next, r];
+      }
+      return next;
+    });
+    if (!removed.length) return;
+    const ids = new Set(removed.map((r) => r.project.segmentId));
+    const timer = setTimeout(() => {
+      setExiting((cur) => cur.filter((e) => !ids.has(e.project.segmentId)));
+    }, 220);
+    timersRef.current.push(timer);
+  }, [liveMap]);
+
+  return (
+    <>
+      {nodes}
+      {exiting.map((e) => (
+        <Tile
+          key={`exit-${e.project.segmentId}`}
+          row={e.absoluteRow}
+          data={e.project}
+          zoom={zoom}
+          isSubcontract={e.isSubcontract}
+          yOffset={e.yOffset}
+          isDragging={false}
+          isDraggable={false}
+          exiting
+        />
+      ))}
+    </>
+  );
 };
 
 export default Tiles;

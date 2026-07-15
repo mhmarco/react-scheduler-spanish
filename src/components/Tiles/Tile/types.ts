@@ -12,6 +12,8 @@ export type TileProps = {
   isDraggable?: boolean;
   /** Extra Y offset in pixels (for subcontract separator) */
   yOffset?: number;
+  /** True while this tile is animating out after its data was removed (fade + scale, then unmount). */
+  exiting?: boolean;
 };
 
 export type StyledTextProps = {
@@ -22,4 +24,5 @@ export type StyledTileWrapperProps = {
   isDraggable?: boolean;
   isDragging?: boolean;
   $unconfirmed?: boolean;
+  $exiting?: boolean;
 };

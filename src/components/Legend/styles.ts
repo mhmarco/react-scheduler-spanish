@@ -51,9 +51,9 @@ export const StyledSubPill = styled.span`
   align-items: center;
   font-size: 9px;
   font-weight: 800;
-  color: #b4791e;
-  background: #fbf1de;
-  border: 1px solid #e9d3a6;
+  color: ${({ theme }) => theme.colors.subcontractText};
+  background: ${({ theme }) => theme.colors.subcontractBg};
+  border: 1px solid ${({ theme }) => theme.colors.subcontractBorder};
   padding: 1px 5px;
   border-radius: 5px;
 `;

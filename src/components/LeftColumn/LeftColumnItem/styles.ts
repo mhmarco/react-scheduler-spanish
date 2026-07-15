@@ -1,6 +1,11 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { boxHeight } from "@/constants";
 import { StyledLeftColumnItemWrapperProps, StyledTextProps } from "./types";
+
+const rowIn = keyframes`
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: none; }
+`;
 
 export const StyledWrapper = styled.div<StyledLeftColumnItemWrapperProps>`
   display: flex;
@@ -12,9 +17,14 @@ export const StyledWrapper = styled.div<StyledLeftColumnItemWrapperProps>`
   border-top: 1px solid
     ${({ theme, $isSubcontract }) =>
       $isSubcontract ? theme.colors.subcontractBorder + "33" : theme.colors.border};
+  border-left: 3px solid
+    ${({ theme, $isSubcontract }) => ($isSubcontract ? theme.colors.subcontractBorder : "transparent")};
   background-color: ${({ theme, $isSubcontract }) =>
     $isSubcontract ? theme.colors.subcontractBg : "transparent"};
   transition: 0.5s ease;
+  @media (prefers-reduced-motion: no-preference) {
+    animation: ${rowIn} 200ms ease-out;
+  }
   cursor: ${({ clickable }) => (clickable ? "pointer" : "auto")};
   &:hover {
     background-color: ${({ theme }) => theme.colors.hover};
