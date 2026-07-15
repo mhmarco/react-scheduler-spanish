@@ -1978,7 +1978,7 @@ const Ps = (e) => {
   }
 }, Rs = (e, r, t, n, o = !1) => {
   const s = t * ye + r * Ie, i = e.canvas.width;
-  e.fillStyle = o ? n.colors.subcontractBorder : n.mode === "dark" ? n.colors.primary + "80" : n.colors.primary, e.fillRect(0, s, i, Ie);
+  e.fillStyle = o ? n.colors.subcontractBorder + "40" : n.mode === "dark" ? n.colors.primary + "80" : n.colors.primary, e.fillRect(0, s, i, Ie);
 }, Ns = (e, r, t, n, o, s, i = [], c = -1) => {
   if (e.clearRect(0, 0, e.canvas.width, e.canvas.height), !!document.getElementById(no)) {
     switch (r) {

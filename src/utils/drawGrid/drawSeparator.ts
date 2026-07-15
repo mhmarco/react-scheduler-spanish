@@ -12,9 +12,10 @@ export const drawSeparator = (
   const y = separatorRowIndex * boxHeight + separatorIndex * subcontractSeparatorHeight;
   const width = ctx.canvas.width;
 
-  // Just the background band — no centre line. The subcontract band is amber; category bands stay neutral.
+  // Just the background band — no centre line. The subcontract band is a SUBTLE amber wash (border colour at low
+  // alpha, not the solid saturated token); category bands stay neutral.
   ctx.fillStyle = isSubcontract
-    ? theme.colors.subcontractBorder
+    ? theme.colors.subcontractBorder + "40"
     : theme.mode === "dark"
     ? theme.colors.primary + "80"
     : theme.colors.primary;
