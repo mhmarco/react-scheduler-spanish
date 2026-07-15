@@ -66,22 +66,30 @@ const Grid = forwardRef<HTMLDivElement, GridProps>(function Grid(
     }
   }, [dragState, onDragStateChange]);
 
-  // Soft fade-in whenever the visible range changes (date jump / next-prev / boundary load) so the repaint reads as a
-  // smooth transition rather than a hard snap. Opacity-only → no effect on layout or hit-testing. Skips first mount;
-  // cancels any in-flight fade so rapid navigation doesn't stack animations and flicker.
+  // Directional slide whenever the visible range changes (date jump / next-prev / boundary load): the new content
+  // slides in FROM the direction of travel — forward (later date) enters from the right, backward from the left —
+  // with a sleek ease-out. Brief transform + fade; skips first mount; cancels any in-flight slide so rapid nav doesn't
+  // stack. The wide (3×) canvas means the shifted edges reveal real adjacent content, not a blank gap.
   const didMountRef = useRef(false);
-  const fadeAnimRef = useRef<Animation | null>(null);
+  const prevDateRef = useRef(date);
+  const slideAnimRef = useRef<Animation | null>(null);
   useEffect(() => {
+    const prev = prevDateRef.current;
+    prevDateRef.current = date;
     if (!didMountRef.current) {
       didMountRef.current = true;
       return;
     }
-    fadeAnimRef.current?.cancel();
-    fadeAnimRef.current =
-      gridWrapperRef.current?.animate?.([{ opacity: 0.35 }, { opacity: 1 }], {
-        duration: 240,
-        easing: "ease-out"
-      }) ?? null;
+    const dx = date.isAfter(prev) ? 34 : -34;
+    slideAnimRef.current?.cancel();
+    slideAnimRef.current =
+      gridWrapperRef.current?.animate?.(
+        [
+          { transform: `translateX(${dx}px)`, opacity: 0.4 },
+          { transform: "translateX(0)", opacity: 1 }
+        ],
+        { duration: 300, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }
+      ) ?? null;
   }, [date]);
 
   // Initialize click-to-add hook

@@ -192,8 +192,9 @@ const CalendarProvider = ({
     if (isLoading) return;
 
     loadMore("middle");
+    // Snap the scroll instantly; the grid's directional slide provides the motion (avoids a competing smooth scroll).
     debounce(() => {
-      moveHorizontalScroll("middle", "smooth");
+      moveHorizontalScroll("middle", "auto");
     }, 300)();
   }, [isLoading, loadMore, moveHorizontalScroll]);
 
@@ -208,9 +209,9 @@ const CalendarProvider = ({
 
       setDate(newDate);
       onRangeChange?.(range);
-      // Use setTimeout to ensure state update completes before scrolling
+      // Snap the scroll instantly; the grid's directional slide provides the motion (avoids a competing smooth scroll).
       setTimeout(() => {
-        moveHorizontalScroll("middle", "smooth");
+        moveHorizontalScroll("middle", "auto");
       }, 300);
     },
     [isLoading, moveHorizontalScroll, onRangeChange, range]
