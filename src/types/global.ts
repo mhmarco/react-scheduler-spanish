@@ -55,6 +55,11 @@ export type Config = {
    * @default true
    */
   showTopbar?: boolean;
+  /**
+   * show the icon + status legend strip above the board
+   * @default true
+   */
+  showLegend?: boolean;
   theme?: Theme;
 };
 

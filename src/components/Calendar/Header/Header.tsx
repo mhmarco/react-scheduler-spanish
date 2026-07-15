@@ -9,6 +9,7 @@ import { getCanvasWidth } from "@/utils/getCanvasWidth";
 import { HeaderProps } from "./types";
 import { StyledCanvas, StyledOuterWrapper, StyledWrapper } from "./styles";
 import Topbar from "./Topbar";
+import Legend from "@/components/Legend/Legend";
 
 const Header: FC<HeaderProps> = ({ zoom, topBarWidth, showThemeToggle, toggleTheme }) => {
   const { week } = useLanguage();
@@ -54,6 +55,7 @@ const Header: FC<HeaderProps> = ({ zoom, topBarWidth, showThemeToggle, toggleThe
       {config.showTopbar !== false && (
         <Topbar width={topBarWidth} showThemeToggle={showThemeToggle} toggleTheme={toggleTheme} />
       )}
+      {config.showLegend !== false && <Legend />}
       <StyledWrapper id={canvasHeaderWrapperId}>
         <StyledCanvas ref={canvasRef} />
       </StyledWrapper>

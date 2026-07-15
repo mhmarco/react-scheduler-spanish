@@ -121,6 +121,7 @@ const Scheduler = forwardRef<SchedulerRef, SchedulerProps>(function Scheduler(
       includeTakenHoursOnWeekendsInDayView: false,
       showTooltip: true,
       showTopbar: true,
+      showLegend: true,
       translations: undefined,
       ...config
     }),
