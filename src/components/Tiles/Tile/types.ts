@@ -21,5 +21,5 @@ export type StyledTextProps = {
 export type StyledTileWrapperProps = {
   isDraggable?: boolean;
   isDragging?: boolean;
-  $dashed?: boolean;
+  $unconfirmed?: boolean;
 };

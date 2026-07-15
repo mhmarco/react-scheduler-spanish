@@ -6,44 +6,41 @@ import { getDatesRange } from "@/utils/getDatesRange";
 import { getTileProperties } from "@/utils/getTileProperties";
 import { getTileTextColor } from "@/utils/getTileTextColor";
 import { ReservationType, TileReadiness } from "@/types/global";
+import { TileIcon, TileIconName } from "./icons";
 import {
   StyledTileWrapper,
-  StyledOneDayStack,
-  StyledTimes,
-  StyledTileIcon,
-  StyledTileBody,
-  StyledTileLines,
-  StyledLine,
-  StyledBookingChip,
-  StyledReadinessStripe,
+  StyledRStripe,
+  StyledNt,
+  StyledNtRow,
+  StyledNtIco,
+  StyledNtTitle,
+  StyledNtClient,
+  StyledNtBk,
+  StyledNtMeta,
   StyledTileTR,
+  StyledDotWrap,
   StyledSubPill,
-  StyledAckDot
+  StyledNtXs,
+  StyledXsTime,
+  StyledXsCorner
 } from "./styles";
 import { TileProps } from "./types";
 
-// Width buckets (px, on the actual rendered tile) — the locked §22.2 / §17.B6 thresholds:
-// wide (w>=248) = title / booking·client / driver; compact (w<248) = booking chip (+client at w>=156), NO driver.
-const TIMES_MIN = 34; // one-day: show start/end times under the type icon
-const CLIENT_MIN = 156; // compact: add the client line
-const WIDE_MIN = 248; // wide bucket: title + booking·client + driver line
+// Width buckets on the rendered tile (§22.2): wide (w>=248) = title / booking·client / driver; compact (w<248) =
+// booking chip (+client at w>=156), no driver; one-day = both times.
+const TIMES_MIN = 34;
+const CLIENT_MIN = 156;
+const WIDE_MIN = 248;
 
-// Readiness stripe/dot palette (§22.4: muted / warn / info / ok).
-const READINESS_COLOR: Record<TileReadiness, string> = {
-  sin_chofer: "#9AA5A0",
-  sin_avisar: "#E0A83C",
-  notificado: "#3B82F6",
-  confirmado: "#2FA36B"
+// Readiness → (4px stripe colour, status dot icon + colour). Tokens from the locked mockup (artifact 91ed97bb).
+const READINESS: Record<TileReadiness, { stripe: string; icon: TileIconName; color: string }> = {
+  sin_chofer: { stripe: "#9AA4B2", icon: "warn", color: "#9AA4B2" },
+  sin_avisar: { stripe: "#D98A22", icon: "warn", color: "#D98A22" },
+  notificado: { stripe: "#2C6BB0", icon: "clock", color: "#2C6BB0" },
+  confirmado: { stripe: "#2E8B63", icon: "check", color: "#2E8B63" }
 };
-// Icon-in-circle glyphs so the four states are distinguishable without colour (§22.2).
-const READINESS_GLYPH: Record<TileReadiness, string> = {
-  sin_chofer: "○",
-  sin_avisar: "!",
-  notificado: "→",
-  confirmado: "✓"
-};
-const SUB_CONFIRMED = "#3E8E5A";
-const SUB_UNCONFIRMED = "#9AA5A0";
+const SUB_OK = "#3E8E5A";
+const SUB_WARN = "#D98A22";
 
 const Tile: FC<TileProps> = ({
   row,
@@ -68,20 +65,15 @@ const Tile: FC<TileProps> = ({
   );
 
   const { colors } = useTheme();
-
-  // Track mouse down position to detect drag vs click
   const mouseDownPos = useRef<{ x: number; y: number } | null>(null);
-  
-  // Check if this is a single-day event
+
   const isSameDay = dayjs(data.startDate).isSame(dayjs(data.endDate), "day");
   const isTour = data.eventType === ReservationType.Tour;
   const isTransfer = data.eventType === ReservationType.Transfer;
   const isOneDayEvent = isSameDay && (isTour || isTransfer);
-  const icon = isTransfer ? "⇄" : isOneDayEvent ? "☀" : "▦";
 
   const handleMouseDown = (e: React.MouseEvent) => {
     mouseDownPos.current = { x: e.clientX, y: e.clientY };
-    
     if (isDraggable && onDragStart) {
       e.preventDefault();
       onDragStart(data, e);
@@ -92,12 +84,7 @@ const Tile: FC<TileProps> = ({
     if (mouseDownPos.current) {
       const deltaX = Math.abs(e.clientX - mouseDownPos.current.x);
       const deltaY = Math.abs(e.clientY - mouseDownPos.current.y);
-      const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-      
-      if (distance <= 5) {
-        onTileClick?.(data);
-      }
-      
+      if (Math.sqrt(deltaX * deltaX + deltaY * deltaY) <= 5) onTileClick?.(data);
       mouseDownPos.current = null;
     } else {
       onTileClick?.(data);
@@ -112,63 +99,13 @@ const Tile: FC<TileProps> = ({
     color: getTileTextColor(data.bgColor ?? "")
   };
 
-  // Two-indicator chrome (§22.2): left readiness stripe + top-right cluster (SUB pill for subcontracts, an
-  // ack/readiness dot for in-house). Unconfirmed subcontracts also get a dashed border.
+  // Two-indicator chrome (§22.2): a 4px left readiness stripe, plus a top-right cluster — SUB pill for subcontract
+  // tiles, or a white dot-wrap with a coloured status icon for in-house tiles.
+  const rd = !isSubcontract && data.readiness ? READINESS[data.readiness] : null;
   const unconfirmedSub = isSubcontract && data.subcontractConfirmed === false;
-  const stripeColor = isSubcontract
-    ? (data.subcontractConfirmed === false ? SUB_UNCONFIRMED : SUB_CONFIRMED)
-    : data.readiness
-    ? READINESS_COLOR[data.readiness]
-    : undefined;
+  const stripeColor = isSubcontract ? (unconfirmedSub ? SUB_WARN : SUB_OK) : rd?.stripe;
 
-  const chrome = (
-    <>
-      {stripeColor && <StyledReadinessStripe style={{ background: stripeColor }} />}
-      <StyledTileTR>
-        {isSubcontract ? (
-          <StyledSubPill>SUB</StyledSubPill>
-        ) : (
-          data.readiness && (
-            <StyledAckDot style={{ background: READINESS_COLOR[data.readiness] }}>
-              {READINESS_GLYPH[data.readiness]}
-            </StyledAckDot>
-          )
-        )}
-      </StyledTileTR>
-    </>
-  );
-
-  // XS one-day: type icon over start/end times (fixes the old blank "1-DAY"/"TRF" pill). Icon-only when too narrow.
-  if (isOneDayEvent) {
-    return (
-      <StyledTileWrapper
-        data-segment-id={data.segmentId}
-        style={wrapperStyle}
-        onClick={handleClick}
-        onMouseDown={handleMouseDown}
-        onDragStart={(e) => e.preventDefault()}
-        isDraggable={isDraggable}
-        isDragging={isDragging}
-        $dashed={unconfirmedSub}>
-        {chrome}
-        <StyledOneDayStack>
-          <StyledTileIcon>{icon}</StyledTileIcon>
-          {width >= TIMES_MIN && (
-            <StyledTimes>
-              <span>{dayjs(data.startDate).format("HH:mm")}</span>
-              {!isTransfer && <span>{dayjs(data.endDate).format("HH:mm")}</span>}
-            </StyledTimes>
-          )}
-        </StyledOneDayStack>
-      </StyledTileWrapper>
-    );
-  }
-
-  // Multi-day content by width bucket (§22.2). Booking chip appears on every tile (incl. subcontract). Wide tiles
-  // lead with the title; compact tiles use the booking # as the identifier. True ellipsis, no sticky fade clip.
-  const isWide = width >= WIDE_MIN;
-  const bookingChip = data.bookingNumber ? <StyledBookingChip>{data.bookingNumber}</StyledBookingChip> : null;
-  return (
+  const wrapper = (children: React.ReactNode) => (
     <StyledTileWrapper
       data-segment-id={data.segmentId}
       style={wrapperStyle}
@@ -177,29 +114,79 @@ const Tile: FC<TileProps> = ({
       onDragStart={(e) => e.preventDefault()}
       isDraggable={isDraggable}
       isDragging={isDragging}
-      $dashed={unconfirmedSub}>
-      {chrome}
-      <StyledTileBody>
-        <StyledTileIcon>{icon}</StyledTileIcon>
-        <StyledTileLines>
-          {isWide ? (
+      $unconfirmed={unconfirmedSub}>
+      {stripeColor && <StyledRStripe style={{ background: stripeColor }} />}
+      {children}
+    </StyledTileWrapper>
+  );
+
+  // One-day: type icon over start/end time chips + a corner status dot.
+  if (isOneDayEvent) {
+    return wrapper(
+      <>
+        {isSubcontract && (
+          <StyledTileTR $sm>
+            <StyledSubPill>SUB</StyledSubPill>
+          </StyledTileTR>
+        )}
+        <StyledNtXs>
+          <TileIcon name={isTransfer ? "transfer" : "sun"} strokeWidth={2.4} />
+          {width >= TIMES_MIN && (
             <>
-              <StyledLine bold>{data.title}</StyledLine>
-              <StyledLine>
-                {bookingChip}
-                {data.subtitle}
-              </StyledLine>
-              {data.driver && <StyledLine>{data.driver}</StyledLine>}
-            </>
-          ) : (
-            <>
-              <StyledLine>{bookingChip}</StyledLine>
-              {width >= CLIENT_MIN && data.subtitle && <StyledLine>{data.subtitle}</StyledLine>}
+              <StyledXsTime>{dayjs(data.startDate).format("HH:mm")}</StyledXsTime>
+              {!isTransfer && <StyledXsTime $end>{dayjs(data.endDate).format("HH:mm")}</StyledXsTime>}
             </>
           )}
-        </StyledTileLines>
-      </StyledTileBody>
-    </StyledTileWrapper>
+          {rd && <StyledXsCorner style={{ background: rd.color }} />}
+        </StyledNtXs>
+      </>
+    );
+  }
+
+  // Multi-day: pin/transfer icon + title; booking·client and a driver line as the tile widens.
+  const isWide = width >= WIDE_MIN;
+  const bk = data.bookingNumber ? <StyledNtBk>{data.bookingNumber}</StyledNtBk> : null;
+  return wrapper(
+    <>
+      <StyledTileTR>
+        {isSubcontract ? (
+          <StyledSubPill>SUB</StyledSubPill>
+        ) : (
+          rd && (
+            <StyledDotWrap style={{ color: rd.color }}>
+              <TileIcon name={rd.icon} strokeWidth={rd.icon === "check" ? 2.6 : 2.2} />
+            </StyledDotWrap>
+          )
+        )}
+      </StyledTileTR>
+      <StyledNt>
+        <StyledNtRow $pad>
+          <StyledNtIco>
+            <TileIcon name={isTransfer ? "transfer" : "tour"} />
+          </StyledNtIco>
+          {isWide ? (
+            <StyledNtTitle>{data.title}</StyledNtTitle>
+          ) : (
+            <>
+              {bk}
+              {width >= CLIENT_MIN && data.subtitle && <StyledNtClient>{data.subtitle}</StyledNtClient>}
+            </>
+          )}
+        </StyledNtRow>
+        {isWide && (
+          <StyledNtRow>
+            {bk}
+            {data.subtitle && <StyledNtClient>{data.subtitle}</StyledNtClient>}
+          </StyledNtRow>
+        )}
+        {isWide && data.driver && (
+          <StyledNtMeta>
+            <TileIcon name="person" />
+            {data.driver}
+          </StyledNtMeta>
+        )}
+      </StyledNt>
+    </>
   );
 };
 

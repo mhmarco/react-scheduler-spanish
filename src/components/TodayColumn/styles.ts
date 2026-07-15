@@ -9,5 +9,6 @@ export const StyledTodayColumn = styled.div`
   bottom: 0;
   pointer-events: none;
   border-left: 2px solid ${({ theme }) => theme.colors.today};
+  border-right: 1px solid rgba(15, 125, 102, 0.22);
   background: ${({ theme }) => theme.colors.today}12;
 `;
