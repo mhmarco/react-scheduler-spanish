@@ -12,6 +12,7 @@ export type CalendarContextType = {
   goToDate: (date: Date | string | number) => void;
   zoomIn: () => void;
   zoomOut: () => void;
+  setZoom: (level: ZoomLevel) => void;
   toggleDisplayActiveUnits: () => void;
   updateTilesCoords: (coords: Coords[]) => void;
   onClearFilterData?: () => void;

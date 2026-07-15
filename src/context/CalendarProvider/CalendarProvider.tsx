@@ -244,6 +244,7 @@ const CalendarProvider = ({
         goToDate,
         zoomIn,
         zoomOut,
+        setZoom: changeZoom,
         zoom,
         isNextZoom,
         isPrevZoom,

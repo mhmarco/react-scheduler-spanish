@@ -11,6 +11,7 @@ export const calendarContext = createContext<CalendarContextType>({
   goToDate: () => {},
   zoomIn: () => {},
   zoomOut: () => {},
+  setZoom: () => {},
   toggleDisplayActiveUnits: () => {},
   updateTilesCoords: () => {},
   tilesCoords: [],
