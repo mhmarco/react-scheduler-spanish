@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 import { leftColumnWidth } from "@/constants";
 import { StyledInputWrapperProps, StyledLeftColumnHeaderProps } from "./types";
 
@@ -67,15 +67,24 @@ export const StyledInputWrapper = styled.div<StyledInputWrapperProps>`
   }
 `;
 
-// Collapse motion: a group first fades out (both here and on the grid, in lockstep), THEN the layout snaps closed —
-// so the two columns snap together and nothing overlaps a snapped-up row mid-fade. Kept mounted (opacity 0) only for
-// the fade beat; the host removes it right after (see Calendar fade-then-collapse).
+const groupFadeOut = keyframes`
+  from { opacity: 1; }
+  to { opacity: 0; }
+`;
+
+// Collapse motion: a group first fades out (both here and on the grid, in lockstep), THEN the layout snaps closed — so
+// the two columns snap together and nothing overlaps a snapped-up row mid-fade. A keyframe (not a transition) because
+// these rows can remount, which would make a transition paint 0 from birth and jump. Kept mounted only for the fade
+// beat; the host removes it right after (see Calendar fade-then-collapse).
 export const StyledGroupBody = styled.div<{ $fading: boolean }>`
-  opacity: ${({ $fading }) => ($fading ? 0 : 1)};
-  transition: opacity 180ms ease;
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
-  }
+  ${({ $fading }) =>
+    $fading &&
+    css`
+      opacity: 0;
+      @media (prefers-reduced-motion: no-preference) {
+        animation: ${groupFadeOut} 180ms ease forwards;
+      }
+    `}
 `;
 
 export const StyledCollapseButton = styled.button<{ $allCollapsed: boolean }>`
