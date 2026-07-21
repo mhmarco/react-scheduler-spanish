@@ -1,6 +1,12 @@
 import { forwardRef, useCallback, useEffect, useRef } from "react";
 import { useTheme } from "styled-components";
-import { headerHeight, canvasHeaderWrapperId, zoom2HeaderHeight } from "@/constants";
+import {
+  headerHeight,
+  headerMonthHeight,
+  headerDayHeight,
+  canvasHeaderWrapperId,
+  zoom2HeaderHeight
+} from "@/constants";
 import { useCalendar } from "@/context/CalendarProvider";
 import { useLanguage } from "@/context/LocaleProvider";
 import { drawHeader } from "@/utils/drawHeader/drawHeader";
@@ -21,16 +27,23 @@ const Header = forwardRef<HTMLDivElement, HeaderProps>(function Header(
 
   const theme = useTheme();
 
+  const showWeekRow = config.showWeekRow !== false;
+  // The canvas AND its wrapper both shrink when the week row is hidden, so the grid below doesn't leave a 16px gap.
+  const currentHeaderHeight =
+    zoom === 2
+      ? zoom2HeaderHeight
+      : zoom === 1 && !showWeekRow
+      ? headerMonthHeight + headerDayHeight
+      : headerHeight;
   const handleResize = useCallback(
     (ctx: CanvasRenderingContext2D) => {
       const width = getCanvasWidth();
-      const currentHeaderHeight = zoom === 2 ? zoom2HeaderHeight : headerHeight;
       const height = currentHeaderHeight + 1;
       resizeCanvas(ctx, width, height);
 
-      drawHeader(ctx, zoom, cols, startDate, week, dayOfYear, theme);
+      drawHeader(ctx, zoom, cols, startDate, week, dayOfYear, theme, showWeekRow);
     },
-    [cols, dayOfYear, startDate, week, zoom, theme]
+    [cols, dayOfYear, startDate, week, zoom, theme, showWeekRow, currentHeaderHeight]
   );
 
   useEffect(() => {
@@ -63,7 +76,7 @@ const Header = forwardRef<HTMLDivElement, HeaderProps>(function Header(
           {config.showLegend !== false && <Legend />}
         </StyledPinned>
       )}
-      <StyledWrapper id={canvasHeaderWrapperId}>
+      <StyledWrapper $height={currentHeaderHeight} id={canvasHeaderWrapperId}>
         <StyledCanvas ref={canvasRef} />
       </StyledWrapper>
     </StyledOuterWrapper>

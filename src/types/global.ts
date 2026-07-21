@@ -80,6 +80,17 @@ export type Config = {
    * @default true
    */
   showFullscreenButton?: boolean;
+  /**
+   * show the Día│Semana│Mes zoom switcher. Set false to lock the view to a single zoom (host omits the control).
+   * @default true
+   */
+  showViewSwitcher?: boolean;
+  /**
+   * show the week-number ("SEMANA n") row in the month-view header. Set false to hide it — the header compacts to
+   * month + days and shrinks by one row.
+   * @default true
+   */
+  showWeekRow?: boolean;
   theme?: Theme;
   /**
    * Whole-year event volume for the Overview ribbon, independent of the loaded board window. Each point is a day and

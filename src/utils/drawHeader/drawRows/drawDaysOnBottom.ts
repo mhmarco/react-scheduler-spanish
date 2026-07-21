@@ -7,7 +7,6 @@ import {
   fontFamily,
   fonts,
   headerDayHeight,
-  headerHeight,
   headerMonthHeight,
   headerWeekHeight
 } from "@/constants";
@@ -21,11 +20,14 @@ export const drawDaysOnBottom = (
   ctx: CanvasRenderingContext2D,
   cols: number,
   startDate: Day,
-  theme: Theme
+  theme: Theme,
+  // Height reserved for the week row above the days (0 hides it — the day row moves up and the header shrinks).
+  weekHeight: number = headerWeekHeight
 ) => {
-  const dayNameYPos = headerHeight - headerDayHeight / dayNameYoffset;
-  const dayNumYPos = headerHeight - headerDayHeight / dayNumYOffset;
-  const yPos = headerMonthHeight + headerWeekHeight;
+  const effectiveHeaderHeight = headerMonthHeight + weekHeight + headerDayHeight;
+  const dayNameYPos = effectiveHeaderHeight - headerDayHeight / dayNameYoffset;
+  const dayNumYPos = effectiveHeaderHeight - headerDayHeight / dayNumYOffset;
+  const yPos = headerMonthHeight + weekHeight;
   let xPos = 0;
 
   for (let i = 0; i < cols; i++) {

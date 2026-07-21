@@ -73,18 +73,22 @@ const Topbar: FC<TopbarProps> = () => {
           </NavBtn>
         </NavigationWrapper>
         <Range>{date.locale(dayjs.locale()).format("MMMM YYYY")}</Range>
-        <TbDiv />
-        <ZoomSeg>
-          <button className={zoom === 2 ? "on" : ""} onClick={() => setZoom(2)}>
-            Día
-          </button>
-          <button className={zoom === 0 ? "on" : ""} onClick={() => setZoom(0)}>
-            Semana
-          </button>
-          <button className={zoom === 1 ? "on" : ""} onClick={() => setZoom(1)}>
-            Mes
-          </button>
-        </ZoomSeg>
+        {config.showViewSwitcher !== false && (
+          <>
+            <TbDiv />
+            <ZoomSeg>
+              <button className={zoom === 2 ? "on" : ""} onClick={() => setZoom(2)}>
+                Día
+              </button>
+              <button className={zoom === 0 ? "on" : ""} onClick={() => setZoom(0)}>
+                Semana
+              </button>
+              <button className={zoom === 1 ? "on" : ""} onClick={() => setZoom(1)}>
+                Mes
+              </button>
+            </ZoomSeg>
+          </>
+        )}
         {config.showJumpToDate !== false && (
           <DateLabel>
             <Svg>

@@ -20,8 +20,8 @@ export const StyledPinned = styled.div<{ $width: number }>`
   z-index: 3;
 `;
 
-export const StyledWrapper = styled.div`
-  height: ${headerHeight}px;
+export const StyledWrapper = styled.div<{ $height?: number }>`
+  height: ${({ $height }) => $height ?? headerHeight}px;
   display: block;
 `;
 
