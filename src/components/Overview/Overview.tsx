@@ -18,11 +18,20 @@ import {
   StyledTip
 } from "./styles";
 
+// Bar colour ramp: grey when a week has no events, then a single green scale from pale (few) to intense (busiest).
+const EMPTY_GREY = "#cdd8d2";
+const GREEN_PALE = [178, 216, 195]; // #b2d8c3
+const GREEN_INTENSE = [15, 125, 102]; // #0f7d66
+const greenRamp = (t: number): string => {
+  const c = Math.min(1, Math.max(0, t));
+  const ch = (i: number) => Math.round(GREEN_PALE[i] + (GREEN_INTENSE[i] - GREEN_PALE[i]) * c);
+  return `rgb(${ch(0)}, ${ch(1)}, ${ch(2)})`;
+};
+
 // Rolling navigator: the ribbon spans exactly the selectable range — 3 whole months back to 9 whole months forward
-// from today — so it IS the navigable window (§22.8). Weekly density bars coloured by worst readiness, a HOY marker,
-// the current viewport window, a hover date readout, and click-to-jump. Bar HEIGHTS come from whole-year counts
-// (config.yearCounts) when the host supplies them, else the loaded data; readiness COLOUR is always overlaid from the
-// loaded window (the only place readiness lives), so distant weeks show volume neutrally and loaded weeks are tinted.
+// from today — so it IS the navigable window (§22.8). Weekly bars coloured by a green VOLUME ramp (grey → pale →
+// intense), a HOY marker, the current viewport window, a hover date readout, and click-to-jump. Heights + colour both
+// come from whole-range counts (config.yearCounts) when the host supplies them, else the loaded data.
 const Overview: FC = () => {
   const { date, zoom, data, goToDate, config } = useCalendar();
   const lang = useLanguage();
@@ -60,47 +69,42 @@ const Overview: FC = () => {
   const bars = useMemo(() => {
     const n = Math.ceil(domainDays / 7);
     const counts = new Array<number>(n).fill(0);
-    const sev = new Array<number>(n).fill(0);
     const weekOf = (d: dayjs.Dayjs) => {
       const off = d.diff(domainStart, "day");
       return off < 0 || off >= domainDays ? -1 : Math.floor(off / 7);
     };
 
-    // Count (height) + worst readiness (colour) in one pass. When the host supplies whole-range yearCounts, BOTH come
-    // from it so the ENTIRE ribbon is coloured by activity — not just the loaded window. Only the demo/no-host fallback
-    // reads readiness off the loaded segments.
+    // Per-week event count. Whole-range yearCounts when the host supplies it, else the loaded data.
     if (yearCounts && yearCounts.length) {
       for (const pt of yearCounts) {
         const i = weekOf(dayjs(pt.date));
-        if (i < 0) continue;
-        counts[i] += pt.count;
-        const s = pt.sev ?? 0;
-        if (s > sev[i]) sev[i] = s;
+        if (i >= 0) counts[i] += pt.count;
       }
     } else {
       for (const row of data ?? []) {
         for (const seg of row.data ?? []) {
           const i = weekOf(dayjs(seg.startDate));
-          if (i < 0) continue;
-          counts[i] += 1;
-          const s = seg.readiness === "sin_chofer" ? 2 : seg.readiness === "sin_avisar" ? 1 : 0;
-          if (s > sev[i]) sev[i] = s;
+          if (i >= 0) counts[i] += 1;
         }
       }
     }
 
-    // Height is anchored to the busiest week (max → 100%, honoring "relative to the max events"), but the exponent is
-    // DERIVED from this operation's own spikiness — max ÷ median of the non-empty weeks. A flat year stays ~linear; a
-    // season-peaked year bends concave so the quiet weeks still read instead of collapsing to slivers. No hardcoded
-    // volume number: the ceiling and the exponent are both data-derived; the 0.45 floor / log2 base are dimensionless.
+    // Height is anchored to the busiest week (max → 100%), but the exponent is DERIVED from this operation's own
+    // spikiness — max ÷ median of the non-empty weeks — so quiet weeks still read instead of collapsing to slivers.
+    // Colour is a single GREEN ramp by relative volume: intense at the busiest week, paling toward the quiet ones,
+    // grey where there's nothing.
     const max = Math.max(0, ...counts);
-    if (max <= 0) return counts.map((_, i) => ({ h: 0, sev: sev[i] }));
+    if (max <= 0) return counts.map(() => ({ h: 0, color: EMPTY_GREY }));
     const nz = counts.filter((c) => c > 0).sort((a, b) => a - b);
     const mid = nz.length >> 1;
     const median = nz.length % 2 ? nz[mid] : (nz[mid - 1] + nz[mid]) / 2;
     const ratio = median > 0 ? max / median : 1;
     const gamma = Math.min(1, Math.max(0.45, 1 / (1 + Math.log2(Math.max(1, ratio)))));
-    return counts.map((c, i) => ({ h: c > 0 ? Math.min(100, 100 * Math.pow(c / max, gamma)) : 0, sev: sev[i] }));
+    return counts.map((c) =>
+      c > 0
+        ? { h: Math.min(100, 100 * Math.pow(c / max, gamma)), color: greenRamp(c / max) }
+        : { h: 0, color: EMPTY_GREY }
+    );
   }, [data, yearCounts, domainStart, domainDays]);
 
   const hoyPct = pct(today);
@@ -154,7 +158,7 @@ const Overview: FC = () => {
         )}
         <StyledBars>
           {bars.map((b, i) => (
-            <StyledBar key={i} $sev={b.sev} style={{ height: `${b.h}%` }} />
+            <StyledBar key={i} style={{ height: `${b.h}%`, background: b.color }} />
           ))}
         </StyledBars>
         <StyledWin style={{ left: `${win.left}%`, width: `${win.width}%` }} />

@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import { Day, ZoomLevel } from "@/types/global";
 import { useCalendar } from "@/context/CalendarProvider";
 import { getColumnGeometry } from "@/utils/getColumnGeometry";
-import { StyledJumpColumn, StyledJumpTag } from "./styles";
+import { StyledJumpColumn } from "./styles";
 
 type JumpColumnProps = {
   zoom: ZoomLevel;
@@ -22,11 +22,7 @@ const JumpColumn: FC<JumpColumnProps> = ({ zoom, startDate }) => {
 
   if (!geometry) return null;
 
-  return (
-    <StyledJumpColumn style={{ left: `${geometry.x}px`, width: `${geometry.width}px` }} aria-hidden>
-      <StyledJumpTag>IR</StyledJumpTag>
-    </StyledJumpColumn>
-  );
+  return <StyledJumpColumn style={{ left: `${geometry.x}px`, width: `${geometry.width}px` }} aria-hidden />;
 };
 
 export default JumpColumn;

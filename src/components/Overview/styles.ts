@@ -82,11 +82,11 @@ export const StyledBars = styled.div`
   gap: 2px;
 `;
 
-export const StyledBar = styled.div<{ $sev: number }>`
+// Colour (green volume ramp / grey) is set inline per bar by the Overview.
+export const StyledBar = styled.div`
   flex: 1;
   border-radius: 2px 2px 0 0;
   min-height: 3px;
-  background: ${({ $sev }) => ($sev === 2 ? "#c6483d" : $sev === 1 ? "#d98a22" : "#93b1a6")};
 `;
 
 export const StyledHoy = styled.div`
