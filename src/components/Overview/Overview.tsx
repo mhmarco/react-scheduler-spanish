@@ -66,30 +66,26 @@ const Overview: FC = () => {
       return off < 0 || off >= domainDays ? -1 : Math.floor(off / 7);
     };
 
-    // Heights: whole-range counts if the host supplied them, else the loaded data.
+    // Count (height) + worst readiness (colour) in one pass. When the host supplies whole-range yearCounts, BOTH come
+    // from it so the ENTIRE ribbon is coloured by activity — not just the loaded window. Only the demo/no-host fallback
+    // reads readiness off the loaded segments.
     if (yearCounts && yearCounts.length) {
       for (const pt of yearCounts) {
         const i = weekOf(dayjs(pt.date));
-        if (i < 0 || i >= n) continue;
+        if (i < 0) continue;
         counts[i] += pt.count;
+        const s = pt.sev ?? 0;
+        if (s > sev[i]) sev[i] = s;
       }
     } else {
       for (const row of data ?? []) {
         for (const seg of row.data ?? []) {
           const i = weekOf(dayjs(seg.startDate));
-          if (i < 0 || i >= n) continue;
+          if (i < 0) continue;
           counts[i] += 1;
+          const s = seg.readiness === "sin_chofer" ? 2 : seg.readiness === "sin_avisar" ? 1 : 0;
+          if (s > sev[i]) sev[i] = s;
         }
-      }
-    }
-
-    // Colour: worst readiness per week, always from the loaded window (readiness isn't in yearCounts).
-    for (const row of data ?? []) {
-      for (const seg of row.data ?? []) {
-        const i = weekOf(dayjs(seg.startDate));
-        if (i < 0 || i >= n) continue;
-        const s = seg.readiness === "sin_chofer" ? 2 : seg.readiness === "sin_avisar" ? 1 : 0;
-        if (s > sev[i]) sev[i] = s;
       }
     }
 
@@ -97,7 +93,7 @@ const Overview: FC = () => {
     // DERIVED from this operation's own spikiness — max ÷ median of the non-empty weeks. A flat year stays ~linear; a
     // season-peaked year bends concave so the quiet weeks still read instead of collapsing to slivers. No hardcoded
     // volume number: the ceiling and the exponent are both data-derived; the 0.45 floor / log2 base are dimensionless.
-    const max = counts.length ? Math.max(...counts) : 0;
+    const max = Math.max(0, ...counts);
     if (max <= 0) return counts.map((_, i) => ({ h: 0, sev: sev[i] }));
     const nz = counts.filter((c) => c > 0).sort((a, b) => a - b);
     const mid = nz.length >> 1;

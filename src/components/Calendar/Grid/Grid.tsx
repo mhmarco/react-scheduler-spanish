@@ -9,11 +9,13 @@ import {
   SelectionOverlay,
   MultiSelectToolbar,
   PendingSelections,
-  TodayColumn
+  TodayColumn,
+  JumpColumn
 } from "@/components";
 import { useCalendar } from "@/context/CalendarProvider";
 import { resizeCanvas } from "@/utils/resizeCanvas";
 import { getCanvasWidth } from "@/utils/getCanvasWidth";
+import { prefersReducedMotion } from "@/utils/prefersReducedMotion";
 import { useDragAndDrop } from "@/hooks/useDragAndDrop";
 import { useClickToAdd } from "@/hooks/useClickToAdd";
 import { GridProps } from "./types";
@@ -179,7 +181,7 @@ const Grid = forwardRef<HTMLDivElement, GridProps>(function Grid(
     xfadePrevDateRef.current = date;
     if (prevRows === rows) return;
     if (!date.isSame(prevDate, "day")) return;
-    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
+    if (prefersReducedMotion()) return;
     const main = canvasRef.current;
     const ghost = ghostCanvasRef.current;
     if (!main || !ghost) return;
@@ -288,6 +290,7 @@ const Grid = forwardRef<HTMLDivElement, GridProps>(function Grid(
         />
         <StyledGhostCanvas ref={ghostCanvasRef} aria-hidden />
         <TodayColumn zoom={zoom as 0 | 1 | 2} startDate={startDate} />
+        <JumpColumn zoom={zoom as 0 | 1 | 2} startDate={startDate} />
         <Tiles
           data={data}
           zoom={zoom}

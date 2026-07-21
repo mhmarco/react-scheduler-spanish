@@ -141,8 +141,8 @@ const Tile: FC<TileProps> = ({
           <TileIcon name={isTransfer ? "transfer" : "sun"} strokeWidth={2.4} />
           {width >= TIMES_MIN && (
             <>
-              <StyledXsTime>{dayjs(data.startDate).format("HH:mm")}</StyledXsTime>
-              {!isTransfer && <StyledXsTime $end>{dayjs(data.endDate).format("HH:mm")}</StyledXsTime>}
+              <StyledXsTime>{dayjs(data.startDate).format("h:mm A")}</StyledXsTime>
+              {!isTransfer && <StyledXsTime $end>{dayjs(data.endDate).format("h:mm A")}</StyledXsTime>}
             </>
           )}
         </StyledNtXs>

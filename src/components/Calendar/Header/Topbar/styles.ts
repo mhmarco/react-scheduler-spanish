@@ -17,7 +17,7 @@ export const Wrapper = styled.div<TopbarProps>`
   background: ${({ theme }) => theme.colors.primary};
 `;
 
-export const Grp = styled.div<{ $at?: "start" | "center" | "end" }>`
+export const Grp = styled.div<{ $at?: "start" | "end" }>`
   display: flex;
   align-items: center;
   gap: 8px;

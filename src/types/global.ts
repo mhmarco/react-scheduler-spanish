@@ -94,6 +94,8 @@ export type OverviewDensityPoint = {
   /** ISO date (any parseable by dayjs); only the day is used. */
   date: string;
   count: number;
+  /** Worst readiness that day for the bar colour: 2 = missing driver, 1 = not-notified, 0 = ok. Defaults to 0. */
+  sev?: number;
 };
 
 export type Theme = {

@@ -262,6 +262,10 @@ export const StyledXsTime = styled.span<{ $end?: boolean }>`
   border-radius: 4px;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.12);
   font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  text-align: center;
+  max-width: 100%;
   background: ${({ $end }) => ($end ? "rgba(255,255,255,0.72)" : "rgba(255,255,255,0.95)")};
   color: ${({ $end }) => ($end ? "#3A4C46" : "#183D3D")};
 `;

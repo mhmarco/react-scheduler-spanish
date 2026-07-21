@@ -43,6 +43,7 @@ const CalendarProvider = ({
   const { zoom: configZoom, maxRecordsPerPage = 50 } = config;
   const [zoom, setZoom] = useState<ZoomLevel>(configZoom);
   const [date, setDate] = useState(dayjs());
+  const [jumpDate, setJumpDate] = useState<dayjs.Dayjs | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
   const [cols, setCols] = useState(getCols(zoom));
   const isNextZoom = allZoomLevel[zoom] !== allZoomLevel[allZoomLevel.length - 1];
@@ -208,6 +209,7 @@ const CalendarProvider = ({
     // laggy vs the rest and desynced its slide/reposition. Mark a center reposition; the [date] effect applies it.
     pendingRepositionRef.current = "middle";
     setDate(dayjs());
+    setJumpDate(null);
     onRangeChange?.(range);
   }, [isLoading, onRangeChange, range]);
 
@@ -223,6 +225,7 @@ const CalendarProvider = ({
       // Mark a center reposition; the [date] effect applies it after the redraw. Explicit nav ⇒ the slide plays.
       pendingRepositionRef.current = "middle";
       setDate(newDate);
+      setJumpDate(newDate);
       onRangeChange?.(range);
     },
     [isLoading, onRangeChange, range]
@@ -261,6 +264,7 @@ const CalendarProvider = ({
         isNextZoom,
         isPrevZoom,
         date,
+        jumpDate,
         isLoading,
         cols,
         startDate: parsedStartDate,

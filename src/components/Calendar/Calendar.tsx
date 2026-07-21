@@ -23,6 +23,7 @@ import {
 } from "@/types/global";
 import { getTooltipData } from "@/utils/getTooltipData";
 import { generateAutoCategories } from "@/utils/generateAutoCategories";
+import { prefersReducedMotion } from "@/utils/prefersReducedMotion";
 import { usePagination } from "@/hooks/usePagination";
 import EmptyBox from "../EmptyBox";
 import { Grid, Header, LeftColumn, Loader, Tooltip } from "..";
@@ -176,15 +177,9 @@ export const Calendar: FC<CalendarProps> = ({
           next.delete(groupId);
           return next;
         });
-        setFadingGroups((prev) => {
-          if (!prev.has(groupId)) return prev;
-          const next = new Set(prev);
-          next.delete(groupId);
-          return next;
-        });
         return;
       }
-      if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
+      if (prefersReducedMotion()) {
         setCollapsedGroups((prev) => new Set(prev).add(groupId));
         return;
       }

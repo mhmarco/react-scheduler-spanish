@@ -23,6 +23,7 @@ export type CalendarContextType = {
   isNextZoom: boolean;
   isPrevZoom: boolean;
   date: dayjs.Dayjs;
+  jumpDate: dayjs.Dayjs | null;
   isLoading: boolean;
   cols: number;
   startDate: Day;

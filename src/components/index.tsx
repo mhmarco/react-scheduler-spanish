@@ -19,5 +19,6 @@ export { default as SelectionOverlay } from "./SelectionOverlay";
 export { default as MultiSelectToolbar } from "./MultiSelectToolbar";
 export { default as PendingSelections } from "./PendingSelections";
 export { default as TodayColumn } from "./TodayColumn/TodayColumn";
+export { default as JumpColumn } from "./JumpColumn/JumpColumn";
 export { default as Legend } from "./Legend/Legend";
 export { default as GroupHeader } from "./LeftColumn/GroupHeader";

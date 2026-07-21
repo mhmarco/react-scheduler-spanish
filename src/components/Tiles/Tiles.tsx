@@ -1,5 +1,5 @@
 import { FC, useEffect, useMemo, useRef, useState } from "react";
-import styled, { keyframes } from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 import { boxHeight, subcontractSeparatorHeight } from "@/constants";
 import { SchedulerProjectData } from "@/types/global";
 import { Tile } from "..";
@@ -19,9 +19,14 @@ const dispoIn = keyframes`
   from { opacity: 0; }
   to { opacity: 1; }
 `;
+const dispoOut = keyframes`
+  from { opacity: 1; }
+  to { opacity: 0; }
+`;
 
-// "DISPONIBLE" watermark on a unit row with no events (mockup 91ed97bb .dispo).
-const StyledDispo = styled.div`
+// "DISPONIBLE" watermark on a unit row with no events (mockup 91ed97bb .dispo). Fades out with the group on collapse
+// via a keyframe (not a transition) for the same reason as the tiles — a transition jumps on remount.
+const StyledDispo = styled.div<{ $fading?: boolean }>`
   position: absolute;
   left: 0;
   right: 0;
@@ -34,10 +39,18 @@ const StyledDispo = styled.div`
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: #93b1a6;
+  pointer-events: none;
   @media (prefers-reduced-motion: no-preference) {
     animation: ${dispoIn} 200ms ease-out;
   }
-  pointer-events: none;
+  ${({ $fading }) =>
+    $fading &&
+    css`
+      opacity: 0;
+      @media (prefers-reduced-motion: no-preference) {
+        animation: ${dispoOut} 180ms ease forwards;
+      }
+    `}
 `;
 
 const Tiles: FC<TilesProps> = ({
@@ -62,9 +75,7 @@ const Tiles: FC<TilesProps> = ({
         if (!person.data.some((r) => r.length > 0)) {
           const yOffset = getSepOffset(rows, separatorRowIndices);
           return [
-            <StyledDispo
-              key={`dispo-${person.id}`}
-              style={{ top: `${rows * boxHeight + yOffset}px`, opacity: unitFading ? 0 : undefined, transition: "opacity 180ms ease" }}>
+            <StyledDispo key={`dispo-${person.id}`} $fading={unitFading} style={{ top: `${rows * boxHeight + yOffset}px` }}>
               Disponible
             </StyledDispo>
           ];
