@@ -136,6 +136,13 @@ export declare type Config = {
      */
     showFullscreenButton?: boolean;
     theme?: Theme;
+    /**
+     * Whole-year event volume for the Overview ribbon, independent of the loaded board window. Each point is a day and
+     * its event count; the ribbon buckets them into weeks for the bar heights. When omitted, the ribbon falls back to
+     * counting the currently-loaded data. Readiness colour is always overlaid from the loaded data (this carries no
+     * readiness), so distant weeks show volume in a neutral tone and loaded weeks show their worst-readiness colour.
+     */
+    yearCounts?: OverviewDensityPoint[];
 };
 
 /**
@@ -384,6 +391,12 @@ declare type NearbyEventDetails = {
     timeGap: number;
     /** Whether this event is before or after the dragged event */
     position: "before" | "after";
+};
+
+declare type OverviewDensityPoint = {
+    /** ISO date (any parseable by dayjs); only the day is used. */
+    date: string;
+    count: number;
 };
 
 declare type ParsedDatesRange = {

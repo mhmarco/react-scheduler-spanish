@@ -19,9 +19,11 @@ import {
 } from "./styles";
 
 // Full-year navigator (§22.8): weekly density bars coloured by worst readiness, a HOY marker, the current viewport
-// window, a hover date readout, and click-to-jump. Density reflects the currently-loaded data only.
+// window, a hover date readout, and click-to-jump. Bar HEIGHTS come from whole-year counts (config.yearCounts) when
+// the host provides them, else from the currently-loaded data; readiness COLOUR is always overlaid from the loaded
+// window (that's the only place readiness lives), so distant weeks show volume neutrally and loaded weeks are tinted.
 const Overview: FC = () => {
-  const { date, zoom, data, goToDate } = useCalendar();
+  const { date, zoom, data, goToDate, config } = useCalendar();
   const lang = useLanguage();
   const trackRef = useRef<HTMLDivElement>(null);
   const [cursor, setCursor] = useState<{ left: number; d: dayjs.Dayjs } | null>(null);
@@ -40,24 +42,44 @@ const Overview: FC = () => {
   );
   const pct = (d: dayjs.Dayjs) => (d.diff(yearStart, "day") / daysInYear) * 100;
 
+  const yearCounts = config?.yearCounts;
   const bars = useMemo(() => {
     const n = Math.ceil(daysInYear / 7);
     const counts = new Array<number>(n).fill(0);
     const sev = new Array<number>(n).fill(0);
+    const weekOf = (d: dayjs.Dayjs) =>
+      d.year() !== year ? -1 : Math.floor(d.diff(yearStart, "day") / 7);
+
+    // Heights: whole-year counts if the host supplied them, else the loaded data.
+    if (yearCounts && yearCounts.length) {
+      for (const pt of yearCounts) {
+        const i = weekOf(dayjs(pt.date));
+        if (i < 0 || i >= n) continue;
+        counts[i] += pt.count;
+      }
+    } else {
+      for (const row of data ?? []) {
+        for (const seg of row.data ?? []) {
+          const i = weekOf(dayjs(seg.startDate));
+          if (i < 0 || i >= n) continue;
+          counts[i] += 1;
+        }
+      }
+    }
+
+    // Colour: worst readiness per week, always from the loaded window (readiness isn't in yearCounts).
     for (const row of data ?? []) {
       for (const seg of row.data ?? []) {
-        const d = dayjs(seg.startDate);
-        if (d.year() !== year) continue;
-        const i = Math.floor(d.diff(yearStart, "day") / 7);
+        const i = weekOf(dayjs(seg.startDate));
         if (i < 0 || i >= n) continue;
-        counts[i] += 1;
         const s = seg.readiness === "sin_chofer" ? 2 : seg.readiness === "sin_avisar" ? 1 : 0;
         if (s > sev[i]) sev[i] = s;
       }
     }
+
     const max = Math.max(1, ...counts);
     return counts.map((c, i) => ({ h: (c / max) * 100, sev: sev[i] }));
-  }, [data, year, yearStart, daysInYear]);
+  }, [data, yearCounts, year, yearStart, daysInYear]);
 
   const today = dayjs();
   const hoyPct = today.year() === year ? pct(today) : null;
