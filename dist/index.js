@@ -6423,7 +6423,7 @@ to{
   return 0.2126 * t[0] + 0.7152 * t[1] + 0.0722 * t[2] > 0.5 ? "black" : "white";
 }, Do = {
   sin_chofer: { stripe: "#9AA4B2", icon: "warn", color: "#9AA4B2", label: "Sin chofer" },
-  sin_avisar: { stripe: "#D98A22", icon: "warn", color: "#D98A22", label: "Sin avisar" },
+  sin_avisar: { stripe: "#D98A22", icon: "warn", color: "#D98A22", label: "No notificado al chofer" },
   notificado: { stripe: "#2C6BB0", icon: "clock", color: "#2C6BB0", label: "Notificado" },
   confirmado: { stripe: "#2E8B63", icon: "check", color: "#2E8B63", label: "Confirmado" }
 };
