@@ -11,6 +11,8 @@ export type TilesProps = {
   separatorRowIndices?: number[];
   /** Units whose group is mid fade-out (collapse) — their (still-live) tiles render as exiting so they fade first. */
   fadingUnitIds?: Set<string>;
+  /** segmentId to persistently highlight (green hue), e.g. focused from a warning. */
+  highlightedSegmentId?: string | null;
 };
 
 export type PlacedTiles = JSX.Element[];

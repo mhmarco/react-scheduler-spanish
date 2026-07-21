@@ -95,6 +95,12 @@ export const StyledTileWrapper = styled.button<StyledTileWrapperProps>`
         animation: ${tileOut} 190ms ease-out forwards;
       }
     `}
+  /* Persistent green highlight for the event focused from a warning: a bold green ring + glow + an inset green wash
+     over the tile bg (below the text, which stays readable). Lifted above neighbours so the ring isn't clipped. */
+  ${({ $highlighted }) =>
+    $highlighted &&
+    `z-index: 9;
+     box-shadow: 0 0 0 3px #0F7D66, 0 0 16px 3px rgba(15, 125, 102, 0.55), inset 0 0 0 200px rgba(15, 125, 102, 0.3);`}
 `;
 
 // 4px left readiness stripe (in-house state / subcontract confirmed-unconfirmed). Colour set inline.

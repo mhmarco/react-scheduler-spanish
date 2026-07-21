@@ -91,6 +91,11 @@ export type Config = {
    * @default true
    */
   showWeekRow?: boolean;
+  /**
+   * segmentId of the event to persistently highlight (green hue) — e.g. the one the host focused from a warning. The
+   * host clears it (null/undefined) when the user clicks away.
+   */
+  highlightedSegmentId?: string | null;
   theme?: Theme;
   /**
    * Whole-year event volume for the Overview ribbon, independent of the loaded board window. Each point is a day and

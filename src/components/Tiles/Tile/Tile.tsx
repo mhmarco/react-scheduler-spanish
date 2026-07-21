@@ -43,7 +43,8 @@ const Tile: FC<TileProps> = ({
   isDragging = false,
   isDraggable = true,
   yOffset = 0,
-  exiting = false
+  exiting = false,
+  highlighted = false
 }) => {
   const { date } = useCalendar();
   const datesRange = getDatesRange(date, zoom);
@@ -107,7 +108,8 @@ const Tile: FC<TileProps> = ({
       isDraggable={isDraggable}
       isDragging={isDragging}
       $unconfirmed={unconfirmedSub}
-      $exiting={exiting}>
+      $exiting={exiting}
+      $highlighted={highlighted}>
       {stripeColor && <StyledRStripe style={{ background: stripeColor }} />}
       {children}
     </StyledTileWrapper>

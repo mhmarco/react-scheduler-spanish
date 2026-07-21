@@ -14,6 +14,8 @@ export type TileProps = {
   yOffset?: number;
   /** True while this tile is animating out after its data was removed (fade + scale, then unmount). */
   exiting?: boolean;
+  /** True when this event is the persistently-highlighted one (green hue), e.g. focused from a warning. */
+  highlighted?: boolean;
 };
 
 export type StyledTextProps = {
@@ -25,4 +27,5 @@ export type StyledTileWrapperProps = {
   isDragging?: boolean;
   $unconfirmed?: boolean;
   $exiting?: boolean;
+  $highlighted?: boolean;
 };

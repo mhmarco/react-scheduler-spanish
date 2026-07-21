@@ -26,7 +26,7 @@ const Grid = forwardRef<HTMLDivElement, GridProps>(function Grid(
   ref
 ) {
   const isThrottled = useRef(false);
-  const { handleScrollNext, handleScrollPrev, date, isLoading, cols, startDate, suppressNextSlideRef } =
+  const { handleScrollNext, handleScrollPrev, date, isLoading, cols, startDate, suppressNextSlideRef, config } =
     useCalendar();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const ghostCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -300,6 +300,7 @@ const Grid = forwardRef<HTMLDivElement, GridProps>(function Grid(
           draggingEventId={draggingEventId}
           separatorRowIndices={separatorRowIndices}
           fadingUnitIds={fadingUnitIds}
+          highlightedSegmentId={config?.highlightedSegmentId ?? null}
         />
         <StyledSpan ref={refRight} position="right" />
         <Loader isLoading={isLoading} position="right" />

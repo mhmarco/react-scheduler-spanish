@@ -61,7 +61,8 @@ const Tiles: FC<TilesProps> = ({
   isDraggable,
   draggingEventId,
   separatorRowIndices = [],
-  fadingUnitIds
+  fadingUnitIds,
+  highlightedSegmentId
 }) => {
   const { nodes, liveMap } = useMemo(() => {
     const liveMap = new Map<string, ExitDesc>();
@@ -106,6 +107,7 @@ const Tiles: FC<TilesProps> = ({
                 isDraggable={isTileDraggable}
                 yOffset={yOffset}
                 exiting={unitFading}
+                highlighted={highlightedSegmentId != null && project.segmentId === highlightedSegmentId}
               />
             );
           })
@@ -113,7 +115,7 @@ const Tiles: FC<TilesProps> = ({
       })
       .flat(2);
     return { nodes, liveMap };
-  }, [data, onTileClick, zoom, onDragStart, isDraggable, draggingEventId, separatorRowIndices, fadingUnitIds]);
+  }, [data, onTileClick, zoom, onDragStart, isDraggable, draggingEventId, separatorRowIndices, fadingUnitIds, highlightedSegmentId]);
 
   // Exit animation: keep a just-removed tile mounted with `exiting` for a beat so it fades out before unmounting.
   // Timers drop only their own batch and are cleared on unmount, so overlapping removals don't cancel each other.
