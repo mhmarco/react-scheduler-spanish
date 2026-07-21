@@ -92,7 +92,12 @@ export const StyledTimeLabel = styled.div`
   margin-bottom: 2px;
 `;
 
+// Date on its own line, time on the next — explicitly stacked (not reliant on the narrow column wrapping), for tour
+// start/end and transfers alike.
 export const StyledTimeValue = styled.div`
+  display: flex;
+  flex-direction: column;
+  line-height: 1.4;
   font-size: 12px;
   font-weight: 500;
   color: ${({ theme }) => theme.colors.textPrimary};

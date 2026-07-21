@@ -133,7 +133,6 @@ const Tooltip: FC<TooltipProps> = ({ tooltipData, visible = true }) => {
             <StyledTimeLabel>{t.startDate}</StyledTimeLabel>
             <StyledTimeValue>
               <StyledTimeDate>{reservationData.startDate}</StyledTimeDate>
-              {" "}
               <StyledTimeHour>{reservationData.startTime}</StyledTimeHour>
             </StyledTimeValue>
           </StyledTimeItem>
@@ -143,7 +142,6 @@ const Tooltip: FC<TooltipProps> = ({ tooltipData, visible = true }) => {
               <StyledTimeLabel>{t.endDate}</StyledTimeLabel>
               <StyledTimeValue>
                 <StyledTimeDate>{reservationData.endDate}</StyledTimeDate>
-                {" "}
                 <StyledTimeHour>{reservationData.endTime}</StyledTimeHour>
               </StyledTimeValue>
             </StyledTimeItem>

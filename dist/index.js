@@ -6955,6 +6955,9 @@ const Rl = b.div`
   letter-spacing: 0.5px;
   margin-bottom: 2px;
 `, Yr = b.div`
+  display: flex;
+  flex-direction: column;
+  line-height: 1.4;
   font-size: 12px;
   font-weight: 500;
   color: ${({ theme: e }) => e.colors.textPrimary};
@@ -7082,7 +7085,6 @@ const Ul = {
           /* @__PURE__ */ h(Ir, { children: l.startDate }),
           /* @__PURE__ */ W(Yr, { children: [
             /* @__PURE__ */ h(Rr, { children: n.startDate }),
-            " ",
             /* @__PURE__ */ h(Lr, { children: n.startTime })
           ] })
         ] }),
@@ -7090,7 +7092,6 @@ const Ul = {
           /* @__PURE__ */ h(Ir, { children: l.endDate }),
           /* @__PURE__ */ W(Yr, { children: [
             /* @__PURE__ */ h(Rr, { children: n.endDate }),
-            " ",
             /* @__PURE__ */ h(Lr, { children: n.endTime })
           ] })
         ] })
