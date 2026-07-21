@@ -20,7 +20,7 @@ import { GridProps } from "./types";
 import { StyledCanvas, StyledGhostCanvas, StyledInnerWrapper, StyledSpan, StyledWrapper } from "./styles";
 
 const Grid = forwardRef<HTMLDivElement, GridProps>(function Grid(
-  { zoom, rows, data, baseData, onTileClick, onEventDrop, onEventDrag, draggableConfig, onDragStateChange, onTimeRangeSelect, onMultiTimeRangeSelect, clickToAddConfig, separatorRowIndices = [], subcontractSeparatorRow = -1 },
+  { zoom, rows, data, baseData, onTileClick, onEventDrop, onEventDrag, draggableConfig, onDragStateChange, onTimeRangeSelect, onMultiTimeRangeSelect, clickToAddConfig, separatorRowIndices = [], subcontractSeparatorRow = -1, fadingUnitIds },
   ref
 ) {
   const isThrottled = useRef(false);
@@ -289,13 +289,14 @@ const Grid = forwardRef<HTMLDivElement, GridProps>(function Grid(
         <StyledGhostCanvas ref={ghostCanvasRef} aria-hidden />
         <TodayColumn zoom={zoom as 0 | 1 | 2} startDate={startDate} />
         <Tiles
-          data={data} 
-          zoom={zoom} 
+          data={data}
+          zoom={zoom}
           onTileClick={onTileClick}
           onDragStart={handleDragStart}
           isDraggable={isDraggable}
           draggingEventId={draggingEventId}
           separatorRowIndices={separatorRowIndices}
+          fadingUnitIds={fadingUnitIds}
         />
         <StyledSpan ref={refRight} position="right" />
         <Loader isLoading={isLoading} position="right" />
