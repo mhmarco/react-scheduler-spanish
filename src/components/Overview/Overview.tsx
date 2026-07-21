@@ -18,10 +18,11 @@ import {
   StyledTip
 } from "./styles";
 
-// Full-year navigator (§22.8): weekly density bars coloured by worst readiness, a HOY marker, the current viewport
-// window, a hover date readout, and click-to-jump. Bar HEIGHTS come from whole-year counts (config.yearCounts) when
-// the host provides them, else from the currently-loaded data; readiness COLOUR is always overlaid from the loaded
-// window (that's the only place readiness lives), so distant weeks show volume neutrally and loaded weeks are tinted.
+// Rolling navigator: the ribbon spans exactly the selectable range — 3 whole months back to 9 whole months forward
+// from today — so it IS the navigable window (§22.8). Weekly density bars coloured by worst readiness, a HOY marker,
+// the current viewport window, a hover date readout, and click-to-jump. Bar HEIGHTS come from whole-year counts
+// (config.yearCounts) when the host supplies them, else the loaded data; readiness COLOUR is always overlaid from the
+// loaded window (the only place readiness lives), so distant weeks show volume neutrally and loaded weeks are tinted.
 const Overview: FC = () => {
   const { date, zoom, data, goToDate, config } = useCalendar();
   const lang = useLanguage();
@@ -34,23 +35,38 @@ const Overview: FC = () => {
     [lang]
   );
 
-  const year = date.year();
-  const yearStart = useMemo(() => dayjs(new Date(year, 0, 1)), [year]);
-  const daysInYear = useMemo(
-    () => dayjs(new Date(year + 1, 0, 1)).diff(yearStart, "day"),
-    [year, yearStart]
-  );
-  const pct = (d: dayjs.Dayjs) => (d.diff(yearStart, "day") / daysInYear) * 100;
+  const today = useMemo(() => dayjs().startOf("day"), []);
+  const { domainStart, domainEnd, domainDays } = useMemo(() => {
+    const start = today.subtract(3, "month").startOf("month");
+    const end = today.add(9, "month").endOf("month");
+    return { domainStart: start, domainEnd: end, domainDays: end.diff(start, "day") + 1 };
+  }, [today]);
+  const pct = (d: dayjs.Dayjs) => (d.diff(domainStart, "day") / domainDays) * 100;
+  const clampPct = (p: number) => Math.min(100, Math.max(0, p));
+
+  // One label + tick per whole month spanned by the domain (crosses a year boundary, so January and the first mark
+  // carry a 2-digit year to disambiguate the repeated month names).
+  const monthMarks = useMemo(() => {
+    const marks: dayjs.Dayjs[] = [];
+    let m = domainStart.startOf("month");
+    while (m.isBefore(domainEnd)) {
+      marks.push(m);
+      m = m.add(1, "month");
+    }
+    return marks;
+  }, [domainStart, domainEnd]);
 
   const yearCounts = config?.yearCounts;
   const bars = useMemo(() => {
-    const n = Math.ceil(daysInYear / 7);
+    const n = Math.ceil(domainDays / 7);
     const counts = new Array<number>(n).fill(0);
     const sev = new Array<number>(n).fill(0);
-    const weekOf = (d: dayjs.Dayjs) =>
-      d.year() !== year ? -1 : Math.floor(d.diff(yearStart, "day") / 7);
+    const weekOf = (d: dayjs.Dayjs) => {
+      const off = d.diff(domainStart, "day");
+      return off < 0 || off >= domainDays ? -1 : Math.floor(off / 7);
+    };
 
-    // Heights: whole-year counts if the host supplied them, else the loaded data.
+    // Heights: whole-range counts if the host supplied them, else the loaded data.
     if (yearCounts && yearCounts.length) {
       for (const pt of yearCounts) {
         const i = weekOf(dayjs(pt.date));
@@ -89,18 +105,17 @@ const Overview: FC = () => {
     const ratio = median > 0 ? max / median : 1;
     const gamma = Math.min(1, Math.max(0.45, 1 / (1 + Math.log2(Math.max(1, ratio)))));
     return counts.map((c, i) => ({ h: c > 0 ? Math.min(100, 100 * Math.pow(c / max, gamma)) : 0, sev: sev[i] }));
-  }, [data, yearCounts, year, yearStart, daysInYear]);
+  }, [data, yearCounts, domainStart, domainDays]);
 
-  const today = dayjs();
-  const hoyPct = today.year() === year ? pct(today) : null;
+  const hoyPct = pct(today);
 
   // The window spans exactly the LOADED/rendered range (getDatesRange = the extent emitted to onRangeChange, i.e. the
   // dates actually fetched/drawn), centred on `center`. Same helper drives the green current-window and the hover
   // ghost, so the ghost is always identical in span to the window a click would load (goToDate recenters on hover).
   const winFor = (center: dayjs.Dayjs) => {
     const { startDate, endDate } = getDatesRange(center, zoom);
-    const left = Math.max(0, pct(startDate));
-    return { left, width: Math.min(100, pct(endDate)) - left, startDate, endDate };
+    const left = clampPct(pct(startDate));
+    return { left, width: clampPct(pct(endDate)) - left, startDate, endDate };
   };
   const win = winFor(date);
   const ghost = cursor ? winFor(cursor.d) : null;
@@ -110,7 +125,7 @@ const Overview: FC = () => {
     const rect = trackRef.current?.getBoundingClientRect();
     if (!rect) return null;
     const f = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
-    return { f, d: yearStart.add(Math.round(f * daysInYear), "day") };
+    return { f, d: domainStart.add(Math.round(f * (domainDays - 1)), "day") };
   };
 
   return (
@@ -132,16 +147,14 @@ const Overview: FC = () => {
         }}
         onMouseLeave={() => setCursor(null)}>
         <StyledMonths>
-          {months.map((m, i) => (
-            <span key={i} style={{ left: `${pct(dayjs(new Date(year, i, 1)))}%` }}>
-              {m}
+          {monthMarks.map((m, i) => (
+            <span key={i} style={{ left: `${pct(m)}%` }}>
+              {i === 0 || m.month() === 0 ? `${months[m.month()]} ${m.format("YY")}` : months[m.month()]}
             </span>
           ))}
         </StyledMonths>
-        {months.map((m, i) =>
-          i === 0 ? null : (
-            <StyledMTick key={i} style={{ left: `${pct(dayjs(new Date(year, i, 1)))}%` }} />
-          )
+        {monthMarks.map((m, i) =>
+          i === 0 ? null : <StyledMTick key={i} style={{ left: `${pct(m)}%` }} />
         )}
         <StyledBars>
           {bars.map((b, i) => (
@@ -149,11 +162,9 @@ const Overview: FC = () => {
           ))}
         </StyledBars>
         <StyledWin style={{ left: `${win.left}%`, width: `${win.width}%` }} />
-        {hoyPct !== null && (
-          <StyledHoy style={{ left: `${hoyPct}%` }}>
-            <span>HOY</span>
-          </StyledHoy>
-        )}
+        <StyledHoy style={{ left: `${clampPct(hoyPct)}%` }}>
+          <span>HOY</span>
+        </StyledHoy>
         {cursor && ghost && (
           <>
             <StyledGhost style={{ left: `${ghost.left}%`, width: `${ghost.width}%` }} />

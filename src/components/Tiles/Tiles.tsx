@@ -47,7 +47,8 @@ const Tiles: FC<TilesProps> = ({
   onDragStart,
   isDraggable,
   draggingEventId,
-  separatorRowIndices = []
+  separatorRowIndices = [],
+  fadingUnitIds
 }) => {
   const { nodes, liveMap } = useMemo(() => {
     const liveMap = new Map<string, ExitDesc>();
@@ -57,10 +58,13 @@ const Tiles: FC<TilesProps> = ({
         if (personIndex > 0) {
           rows += Math.max(data[personIndex - 1].data.length, 1);
         }
+        const unitFading = !!fadingUnitIds?.has(person.id);
         if (!person.data.some((r) => r.length > 0)) {
           const yOffset = getSepOffset(rows, separatorRowIndices);
           return [
-            <StyledDispo key={`dispo-${person.id}`} style={{ top: `${rows * boxHeight + yOffset}px` }}>
+            <StyledDispo
+              key={`dispo-${person.id}`}
+              style={{ top: `${rows * boxHeight + yOffset}px`, opacity: unitFading ? 0 : undefined, transition: "opacity 180ms ease" }}>
               Disponible
             </StyledDispo>
           ];
@@ -90,6 +94,7 @@ const Tiles: FC<TilesProps> = ({
                 isDragging={isDraggingThis}
                 isDraggable={isTileDraggable}
                 yOffset={yOffset}
+                exiting={unitFading}
               />
             );
           })
@@ -97,7 +102,7 @@ const Tiles: FC<TilesProps> = ({
       })
       .flat(2);
     return { nodes, liveMap };
-  }, [data, onTileClick, zoom, onDragStart, isDraggable, draggingEventId, separatorRowIndices]);
+  }, [data, onTileClick, zoom, onDragStart, isDraggable, draggingEventId, separatorRowIndices, fadingUnitIds]);
 
   // Exit animation: keep a just-removed tile mounted with `exiting` for a beat so it fades out before unmounting.
   // Timers drop only their own batch and are cleared on unmount, so overlapping removals don't cancel each other.

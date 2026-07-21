@@ -9,6 +9,8 @@ export type TilesProps = {
   draggingEventId?: string | null;
   /** Row indices where group separators are drawn */
   separatorRowIndices?: number[];
+  /** Units whose group is mid fade-out (collapse) — their (still-live) tiles render as exiting so they fade first. */
+  fadingUnitIds?: Set<string>;
 };
 
 export type PlacedTiles = JSX.Element[];

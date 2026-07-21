@@ -13,6 +13,7 @@ export type LeftColumnProps = {
   onSearchInputChange: React.ChangeEventHandler<HTMLInputElement>;
   onItemClick?: (data: SchedulerItemClickData) => void;
   collapsedGroups: Set<string>;
+  fadingGroups: Set<string>;
   onToggleGroup: (groupId: string) => void;
   allGroupIds: string[];
   onExpandAll: () => void;

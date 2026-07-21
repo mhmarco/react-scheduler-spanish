@@ -1,10 +1,13 @@
 import styled from "styled-components";
+import { leftColumnWidth } from "@/constants";
 
+// Content inset by leftColumnWidth for the same reason as the toolbar: the strip spans the full board width but its
+// items must clear the sticky left column, which paints above it.
 export const StyledLegend = styled.div`
   display: flex;
   align-items: center;
   gap: 13px;
-  padding: 8px 16px;
+  padding: 8px 16px 8px ${leftColumnWidth + 16}px;
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   background: ${({ theme }) => theme.colors.gridBackground};
   overflow-x: auto;

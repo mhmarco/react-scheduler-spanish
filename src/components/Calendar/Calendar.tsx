@@ -118,6 +118,9 @@ export const Calendar: FC<CalendarProps> = ({
   const [isDragging, setIsDragging] = useState(false);
   const [searchPhrase, setSearchPhrase] = useState("");
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());
+  const [fadingGroups, setFadingGroups] = useState<Set<string>>(new Set());
+  const fadeTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
+  useEffect(() => () => fadeTimers.current.forEach(clearTimeout), []);
   const {
     zoom,
     startDate,
@@ -158,14 +161,42 @@ export const Calendar: FC<CalendarProps> = ({
     return { effectiveCategories: auto.categories, effectivePage };
   }, [categories, page]);
 
-  const handleToggleGroup = useCallback((groupId: string) => {
-    setCollapsedGroups((prev) => {
-      const next = new Set(prev);
-      if (next.has(groupId)) next.delete(groupId);
-      else next.add(groupId);
-      return next;
-    });
-  }, []);
+  // Fade-then-collapse: expanding is immediate (tileIn/rowIn carry it in), but collapsing first fades the group's rows
+  // and tiles out IN PLACE (layout held), then commits the collapse a beat later so both columns snap closed together —
+  // no tile freezes over a snapped-up row mid-fade. Reduced-motion collapses instantly.
+  const handleToggleGroup = useCallback(
+    (groupId: string) => {
+      if (collapsedGroups.has(groupId)) {
+        setCollapsedGroups((prev) => {
+          const next = new Set(prev);
+          next.delete(groupId);
+          return next;
+        });
+        setFadingGroups((prev) => {
+          if (!prev.has(groupId)) return prev;
+          const next = new Set(prev);
+          next.delete(groupId);
+          return next;
+        });
+        return;
+      }
+      if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
+        setCollapsedGroups((prev) => new Set(prev).add(groupId));
+        return;
+      }
+      setFadingGroups((prev) => new Set(prev).add(groupId));
+      const timer = setTimeout(() => {
+        setCollapsedGroups((prev) => new Set(prev).add(groupId));
+        setFadingGroups((prev) => {
+          const next = new Set(prev);
+          next.delete(groupId);
+          return next;
+        });
+      }, 190);
+      fadeTimers.current.push(timer);
+    },
+    [collapsedGroups]
+  );
 
   // Compute all collapsible group IDs
   const allGroupIds = useMemo(() => {
@@ -191,6 +222,17 @@ export const Calendar: FC<CalendarProps> = ({
   const handleCollapseAll = useCallback(() => {
     setCollapsedGroups(new Set(allGroupIds));
   }, [allGroupIds]);
+
+  // Units whose group is mid-fade — their grid tiles render as `exiting` (opacity 0) during the fade beat.
+  const fadingUnitIds = useMemo(() => {
+    const ids = new Set<string>();
+    if (fadingGroups.size === 0) return ids;
+    for (const item of effectivePage) {
+      const gid = item.isSubcontract ? "__subcontract__" : item.categoryId;
+      if (gid && fadingGroups.has(gid)) ids.add(item.id);
+    }
+    return ids;
+  }, [fadingGroups, effectivePage]);
 
   // Build grouped structure and compute visible data
   const {
@@ -439,6 +481,7 @@ export const Calendar: FC<CalendarProps> = ({
         onSearchInputChange={handleSearch}
         onItemClick={onItemClick}
         collapsedGroups={collapsedGroups}
+        fadingGroups={fadingGroups}
         onToggleGroup={handleToggleGroup}
         allGroupIds={allGroupIds}
         onExpandAll={handleExpandAll}
@@ -469,6 +512,7 @@ export const Calendar: FC<CalendarProps> = ({
             clickToAddConfig={clickToAddConfig}
             separatorRowIndices={separatorRowIndices}
             subcontractSeparatorRow={subcontractSeparatorRow}
+            fadingUnitIds={fadingUnitIds}
           />
         ) : (
           <StyledEmptyBoxWrapper width={topBarWidth}>

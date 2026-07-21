@@ -67,22 +67,15 @@ export const StyledInputWrapper = styled.div<StyledInputWrapperProps>`
   }
 `;
 
-// Accordion wrapper for a group's rows. The grid tiles fade out and the canvas cross-fades on collapse (Grid.tsx),
-// but the left-column labels used to pop out of flow instantly — this animates their height to 0 in lockstep so the
-// two sides read as one motion. grid-template-rows 0fr→1fr is the modern no-magic-number collapse; the inner div
-// clips. Rows stay mounted while collapsed (height 0) so toggling never remounts them (no rowIn re-fire).
-export const StyledGroupBody = styled.div<{ $collapsed: boolean }>`
-  display: grid;
-  grid-template-rows: ${({ $collapsed }) => ($collapsed ? "0fr" : "1fr")};
-  transition: grid-template-rows 200ms ease;
+// Collapse motion: a group first fades out (both here and on the grid, in lockstep), THEN the layout snaps closed —
+// so the two columns snap together and nothing overlaps a snapped-up row mid-fade. Kept mounted (opacity 0) only for
+// the fade beat; the host removes it right after (see Calendar fade-then-collapse).
+export const StyledGroupBody = styled.div<{ $fading: boolean }>`
+  opacity: ${({ $fading }) => ($fading ? 0 : 1)};
+  transition: opacity 180ms ease;
   @media (prefers-reduced-motion: reduce) {
     transition: none;
   }
-`;
-
-export const StyledGroupBodyInner = styled.div`
-  overflow: hidden;
-  min-height: 0;
 `;
 
 export const StyledCollapseButton = styled.button<{ $allCollapsed: boolean }>`

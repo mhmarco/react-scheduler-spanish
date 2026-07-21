@@ -1,8 +1,10 @@
 import styled from "styled-components";
+import { leftColumnWidth } from "@/constants";
 import { TopbarProps } from "./types";
 
-// Toolbar matched to the mockup .toolbar (artifact 91ed97bb): a light full-width band with a left control group
-// and a right group. Fixed mockup colours where the component theme has no matching token.
+// Toolbar matched to the mockup .toolbar (artifact 91ed97bb): a light full-width band with a left control group and a
+// right group. The band's background spans the full board width (it sits under the sticky left column), but its
+// CONTENT is inset by leftColumnWidth so the nav/date never render under that column, which paints above the toolbar.
 export const Wrapper = styled.div<TopbarProps>`
   width: 100%;
   display: flex;
@@ -10,7 +12,7 @@ export const Wrapper = styled.div<TopbarProps>`
   justify-content: space-between;
   gap: 12px;
   flex-wrap: wrap;
-  padding: 9px 16px;
+  padding: 9px 16px 9px ${leftColumnWidth + 16}px;
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   background: ${({ theme }) => theme.colors.primary};
 `;

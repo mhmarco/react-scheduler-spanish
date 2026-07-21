@@ -10,8 +10,7 @@ import {
   StyledWrapper,
   StyledHeaderActions,
   StyledCollapseButton,
-  StyledGroupBody,
-  StyledGroupBodyInner
+  StyledGroupBody
 } from "./styles";
 import { LeftColumnProps } from "./types";
 import LeftColumnItem from "./LeftColumnItem/LeftColumnItem";
@@ -30,6 +29,7 @@ const LeftColumn: FC<LeftColumnProps> = ({
   onSearchInputChange,
   onItemClick,
   collapsedGroups,
+  fadingGroups,
   onToggleGroup,
   allGroupIds,
   onExpandAll,
@@ -71,19 +71,18 @@ const LeftColumn: FC<LeftColumnProps> = ({
     );
     if (items.length === 0) return null;
     const isCollapsed = collapsedGroups.has(cat.id);
+    const isFading = fadingGroups.has(cat.id);
     const label = cat.name;
     return (
       <div key={cat.id}>
         <GroupHeader
           label={label}
           count={items.length}
-          isCollapsed={isCollapsed}
+          isCollapsed={isCollapsed || isFading}
           onToggle={() => onToggleGroup(cat.id)}
           variant="category"
         />
-        <StyledGroupBody $collapsed={isCollapsed}>
-          <StyledGroupBodyInner>{items.map(renderItem)}</StyledGroupBodyInner>
-        </StyledGroupBody>
+        {!isCollapsed && <StyledGroupBody $fading={isFading}>{items.map(renderItem)}</StyledGroupBody>}
       </div>
     );
   };
@@ -145,13 +144,15 @@ const LeftColumn: FC<LeftColumnProps> = ({
           <GroupHeader
             label={subcontractLabel}
             count={subcontractUnits.length}
-            isCollapsed={collapsedGroups.has("__subcontract__")}
+            isCollapsed={collapsedGroups.has("__subcontract__") || fadingGroups.has("__subcontract__")}
             onToggle={() => onToggleGroup("__subcontract__")}
             variant="subcontract"
           />
-          <StyledGroupBody $collapsed={collapsedGroups.has("__subcontract__")}>
-            <StyledGroupBodyInner>{subcontractUnits.map(renderItem)}</StyledGroupBodyInner>
-          </StyledGroupBody>
+          {!collapsedGroups.has("__subcontract__") && (
+            <StyledGroupBody $fading={fadingGroups.has("__subcontract__")}>
+              {subcontractUnits.map(renderItem)}
+            </StyledGroupBody>
+          )}
         </>
       )}
       <PaginationButton
