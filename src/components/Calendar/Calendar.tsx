@@ -29,6 +29,10 @@ import { Grid, Header, LeftColumn, Loader, Tooltip } from "..";
 import { CalendarProps } from "./types";
 import { StyledOuterWrapper, StyledInnerWrapper, StyledEmptyBoxWrapper } from "./styles";
 
+// Stable empty reference for the no-fade case: returning a fresh Set each render would flow into the Tiles `nodes`
+// memo (a dep), rebuild its liveMap every render, and fire the exit-tracking effect in a loop.
+const EMPTY_UNIT_IDS: Set<string> = new Set();
+
 const initialTooltipData: TooltipData = {
   coords: { x: 0, y: 0 },
   mouseCoords: { x: 0, y: 0 },
@@ -225,8 +229,8 @@ export const Calendar: FC<CalendarProps> = ({
 
   // Units whose group is mid-fade — their grid tiles render as `exiting` (opacity 0) during the fade beat.
   const fadingUnitIds = useMemo(() => {
+    if (fadingGroups.size === 0) return EMPTY_UNIT_IDS;
     const ids = new Set<string>();
-    if (fadingGroups.size === 0) return ids;
     for (const item of effectivePage) {
       const gid = item.isSubcontract ? "__subcontract__" : item.categoryId;
       if (gid && fadingGroups.has(gid)) ids.add(item.id);
