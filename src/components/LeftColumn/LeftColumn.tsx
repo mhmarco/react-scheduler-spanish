@@ -9,7 +9,9 @@ import {
   StyledLeftColumnHeader,
   StyledWrapper,
   StyledHeaderActions,
-  StyledCollapseButton
+  StyledCollapseButton,
+  StyledGroupBody,
+  StyledGroupBodyInner
 } from "./styles";
 import { LeftColumnProps } from "./types";
 import LeftColumnItem from "./LeftColumnItem/LeftColumnItem";
@@ -79,7 +81,9 @@ const LeftColumn: FC<LeftColumnProps> = ({
           onToggle={() => onToggleGroup(cat.id)}
           variant="category"
         />
-        {!isCollapsed && items.map(renderItem)}
+        <StyledGroupBody $collapsed={isCollapsed}>
+          <StyledGroupBodyInner>{items.map(renderItem)}</StyledGroupBodyInner>
+        </StyledGroupBody>
       </div>
     );
   };
@@ -145,7 +149,9 @@ const LeftColumn: FC<LeftColumnProps> = ({
             onToggle={() => onToggleGroup("__subcontract__")}
             variant="subcontract"
           />
-          {!collapsedGroups.has("__subcontract__") && subcontractUnits.map(renderItem)}
+          <StyledGroupBody $collapsed={collapsedGroups.has("__subcontract__")}>
+            <StyledGroupBodyInner>{subcontractUnits.map(renderItem)}</StyledGroupBodyInner>
+          </StyledGroupBody>
         </>
       )}
       <PaginationButton
