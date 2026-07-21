@@ -77,8 +77,18 @@ const Overview: FC = () => {
       }
     }
 
-    const max = Math.max(1, ...counts);
-    return counts.map((c, i) => ({ h: (c / max) * 100, sev: sev[i] }));
+    // Height is anchored to the busiest week (max → 100%, honoring "relative to the max events"), but the exponent is
+    // DERIVED from this operation's own spikiness — max ÷ median of the non-empty weeks. A flat year stays ~linear; a
+    // season-peaked year bends concave so the quiet weeks still read instead of collapsing to slivers. No hardcoded
+    // volume number: the ceiling and the exponent are both data-derived; the 0.45 floor / log2 base are dimensionless.
+    const max = counts.length ? Math.max(...counts) : 0;
+    if (max <= 0) return counts.map((_, i) => ({ h: 0, sev: sev[i] }));
+    const nz = counts.filter((c) => c > 0).sort((a, b) => a - b);
+    const mid = nz.length >> 1;
+    const median = nz.length % 2 ? nz[mid] : (nz[mid - 1] + nz[mid]) / 2;
+    const ratio = median > 0 ? max / median : 1;
+    const gamma = Math.min(1, Math.max(0.45, 1 / (1 + Math.log2(Math.max(1, ratio)))));
+    return counts.map((c, i) => ({ h: c > 0 ? Math.min(100, 100 * Math.pow(c / max, gamma)) : 0, sev: sev[i] }));
   }, [data, yearCounts, year, yearStart, daysInYear]);
 
   const today = dayjs();
@@ -148,7 +158,7 @@ const Overview: FC = () => {
           <>
             <StyledGhost style={{ left: `${ghost.left}%`, width: `${ghost.width}%` }} />
             <StyledCursor style={{ left: `${cursor.left}%` }} />
-            <StyledTip style={{ left: `${cursor.left}%` }}>{`${fmt(ghost.startDate)} – ${fmt(ghost.endDate)}`}</StyledTip>
+            <StyledTip style={{ left: `${cursor.left}%` }}>{`Ir a ${fmt(cursor.d)}`}</StyledTip>
           </>
         )}
       </StyledTrack>
