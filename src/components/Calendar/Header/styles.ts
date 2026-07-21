@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { headerHeight, leftColumnWidth } from "@/constants";
+import { headerHeight } from "@/constants";
 
 export const StyledOuterWrapper = styled.div`
   position: sticky;
@@ -9,13 +9,14 @@ export const StyledOuterWrapper = styled.div`
   z-index: 10;
 `;
 
-// Topbar + Legend are pinned to the visible viewport (sticky left, viewport-minus-left-column width) so they stay in
-// view while the canvas header/grid scroll horizontally. This is what lets the toolbar's centred ‹ Hoy › sit in the
-// middle of the visible board rather than the middle of the full scrollable canvas.
+// Topbar + Legend span the full visible viewport width and are pinned (sticky left) so they stay in view while the
+// canvas header/grid scroll horizontally. Full-width — NOT offset by the left column — so the 2-group toolbar's nav
+// sits flush at the far left (matching the mockup); the old left-column offset only made sense for the retired
+// centred-‹ Hoy › layout and left a blank gap above the unit-label column.
 export const StyledPinned = styled.div<{ $width: number }>`
   position: sticky;
-  left: ${leftColumnWidth}px;
-  width: calc(${({ $width }) => $width}px - ${leftColumnWidth}px);
+  left: 0;
+  width: ${({ $width }) => $width}px;
   z-index: 3;
 `;
 

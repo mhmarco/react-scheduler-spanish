@@ -1660,7 +1660,7 @@ x.div`
   width: 40vw;
   height: 40vh;
 `;
-const De = 50, Ze = 24, Ct = 16, nt = 40, vt = nt + Ct + Ze, xt = 84, ge = 56, Ye = 196, Le = 12, Pe = 50, bt = 24, Tt = 16, dn = 40, ks = bt + Tt + dn, rr = 24, or = 52, He = {
+const De = 50, Ze = 24, Ct = 16, nt = 40, vt = nt + Ct + Ze, xt = 84, ge = 56, Le = 196, Re = 12, Pe = 50, bt = 24, Tt = 16, dn = 40, ks = bt + Tt + dn, rr = 24, or = 52, He = {
   topRow: `600 14px ${Ne}`,
   middleRow: `400 10px ${Ne}`,
   bottomRow: {
@@ -1668,7 +1668,7 @@ const De = 50, Ze = 24, Ct = 16, nt = 40, vt = nt + Ct + Ze, xt = 84, ge = 56, Y
     number: `600 10px ${Ne}`,
     hoursInDay: `400 9px ${Ne}`
   }
-}, pt = 3, $s = 1.6, Ds = 4.5, un = 12, jt = 24, Es = "reactSchedulerCanvasHeaderWrapper", no = "reactSchedulerCanvasWrapper", je = Dt, _s = 4, On = 48, Ke = 5, Ts = 40, sr = 8, Yn = Ze / 2 + 2, ro = Ct / 2 + Ze + 1, ir = 2, Ee = 60, Re = 21, oo = 58, so = "reactSchedulerBody";
+}, pt = 3, $s = 1.6, Ds = 4.5, un = 12, jt = 24, Es = "reactSchedulerCanvasHeaderWrapper", no = "reactSchedulerCanvasWrapper", je = Dt, _s = 4, On = 48, Ke = 5, Ts = 40, sr = 8, Yn = Ze / 2 + 2, ro = Ct / 2 + Ze + 1, ir = 2, Ee = 60, Ye = 21, oo = 58, so = "reactSchedulerBody";
 var st = {}, As = {
   get exports() {
     return st;
@@ -1916,7 +1916,7 @@ const Ps = (e) => {
   let t = 0;
   for (const n of r)
     n <= e && t++;
-  return t * Re;
+  return t * Ye;
 }, Is = (e, r, t, n, o, s = []) => {
   for (let i = 0; i < r; i++) {
     const c = Nn(i, s);
@@ -1940,8 +1940,8 @@ const Ps = (e) => {
 }, Os = (e, r, t, n) => {
   e.setLineDash([5, 5]), e.strokeStyle = n.colors.border, e.moveTo(r + 0.5, 0.5), e.lineTo(r + 0.5, t + 0.5), e.stroke();
 }, Ys = (e, r, t, n, o, s = []) => {
-  let i = 0, c = -(n.dayOfMonth - 1) * Le;
-  const l = r * ge + s.length * Re;
+  let i = 0, c = -(n.dayOfMonth - 1) * Re;
+  const l = r * ge + s.length * Ye;
   for (let a = 0; a <= t; a++) {
     const f = _(`${n.year}-${n.month + 1}-${n.dayOfMonth}`).add(
       a,
@@ -1954,7 +1954,7 @@ const Ps = (e) => {
     i += xt;
   }
   for (let a = 0; a < t; a++) {
-    const u = io(n, a) * Le;
+    const u = io(n, a) * Re;
     Os(e, c, l, o), c += u;
   }
 }, Rs = (e, r, t, n, o, s = []) => {
@@ -1977,8 +1977,8 @@ const Ps = (e) => {
     }
   }
 }, Ls = (e, r, t, n, o = !1) => {
-  const s = t * ge + r * Re, i = e.canvas.width;
-  e.fillStyle = o ? n.colors.subcontractBorder + "40" : n.mode === "dark" ? n.colors.primary + "80" : n.colors.primary, e.fillRect(0, s, i, Re);
+  const s = t * ge + r * Ye, i = e.canvas.width;
+  e.fillStyle = o ? n.colors.subcontractBorder + "40" : n.mode === "dark" ? n.colors.primary + "80" : n.colors.primary, e.fillRect(0, s, i, Ye);
 }, Ns = (e, r, t, n, o, s, i = [], c = -1) => {
   if (e.clearRect(0, 0, e.canvas.width, e.canvas.height), !!document.getElementById(no)) {
     switch (r) {
@@ -2324,7 +2324,7 @@ const Ht = [0, 1, 2];
 var At = /* @__PURE__ */ ((e) => (e[e.Tour = 0] = "Tour", e[e.Transfer = 1] = "Transfer", e))(At || {});
 const co = (e) => Ht.includes(e), ft = (e) => {
   var n;
-  const t = (((n = document.getElementById(je)) == null ? void 0 : n.clientWidth) || 0) - Ye;
+  const t = (((n = document.getElementById(je)) == null ? void 0 : n.clientWidth) || 0) - Le;
   switch (e) {
     case 1:
       return Math.ceil(t / De) * pt;
@@ -2371,7 +2371,7 @@ const co = (e) => Ht.includes(e), ft = (e) => {
   };
 }, Bn = () => {
   var t;
-  return ((((t = document.getElementById(je)) == null ? void 0 : t.clientWidth) || 0) - Ye) * pt;
+  return ((((t = document.getElementById(je)) == null ? void 0 : t.clientWidth) || 0) - Le) * pt;
 }, lo = Hr({
   handleGoNext: () => {
   },
@@ -2579,13 +2579,13 @@ const pi = ({
     return e;
   let t = e, n = 0;
   for (const o of r) {
-    const s = o * ge + n * Re;
-    if (e >= s + Re)
+    const s = o * ge + n * Ye;
+    if (e >= s + Ye)
       n++;
     else if (e >= s)
-      return o * ge + n * Re - n * Re;
+      return o * ge + n * Ye - n * Ye;
   }
-  return t - n * Re;
+  return t - n * Ye;
 }, mi = 5, dr = (e, r) => {
   const t = Math.abs(r.x - e.x), n = Math.abs(r.y - e.y);
   return Math.sqrt(t * t + n * n) > mi;
@@ -2620,7 +2620,7 @@ const pi = ({
       let z;
       switch (t) {
         case 0:
-          z = Le * 7;
+          z = Re * 7;
           break;
         case 1:
           z = De;
@@ -2960,11 +2960,11 @@ const pi = ({
     let G = 0;
     for (const $ of a)
       $ <= g && G++;
-    return g * ge + G * Re;
+    return g * ge + G * Ye;
   }, [a]), [v, S] = pe("idle"), [m, Y] = pe(null), [F, P] = pe(null), [I, d] = pe(null), [h, b] = pe(!1), [k, T] = pe([]), [R, J] = pe(!1), q = fe(null), D = fe(null), E = fe(null), A = fe(null), N = de(() => {
     switch (t) {
       case 0:
-        return Le * 7;
+        return Re * 7;
       case 1:
         return De;
       case 2:
@@ -3088,7 +3088,7 @@ const pi = ({
       const $ = document.getElementById(je);
       if (!$ || !c.current)
         return;
-      const W = $.getBoundingClientRect(), re = 60, U = 12, le = g - (W.left + Ye), he = W.right - g;
+      const W = $.getBoundingClientRect(), re = 60, U = 12, le = g - (W.left + Le), he = W.right - g;
       let ue = 0;
       le < re ? ue = -U * (1 - Math.max(0, le) / re) : he < re && (ue = U * (1 - Math.max(0, he) / re)), B(), ue !== 0 && (A.current = requestAnimationFrame(() => {
         $.scrollLeft += ue, L(ht(g, G, c.current)), K(g, G);
@@ -3331,7 +3331,7 @@ const wi = x.canvas`
     te.preventDefault();
   }, []), Ce = de((te) => {
     te.preventDefault();
-  }, []), ae = M.length * Re, ee = de(
+  }, []), ae = M.length * Ye, ee = de(
     (te) => {
       const oe = Bn(), me = t * ge + 1 + ae;
       uo(te, oe, me), Ns(te, r, t, d, h, X, M, v);
@@ -3394,7 +3394,7 @@ const wi = x.canvas`
       },
       {
         root: document.getElementById(je),
-        rootMargin: `0px 0px 0px -${Ye}px`
+        rootMargin: `0px 0px 0px -${Le}px`
       }
     );
     return te.observe(E.current), () => {
@@ -4373,17 +4373,17 @@ const Zt = new na(), go = Hr({
   display: flex;
 `, la = x.div`
   position: relative;
-  margin-left: ${Ye};
+  margin-left: ${Le};
   display: flex;
   flex-direction: column;
   contain: paint;
 `, da = x.div`
-  width: calc(${({ width: e }) => e}px - ${Ye}px);
+  width: calc(${({ width: e }) => e}px - ${Le}px);
   position: sticky;
   top: 0;
   min-height: 440px;
   height: 100%;
-  left: ${Ye}px;
+  left: ${Le}px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -5381,8 +5381,8 @@ const za = x.div`
     /* @__PURE__ */ p(ac, { children: l })
   ] }) });
 }, cc = x.div`
-  min-width: ${Ye + "px"};
-  max-width: ${Ye + "px"};
+  min-width: ${Le + "px"};
+  max-width: ${Le + "px"};
   min-height: 100vh;
   position: sticky;
   left: 0;
@@ -5397,7 +5397,7 @@ const za = x.div`
   display: flex;
   flex-direction: column;
   justify-content: end;
-  width: ${Ye}px;
+  width: ${Le}px;
   background-color: ${({ theme: e }) => e.colors.background};
   z-index: 3;
 `, dc = x.div`
@@ -5840,12 +5840,12 @@ to{
     c += De;
   }
 }, Oc = (e, r, t, n) => {
-  let o = -(t.dayOfMonth - 1) * Le;
+  let o = -(t.dayOfMonth - 1) * Re;
   const s = Ze;
   let c = t.month;
   for (let l = 0; l < r; l++) {
     c >= un && (c = 0);
-    const a = io(t, l) * Le;
+    const a = io(t, l) * Re;
     Xe(
       {
         ctx: e,
@@ -5938,9 +5938,9 @@ to{
   }
 }, Bc = (e, r, t, n) => {
   const s = r.year, i = e.canvas.width * 2;
-  let c = 0, l = 0, a = (ar(s) - t + 1) * Le, u = 0;
+  let c = 0, l = 0, a = (ar(s) - t + 1) * Re, u = 0;
   for (; c + u <= i; )
-    l > 0 && (a = ar(s + l) * Le), u + a > i && l > 0 && (a = Math.ceil((i - u) / Le) * Le), Xe(
+    l > 0 && (a = ar(s + l) * Re), u + a > i && l > 0 && (a = Math.ceil((i - u) / Re) * Re), Xe(
       {
         ctx: e,
         x: c,
@@ -6037,8 +6037,8 @@ to{
   z-index: 10;
 `, Zc = x.div`
   position: sticky;
-  left: ${Ye}px;
-  width: calc(${({ $width: e }) => e}px - ${Ye}px);
+  left: 0;
+  width: ${({ $width: e }) => e}px;
   z-index: 3;
 `, Vc = x.div`
   height: ${vt}px;
@@ -6234,7 +6234,7 @@ to{
   let n;
   switch (t) {
     case 0:
-      n = Le;
+      n = Re;
       break;
     case 2:
       n = Pe;
@@ -6427,7 +6427,7 @@ const il = it`
   pointer-events: none;
 `, ll = x.div`
   position: sticky;
-  left: ${Ye + 4}px;
+  left: ${Le + 4}px;
   width: fit-content;
   max-width: 100%;
   height: 100%;
@@ -6635,7 +6635,7 @@ const il = it`
   let t = 0;
   for (const n of r)
     e >= n && t++;
-  return t * Re;
+  return t * Ye;
 }, bl = it`
   from { opacity: 0; }
   to { opacity: 1; }
@@ -7101,7 +7101,7 @@ const Bl = x.div`
   ${St}
 `, Wl = x.div`
   position: sticky;
-  left: ${Ye + 16}px;
+  left: ${Le + 16}px;
   overflow: hidden;
 `, jl = x.div`
   position: absolute;
@@ -7220,7 +7220,7 @@ const Bl = x.div`
     let d = 0;
     for (const h of l)
       h <= I && d++;
-    return I * ge + d * Re;
+    return I * ge + d * Ye;
   }, [f, y] = pe(null), [M, v] = pe(0), S = de((I = 400, d = 300) => {
     const b = t.width, k = 48, T = document.getElementById("react-scheduler");
     if (!T)
@@ -7229,7 +7229,7 @@ const Bl = x.div`
         y: r.y
       };
     const R = T.scrollLeft, J = T.scrollTop, q = T.clientWidth, D = T.clientHeight, E = r.x - R, A = r.y - J, N = {
-      left: Ye + 16,
+      left: Le + 16,
       // Avoid left column
       right: q - 16,
       top: 16,
@@ -7745,7 +7745,7 @@ const ad = x.div`
   const [c, l] = pe(null), [a, u] = pe({ x: 0, y: 0 }), f = fe(null), y = $e(() => {
     switch (t) {
       case 0:
-        return Le * 7;
+        return Re * 7;
       case 1:
         return De;
       case 2:
@@ -7783,7 +7783,7 @@ const ad = x.div`
     let A = 0;
     for (const X of i)
       X <= k && A++;
-    const N = k * ge + A * Re, O = D * y;
+    const N = k * ge + A * Ye, O = D * y;
     return {
       index: b,
       selection: h,
@@ -7919,7 +7919,7 @@ ${h.conflicts.map((k) => {
   const { cols: t } = Ve(), n = $e(() => {
     if (e === 2)
       return null;
-    const o = e === 0 ? Le * 7 : De, s = _().year(r.year).month(r.month).date(r.dayOfMonth).startOf("day"), i = _().startOf("day"), c = e === 0 ? i.startOf("week").diff(s.startOf("week"), "week") : i.diff(s, "days");
+    const o = e === 0 ? Re * 7 : De, s = _().year(r.year).month(r.month).date(r.dayOfMonth).startOf("day"), i = _().startOf("day"), c = e === 0 ? i.startOf("week").diff(s.startOf("week"), "week") : i.diff(s, "days");
     return c < 0 || c >= t ? null : { x: c * o, width: o };
   }, [e, r, t]);
   return n ? /* @__PURE__ */ p(yd, { style: { left: `${n.x}px`, width: `${n.width}px` }, "aria-hidden": !0 }) : null;
