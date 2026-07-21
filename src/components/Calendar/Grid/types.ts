@@ -33,8 +33,6 @@ export type GridProps = {
   separatorRowIndices?: number[];
   /** The separator row index that starts the subcontract group (drawn amber). -1 when there is no subcontract group. */
   subcontractSeparatorRow?: number;
-  /** Units whose group is mid fade-out (collapse) — their tiles render as exiting so they fade before the snap. */
-  fadingUnitIds?: Set<string>;
 };
 
 export type StyledSpanProps = {

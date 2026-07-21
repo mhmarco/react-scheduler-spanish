@@ -10,7 +10,8 @@ import {
   StyledWrapper,
   StyledHeaderActions,
   StyledCollapseButton,
-  StyledGroupBody
+  StyledGroupBody,
+  StyledGroupBodyInner
 } from "./styles";
 import { LeftColumnProps } from "./types";
 import LeftColumnItem from "./LeftColumnItem/LeftColumnItem";
@@ -29,7 +30,6 @@ const LeftColumn: FC<LeftColumnProps> = ({
   onSearchInputChange,
   onItemClick,
   collapsedGroups,
-  fadingGroups,
   onToggleGroup,
   allGroupIds,
   onExpandAll,
@@ -71,18 +71,19 @@ const LeftColumn: FC<LeftColumnProps> = ({
     );
     if (items.length === 0) return null;
     const isCollapsed = collapsedGroups.has(cat.id);
-    const isFading = fadingGroups.has(cat.id);
     const label = cat.name;
     return (
       <div key={cat.id}>
         <GroupHeader
           label={label}
           count={items.length}
-          isCollapsed={isCollapsed || isFading}
+          isCollapsed={isCollapsed}
           onToggle={() => onToggleGroup(cat.id)}
           variant="category"
         />
-        {!isCollapsed && <StyledGroupBody $fading={isFading}>{items.map(renderItem)}</StyledGroupBody>}
+        <StyledGroupBody $collapsed={isCollapsed}>
+          <StyledGroupBodyInner>{items.map(renderItem)}</StyledGroupBodyInner>
+        </StyledGroupBody>
       </div>
     );
   };
@@ -144,15 +145,13 @@ const LeftColumn: FC<LeftColumnProps> = ({
           <GroupHeader
             label={subcontractLabel}
             count={subcontractUnits.length}
-            isCollapsed={collapsedGroups.has("__subcontract__") || fadingGroups.has("__subcontract__")}
+            isCollapsed={collapsedGroups.has("__subcontract__")}
             onToggle={() => onToggleGroup("__subcontract__")}
             variant="subcontract"
           />
-          {!collapsedGroups.has("__subcontract__") && (
-            <StyledGroupBody $fading={fadingGroups.has("__subcontract__")}>
-              {subcontractUnits.map(renderItem)}
-            </StyledGroupBody>
-          )}
+          <StyledGroupBody $collapsed={collapsedGroups.has("__subcontract__")}>
+            <StyledGroupBodyInner>{subcontractUnits.map(renderItem)}</StyledGroupBodyInner>
+          </StyledGroupBody>
         </>
       )}
       <PaginationButton

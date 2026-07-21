@@ -1,4 +1,4 @@
-import styled, { css, keyframes } from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { leftColumnWidth, tileHeight } from "@/constants";
 import { marginPaddingReset, truncate } from "@/styles";
 import { StyledTextProps, StyledTileWrapperProps } from "./types";
@@ -31,14 +31,6 @@ export const StyledText = styled.p<StyledTextProps>`
 const tileIn = keyframes`
   from { opacity: 0; transform: scale(0.96); }
   to { opacity: 1; transform: none; }
-`;
-
-// Exit is a keyframe, NOT a transition: tiles are frequently remounted (fresh nodes), so a transition from opacity 1
-// never fires — it paints 0 from birth and jumps. A keyframe always plays from its `from` state, so it fades whether
-// the node is preserved or remounted (drives the collapse fade-then-snap and the plain remove-a-tile exit).
-const tileOut = keyframes`
-  from { opacity: 1; transform: none; }
-  to { opacity: 0; transform: scale(0.96); }
 `;
 
 export const StyledTileWrapper = styled.button<StyledTileWrapperProps>`
@@ -85,16 +77,7 @@ export const StyledTileWrapper = styled.button<StyledTileWrapperProps>`
      @media (prefers-reduced-motion: no-preference) {
        &:hover:not(:active) { box-shadow: 0 0 0 1.5px #D98A22, 0 6px 13px -3px rgba(12,26,23,0.42); }
      }`}
-  ${({ $exiting }) =>
-    $exiting &&
-    css`
-      opacity: 0;
-      transform: scale(0.96);
-      pointer-events: none;
-      @media (prefers-reduced-motion: no-preference) {
-        animation: ${tileOut} 190ms ease-out forwards;
-      }
-    `}
+  ${({ $exiting }) => $exiting && "opacity: 0; transform: scale(0.96); pointer-events: none;"}
 `;
 
 // 4px left readiness stripe (in-house state / subcontract confirmed-unconfirmed). Colour set inline.
