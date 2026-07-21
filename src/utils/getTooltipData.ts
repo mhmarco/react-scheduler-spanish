@@ -77,7 +77,9 @@ export const getTooltipData = (
       destinationAddress: reservation.destinationAddress,
       returnAddress: reservation.returnAddress,
       isOneDayEvent,
-      passengers: reservation.totalPassengers
+      passengers: reservation.totalPassengers,
+      readiness: reservation.readiness,
+      subcontractConfirmed: reservation.subcontractConfirmed
     }
   };
 };

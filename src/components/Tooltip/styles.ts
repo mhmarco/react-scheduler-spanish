@@ -40,15 +40,38 @@ export const StyledBookingId = styled.span`
   white-space: nowrap;
 `;
 
-export const StyledTypeBadge = styled.span<{ $type: "tour" | "transfer" | "oneday" }>`
+// Green service-type tag with the tile's service-type icon before the label, so the icon-on-tile ↔ description
+// connection is obvious (the legend used to carry this). Always green now — the icon distinguishes the type.
+export const StyledTypeBadge = styled.span`
   flex-shrink: 0;
-  background: ${({ $type }) => ($type === "transfer" ? "#dbeafe" : "#dcfce7")};
-  color: ${({ $type }) => ($type === "transfer" ? "#1e40af" : "#166534")};
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: #dcfce7;
+  color: #166534;
   font-size: 9px;
   font-weight: 600;
-  padding: 2px 6px;
+  padding: 2px 7px 2px 5px;
   border-radius: 10px;
   text-transform: uppercase;
+  svg {
+    width: 11px;
+    height: 11px;
+  }
+`;
+
+// In-house readiness status (icon + label, e.g. "Sin chofer") shown on hover in place of the removed legend key.
+export const StyledReadiness = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  svg {
+    width: 14px;
+    height: 14px;
+  }
 `;
 
 export const StyledTitle = styled.div`

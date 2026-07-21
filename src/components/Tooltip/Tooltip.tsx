@@ -1,6 +1,8 @@
 import { FC, useLayoutEffect, useRef, useState } from "react";
 import { ReservationType } from "@/types/global";
 import { useLanguage } from "@/context/LocaleProvider";
+import { TileIcon } from "@/components/Tiles/Tile/icons";
+import { READINESS } from "@/components/Tiles/Tile/readiness";
 import { TooltipProps } from "./types";
 import {
   StyledTooltipWrapper,
@@ -8,6 +10,7 @@ import {
   StyledHeaderTop,
   StyledBookingId,
   StyledTypeBadge,
+  StyledReadiness,
   StyledTitle,
   StyledClient,
   StyledBody,
@@ -93,17 +96,14 @@ const Tooltip: FC<TooltipProps> = ({ tooltipData, visible = true }) => {
   const isTour = reservationData.reservationType === ReservationType.Tour;
   const isOneDayTour = isTour && reservationData.isOneDayEvent;
   
-  // Determine badge type and label
-  const getBadgeType = () => {
-    if (!isTour) return "transfer";
-    return isOneDayTour ? "oneday" : "tour";
-  };
-  
-  const getBadgeLabel = () => {
-    if (!isTour) return t.transfer;
-    return isOneDayTour ? t.oneDay : t.tour;
-  };
-  
+  // Service-type icon (matches the tile) + label. Transfer → transfer glyph, one-day tour → sun, multi-day → tour.
+  const typeIcon = !isTour ? "transfer" : isOneDayTour ? "sun" : "tour";
+  const badgeLabel = !isTour ? t.transfer : isOneDayTour ? t.oneDay : t.tour;
+
+  // In-house readiness (icon + label) for the hover status row — replaces the removed legend key. Subcontracts have no
+  // driver flow, so no row (they need no explanation).
+  const rd = reservationData.readiness ? READINESS[reservationData.readiness] : null;
+
   // Build details array for grid
   const details = [
     reservationData.groupName && { label: t.groupName, value: reservationData.groupName },
@@ -117,13 +117,20 @@ const Tooltip: FC<TooltipProps> = ({ tooltipData, visible = true }) => {
       <StyledHeader>
         <StyledHeaderTop>
           <StyledBookingId>{reservationData.bookingNumber}</StyledBookingId>
-          <StyledTypeBadge $type={getBadgeType()}>
-            {getBadgeLabel()}
+          <StyledTypeBadge>
+            <TileIcon name={typeIcon} strokeWidth={2.4} />
+            {badgeLabel}
           </StyledTypeBadge>
         </StyledHeaderTop>
         <StyledTitle>{reservationData.eventName}</StyledTitle>
         {reservationData.client && (
           <StyledClient>{reservationData.client}</StyledClient>
+        )}
+        {rd && (
+          <StyledReadiness style={{ color: rd.color }}>
+            <TileIcon name={rd.icon} strokeWidth={rd.icon === "check" ? 2.6 : 2.2} />
+            {rd.label}
+          </StyledReadiness>
         )}
       </StyledHeader>
 

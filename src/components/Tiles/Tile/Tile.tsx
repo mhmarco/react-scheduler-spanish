@@ -5,8 +5,9 @@ import { useCalendar } from "@/context/CalendarProvider";
 import { getDatesRange } from "@/utils/getDatesRange";
 import { getTileProperties } from "@/utils/getTileProperties";
 import { getTileTextColor } from "@/utils/getTileTextColor";
-import { ReservationType, TileReadiness } from "@/types/global";
-import { TileIcon, TileIconName } from "./icons";
+import { ReservationType } from "@/types/global";
+import { TileIcon } from "./icons";
+import { READINESS } from "./readiness";
 import {
   StyledTileWrapper,
   StyledRStripe,
@@ -29,13 +30,6 @@ import { TileProps } from "./types";
 // nothing is dropped on narrow tiles. One-day tiles show both time chips once past this width.
 const TIMES_MIN = 34;
 
-// Readiness → (4px stripe colour, status dot icon + colour). Tokens from the locked mockup (artifact 91ed97bb).
-const READINESS: Record<TileReadiness, { stripe: string; icon: TileIconName; color: string }> = {
-  sin_chofer: { stripe: "#9AA4B2", icon: "warn", color: "#9AA4B2" },
-  sin_avisar: { stripe: "#D98A22", icon: "warn", color: "#D98A22" },
-  notificado: { stripe: "#2C6BB0", icon: "clock", color: "#2C6BB0" },
-  confirmado: { stripe: "#2E8B63", icon: "check", color: "#2E8B63" }
-};
 const SUB_OK = "#3E8E5A";
 const SUB_WARN = "#D98A22";
 

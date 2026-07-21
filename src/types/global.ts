@@ -456,4 +456,6 @@ export type ReservationData = {
   returnAddress?: string;
   isOneDayEvent?: boolean;
   passengers?: number;
+  readiness?: TileReadiness;
+  subcontractConfirmed?: boolean;
 };
