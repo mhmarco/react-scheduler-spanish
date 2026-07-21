@@ -59,7 +59,7 @@ export const es = {
     reservationNotes: "Notas de Reserva",
     tour: "Gira",
     transfer: "Transfer",
-    oneDay: "Un día",
+    oneDay: "One Day",
     passengers: "Pax"
   },
   subcontract: "Subcontrato"
