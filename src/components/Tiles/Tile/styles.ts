@@ -101,6 +101,12 @@ export const StyledTileWrapper = styled.button<StyledTileWrapperProps>`
     $highlighted &&
     `z-index: 9;
      box-shadow: 0 0 0 3px #0F7D66, 0 0 16px 3px rgba(15, 125, 102, 0.55), inset 0 0 0 200px rgba(15, 125, 102, 0.3);`}
+  /* Focus-mode: rows outside the focused set fade back and go inert. */
+  ${({ $dimmed }) => $dimmed && "opacity: 0.26; filter: grayscale(0.45); pointer-events: none;"}
+  /* Focus-mode: a blocking service that will vacate the target unit — amber dashed outline, faded. */
+  ${({ $leaving }) =>
+    $leaving &&
+    "opacity: 0.74; filter: grayscale(0.2); outline: 2px dashed #D98A22; outline-offset: -2px; z-index: 7;"}
 `;
 
 // 4px left readiness stripe (in-house state / subcontract confirmed-unconfirmed). Colour set inline.
@@ -128,8 +134,8 @@ export const StyledNt = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 2px;
-  padding: 5px 10px;
+  gap: 1px;
+  padding: 4px 10px;
 `;
 
 export const StyledNtRow = styled.div<{ $pad?: boolean }>`
@@ -137,7 +143,7 @@ export const StyledNtRow = styled.div<{ $pad?: boolean }>`
   align-items: center;
   gap: 5px;
   min-width: 0;
-  line-height: 1.25;
+  line-height: 1.12;
   ${({ $pad }) => $pad && "padding-right: 24px;"}
 `;
 
@@ -195,9 +201,10 @@ export const StyledNtMeta = styled.div`
   opacity: 0.9;
   font-size: 9.5px;
   font-weight: 600;
+  line-height: 1.1;
   & svg {
-    width: 11px;
-    height: 11px;
+    width: 10px;
+    height: 10px;
     flex: none;
     opacity: 0.9;
   }
@@ -274,4 +281,107 @@ export const StyledXsTime = styled.span<{ $end?: boolean }>`
   max-width: 100%;
   background: ${({ $end }) => ($end ? "rgba(255,255,255,0.72)" : "rgba(255,255,255,0.95)")};
   color: ${({ $end }) => ($end ? "#3A4C46" : "#183D3D")};
+`;
+
+// --- Focus-mode ghost preview tile + the "Sub" leave-tag on vacating blockers ---
+
+const ghostRise = keyframes`
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+`;
+
+// The translucent-green landing preview. Positioned (left/top/width) like a real tile; non-interactive; overflow
+// visible so the "entra a …" badge can hang below.
+export const StyledGhostTile = styled.div`
+  position: absolute;
+  height: ${tileHeight}px;
+  border-radius: 7px;
+  /* A clearly-green "this is the event that lands here" preview — nearly opaque so it doesn't muddy over the dark
+     blocker underneath; the dashed light border + the "entra a…" badge keep it reading as a preview, not a real tile. */
+  background: rgba(21, 133, 97, 0.74);
+  border: 2px dashed rgba(255, 255, 255, 0.92);
+  box-shadow: 0 0 0 3px rgba(15, 125, 102, 0.28), 0 3px 9px -2px rgba(12, 26, 23, 0.4);
+  pointer-events: none;
+  z-index: 8;
+  overflow: visible;
+  @media (prefers-reduced-motion: no-preference) {
+    animation: ${ghostRise} 0.42s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+  }
+`;
+
+export const StyledGhostBody = styled.div`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  padding: 5px 10px;
+  min-width: 0;
+`;
+
+export const StyledGhostTitle = styled.div`
+  ${truncate}
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  font-size: 12px;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  line-height: 1.15;
+  & svg {
+    width: 14px;
+    height: 14px;
+    flex: none;
+    color: #fff;
+  }
+`;
+
+export const StyledGhostCap = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.95);
+  line-height: 1.1;
+  & svg {
+    width: 11px;
+    height: 11px;
+    flex: none;
+    color: #fff;
+  }
+`;
+
+export const StyledGhostBadge = styled.span`
+  position: absolute;
+  bottom: -11px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  background: #2e8b63;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 800;
+  border-radius: 6px;
+  padding: 2px 8px;
+  box-shadow: 0 2px 7px rgba(0, 0, 0, 0.22);
+  z-index: 9;
+`;
+
+export const StyledLeaveTag = styled.span`
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  background: #d98a22;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 800;
+  border-radius: 6px;
+  padding: 1px 7px;
+  z-index: 8;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 `;

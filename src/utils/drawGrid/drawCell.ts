@@ -28,15 +28,17 @@ export const drawCell = (
   isBusinessDay: boolean,
   isCurrentDay: boolean,
   theme: Theme,
-  isPast = false
+  isPast = false,
+  isMonthStart = false
 ) => {
-  ctx.strokeStyle = theme.colors.border;
   if (isCurrentDay) {
     ctx.fillStyle = theme.colors.currentDay;
   } else if (isBusinessDay) {
     ctx.fillStyle = "transparent";
   } else {
-    ctx.fillStyle = theme.colors.primary;
+    // Weekend tint: the SHARED muted green (#E1ECE6) — same colour as the group bands + toolbar header so weekends
+    // read as part of the same green language, not a separate paler wash.
+    ctx.fillStyle = theme.mode === "dark" ? theme.colors.primary : "#E1ECE6";
   }
   ctx.beginPath();
   ctx.setLineDash([]);
@@ -48,5 +50,26 @@ export const drawCell = (
       ctx.fillRect(x, y, width, boxHeight);
     }
   }
-  ctx.strokeRect(x + 0.5, y + 0.5, width, boxHeight);
+  const isDark = theme.mode === "dark";
+  // Very subtle vertical day divider (right edge) — separates days without the old heavy box.
+  ctx.strokeStyle = isDark ? theme.colors.border : "#EEF3F0";
+  ctx.beginPath();
+  ctx.moveTo(x + width - 0.5, y);
+  ctx.lineTo(x + width - 0.5, y + boxHeight);
+  ctx.stroke();
+  // Subtle horizontal row divider at the TOP of each cell — the left column draws each unit row's divider as a
+  // border-TOP, so a bottom line here sat a full row off from those borders (the reported misalignment).
+  ctx.strokeStyle = isDark ? theme.colors.border : "#E4EAE7";
+  ctx.beginPath();
+  ctx.moveTo(x, y + 0.5);
+  ctx.lineTo(x + width, y + 0.5);
+  ctx.stroke();
+  // Month boundary: a green (sage) vertical at the first day of a month, so month changes read clearly.
+  if (isMonthStart) {
+    ctx.strokeStyle = isDark ? theme.colors.today : "#5C8374";
+    ctx.beginPath();
+    ctx.moveTo(x + 0.5, y);
+    ctx.lineTo(x + 0.5, y + boxHeight);
+    ctx.stroke();
+  }
 };

@@ -8,20 +8,20 @@ export const StyledGroupHeader = styled.div<{ $variant: "category" | "subcontrac
   padding: 0 11px 0 9px;
   height: 21px;
   color: ${({ theme, $variant }) =>
-    $variant === "subcontract" ? theme.colors.subcontractText : theme.colors.accent};
+    $variant === "subcontract" ? theme.colors.subcontractText : "#5C8374"};
   background: ${({ theme, $variant }) =>
-    $variant === "subcontract" ? theme.colors.subcontractBorder + "24" : theme.colors.accent + "14"};
+    $variant === "subcontract" ? theme.colors.subcontractBorder + "24" : "#E1ECE6"};
   border-left: 3px solid
     ${({ theme, $variant }) => ($variant === "subcontract" ? theme.colors.subcontractBorder : "transparent")};
   border-bottom: 1px solid
-    ${({ theme, $variant }) => ($variant === "subcontract" ? theme.colors.subcontractBorder : theme.colors.border)};
+    ${({ theme, $variant }) => ($variant === "subcontract" ? theme.colors.subcontractBorder : "#D4DFD9")};
   cursor: pointer;
   user-select: none;
   transition: background 0.15s ease;
 
   &:hover {
     background: ${({ theme, $variant }) =>
-      $variant === "subcontract" ? theme.colors.subcontractBorder + "33" : theme.colors.accent + "22"};
+      $variant === "subcontract" ? theme.colors.subcontractBorder + "33" : "#DAE6E0"};
   }
 `;
 
@@ -31,7 +31,7 @@ export const StyledLabel = styled.span<{ $variant: "category" | "subcontract" }>
   letter-spacing: 0.07em;
   text-transform: uppercase;
   color: ${({ theme, $variant }) =>
-    $variant === "subcontract" ? theme.colors.subcontractText : theme.colors.accent};
+    $variant === "subcontract" ? theme.colors.subcontractText : "#5C8374"};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -44,7 +44,7 @@ export const StyledCount = styled.span<{ $variant: "category" | "subcontract" }>
   font-weight: 700;
   opacity: 0.75;
   color: ${({ theme, $variant }) =>
-    $variant === "subcontract" ? theme.colors.subcontractText : theme.colors.accent};
+    $variant === "subcontract" ? theme.colors.subcontractText : "#5C8374"};
   flex-shrink: 0;
 `;
 

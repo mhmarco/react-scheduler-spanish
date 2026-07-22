@@ -22,7 +22,13 @@ import {
   StyledDotWrap,
   StyledSubPill,
   StyledNtXs,
-  StyledXsTime
+  StyledXsTime,
+  StyledGhostTile,
+  StyledGhostBody,
+  StyledGhostTitle,
+  StyledGhostCap,
+  StyledGhostBadge,
+  StyledLeaveTag
 } from "./styles";
 import { TileProps } from "./types";
 
@@ -44,7 +50,11 @@ const Tile: FC<TileProps> = ({
   isDraggable = true,
   yOffset = 0,
   exiting = false,
-  highlighted = false
+  highlighted = false,
+  dimmed = false,
+  leaving = false,
+  ghost = false,
+  ghostBadge = ""
 }) => {
   const { date } = useCalendar();
   const datesRange = getDatesRange(date, zoom);
@@ -64,6 +74,26 @@ const Tile: FC<TileProps> = ({
   const isTour = data.eventType === ReservationType.Tour;
   const isTransfer = data.eventType === ReservationType.Transfer;
   const isOneDayEvent = isSameDay && (isTour || isTransfer);
+
+  // Focus-mode GHOST: a translucent-green, non-interactive preview of the gira landing on the target unit. Positioned
+  // identically to a real tile (same getTileProperties), so it lands pixel-exact in the freed slot.
+  if (ghost) {
+    return (
+      <StyledGhostTile style={{ left: `${x}px`, top: `${y + yOffset}px`, width: `${width}px` }}>
+        <StyledGhostBody>
+          <StyledGhostTitle>
+            <TileIcon name={isTransfer ? "transfer" : "tour"} />
+            {data.title}
+          </StyledGhostTitle>
+          <StyledGhostCap>
+            <TileIcon name="check" strokeWidth={2.6} />
+            flota propia
+          </StyledGhostCap>
+        </StyledGhostBody>
+        {ghostBadge && <StyledGhostBadge>{ghostBadge}</StyledGhostBadge>}
+      </StyledGhostTile>
+    );
+  }
 
   const handleMouseDown = (e: React.MouseEvent) => {
     mouseDownPos.current = { x: e.clientX, y: e.clientY };
@@ -109,8 +139,11 @@ const Tile: FC<TileProps> = ({
       isDragging={isDragging}
       $unconfirmed={unconfirmedSub}
       $exiting={exiting}
-      $highlighted={highlighted}>
+      $highlighted={highlighted}
+      $dimmed={dimmed}
+      $leaving={leaving}>
       {stripeColor && <StyledRStripe style={{ background: stripeColor }} />}
+      {leaving && <StyledLeaveTag>Sub</StyledLeaveTag>}
       {children}
     </StyledTileWrapper>
   );

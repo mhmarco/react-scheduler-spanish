@@ -20,7 +20,10 @@ export const drawRow = (config: DrawRowConfig, theme: Theme) => {
   } = config;
 
   ctx.beginPath();
-  ctx.strokeStyle = strokeStyle ?? theme.colors.border;
+  // Subtle green-tinted hairline (not the heavy neutral border) so the grid reads clean, not boxed (matches the
+  // reimagined artifact). Only horizontal dividers are drawn — no per-cell vertical strokes.
+  const lineColor = strokeStyle ?? (theme.mode === "dark" ? theme.colors.border : "#E4EAE7");
+  ctx.strokeStyle = lineColor;
   ctx.setLineDash([]);
 
   if (label && font && textYPos) {
@@ -40,21 +43,27 @@ export const drawRow = (config: DrawRowConfig, theme: Theme) => {
       ctx.lineTo(x + width / 2, y + height - 5);
       ctx.stroke();
     } else {
-      ctx.strokeRect(x + 0.5, y + 0.5, width, height);
+      // Bottom divider only — no box around the month label (removes the boxed look + the vertical column lines).
+      ctx.moveTo(x, y + height - 0.5);
+      ctx.lineTo(x + width, y + height - 0.5);
+      ctx.stroke();
     }
 
     ctx.font = font;
 
     const textXPos = x + width / 2 - ctx.measureText(label).width / 2;
     ctx.textBaseline = "middle";
-    ctx.fillStyle = theme.colors.accent;
-    // change from main branch: ctx.fillStyle = theme.colors.placeholder;
+    ctx.fillStyle = theme.mode === "dark" ? theme.colors.textPrimary : "#183D3D";
     ctx.fillText(label, textXPos, textYPos);
   }
   if (isBottomRow && fillStyle && topText && bottomText) {
     ctx.fillStyle = fillStyle;
     ctx.fillRect(x, y, width, height);
-    ctx.strokeRect(x + 0.5, y + 0.5, width, height);
+    // Header day cell: a single bottom hairline under the whole day row — no vertical column strokes, no box.
+    ctx.beginPath();
+    ctx.moveTo(x, y + height - 0.5);
+    ctx.lineTo(x + width, y + height - 0.5);
+    ctx.stroke();
 
     ctx.font = topText.font;
 

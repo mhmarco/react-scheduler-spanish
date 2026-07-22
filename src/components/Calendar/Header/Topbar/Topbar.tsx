@@ -1,7 +1,5 @@
 import { FC } from "react";
-import dayjs from "dayjs";
 import { useCalendar } from "@/context/CalendarProvider";
-import { useLanguage } from "@/context/LocaleProvider";
 import { outsideWrapperId, schedulerBodyId } from "@/constants";
 import {
   Wrapper,
@@ -9,7 +7,6 @@ import {
   NavigationWrapper,
   NavBtn,
   Today,
-  Range,
   TbDiv,
   ZoomSeg,
   DateLabel,
@@ -38,7 +35,6 @@ const toggleFullscreen = () => {
 const Topbar: FC<TopbarProps> = () => {
   const {
     config,
-    date,
     zoom,
     handleGoNext,
     handleGoPrev,
@@ -48,8 +44,6 @@ const Topbar: FC<TopbarProps> = () => {
     toggleDisplayActiveUnits,
     toolbarActions
   } = useCalendar();
-  // Re-render when the locale settles so the range label reflects dayjs.locale (set async by LocaleProvider).
-  useLanguage();
   const { filterButtonState = -1 } = config;
 
   const focusSearch = () => {
@@ -72,7 +66,6 @@ const Topbar: FC<TopbarProps> = () => {
             </Svg>
           </NavBtn>
         </NavigationWrapper>
-        <Range>{date.locale(dayjs.locale()).format("MMMM YYYY")}</Range>
         {config.showViewSwitcher !== false && (
           <>
             <TbDiv />

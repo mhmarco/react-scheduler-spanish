@@ -1,11 +1,8 @@
 import dayjs from "dayjs";
 import { Day } from "@/types/global";
 import {
-  dayNameYoffset,
-  dayNumYOffset,
   dayWidth,
   fontFamily,
-  fonts,
   headerDayHeight,
   headerMonthHeight,
   headerWeekHeight
@@ -13,8 +10,6 @@ import {
 import { parseDay } from "@/utils/dates";
 import { Theme } from "@/styles";
 import { drawRow } from "../../drawRow";
-import { getBoxFillStyle } from "../../getBoxFillStyle";
-import { getTextStyle } from "../../getTextStyle";
 
 export const drawDaysOnBottom = (
   ctx: CanvasRenderingContext2D,
@@ -24,10 +19,10 @@ export const drawDaysOnBottom = (
   // Height reserved for the week row above the days (0 hides it — the day row moves up and the header shrinks).
   weekHeight: number = headerWeekHeight
 ) => {
-  const effectiveHeaderHeight = headerMonthHeight + weekHeight + headerDayHeight;
-  const dayNameYPos = effectiveHeaderHeight - headerDayHeight / dayNameYoffset;
-  const dayNumYPos = effectiveHeaderHeight - headerDayHeight / dayNumYOffset;
   const yPos = headerMonthHeight + weekHeight;
+  // Stack the weekday name over the date number with a slight bottom margin before the grid (artifact breathing room).
+  const dayNameYPos = yPos + 13;
+  const dayNumYPos = yPos + 27;
   let xPos = 0;
 
   for (let i = 0; i < cols; i++) {
@@ -45,29 +40,27 @@ export const drawDaysOnBottom = (
         width: dayWidth,
         height: headerDayHeight,
         isBottomRow: true,
-        // OPAQUE today fill (currentDay, same as the grid's today column) — the old `today+"26"` was 15% alpha, so
-        // events scrolling under the header showed through the HOY cell.
-        fillStyle: isToday
-          ? theme.colors.currentDay
-          : day.isBusinessDay
-          ? theme.colors.gridBackground
-          : theme.colors.primary,
+        // Day headers stay UNIFORM across the week — weekends get no header tint (artifact: only the grid BODY washes
+        // weekends, the header row never does). Today keeps its opaque currentDay fill so scrolling events don't bleed
+        // through the HOY cell.
+        fillStyle: isToday ? theme.colors.currentDay : theme.colors.gridBackground,
+        // Reimagined hierarchy (artifact): the weekday name is the small muted label, the date number is the large
+        // bold teal figure — the inverse of the old 14px-name / 10px-number. The trailing locale period is stripped.
         topText: {
           y: dayNameYPos,
-          label: isToday ? "" : day.dayName.toUpperCase(),
-          font: fonts.bottomRow.name,
-          color: getTextStyle({ isCurrent: false, isBusinessDay: day.isBusinessDay }, theme)
+          label: isToday ? "" : day.dayName.replace(/\./g, "").toUpperCase(),
+          font: `600 10px ${fontFamily}`,
+          color: theme.mode === "dark" ? theme.colors.placeholder : "#74897F"
         },
         bottomText: {
           y: dayNumYPos,
           label: `${day.dayOfMonth}`,
-          font: isToday ? `700 10px ${fontFamily}` : fonts.bottomRow.number,
+          font: isToday ? `700 12px ${fontFamily}` : `700 13px ${fontFamily}`,
           color: isToday
             ? theme.colors.today
-            : getTextStyle(
-                { isCurrent: false, isBusinessDay: day.isBusinessDay, variant: "bottomRow" },
-                theme
-              )
+            : theme.mode === "dark"
+            ? theme.colors.textPrimary
+            : "#183D3D"
         }
       },
       theme
@@ -89,6 +82,18 @@ export const drawDaysOnBottom = (
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText("HOY", cx, py + pillH / 2 + 0.5);
+      ctx.restore();
+    }
+
+    // Month boundary: continue the body's green month separator up through the header so it reads as one line.
+    if (day.dayOfMonth === 1) {
+      ctx.save();
+      ctx.strokeStyle = theme.mode === "dark" ? theme.colors.today : "#5C8374";
+      ctx.setLineDash([]);
+      ctx.beginPath();
+      ctx.moveTo(xPos + 0.5, 0);
+      ctx.lineTo(xPos + 0.5, yPos + headerDayHeight);
+      ctx.stroke();
       ctx.restore();
     }
 

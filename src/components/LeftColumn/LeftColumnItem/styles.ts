@@ -79,3 +79,44 @@ export const StyledText = styled.p<StyledTextProps>`
   white-space: nowrap;
   overflow: hidden;
 `;
+
+// Capacity + plate as two distinct chips under the unit name (Option B). Colours reuse the accent (sage) the avatar
+// already uses, so both stay theme-correct in light/dark.
+export const StyledMetaRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 3px;
+  line-height: 1;
+  max-width: 148px;
+`;
+export const StyledPaxChip = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  flex: none;
+  font-size: 10px;
+  font-weight: 700;
+  color: ${({ theme }) => theme.colors.accent};
+  background: ${({ theme }) => theme.colors.accent + "1A"};
+  padding: 1px 6px;
+  border-radius: 5px;
+  & svg {
+    width: 11px;
+    height: 11px;
+  }
+`;
+export const StyledPlateChip = styled.span`
+  min-width: 0;
+  font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: ${({ theme }) => theme.colors.placeholder};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  padding: 1px 6px;
+  border-radius: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;

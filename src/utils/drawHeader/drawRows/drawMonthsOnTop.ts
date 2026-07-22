@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { dayWidth, fonts, headerMonthHeight, monthsInYear, topRowTextYPos } from "@/constants";
+import { dayWidth, fontFamily, headerMonthHeight, monthsInYear, topRowTextYPos } from "@/constants";
 import { Day } from "@/types/global";
 import { Theme } from "@/styles";
 import { drawRow } from "../../drawRow";
@@ -41,7 +41,7 @@ export const drawMonthsOnTop = (ctx: CanvasRenderingContext2D, startDate: Day, t
             .month(startMonthIndex)
             .format("MMMM YYYY")
             .toUpperCase()}`,
-        font: fonts.topRow
+        font: `800 12px ${fontFamily}`
       },
       theme
     );

@@ -173,7 +173,20 @@ const Scheduler = forwardRef<SchedulerRef, SchedulerProps>(function Scheduler(
 
     window.addEventListener("resize", handleResize);
 
-    return () => window.removeEventListener("resize", handleResize);
+    // The pinned Topbar/Legend strip is sized to the EXACT wrapper width, so it must track layout-driven width changes
+    // that never fire a window resize — entering CSS fullscreen, or the side panel collapsing. Without this the strip
+    // stays at its old (narrower) width and leaves an uncovered gap on the right that scrolled events show through.
+    let ro: ResizeObserver | undefined;
+    const el = outsideWrapperRef.current;
+    if (el && typeof ResizeObserver !== "undefined") {
+      ro = new ResizeObserver(handleResize);
+      ro.observe(el);
+    }
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      ro?.disconnect();
+    };
   }, []);
 
   return (

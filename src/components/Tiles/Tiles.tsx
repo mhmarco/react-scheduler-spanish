@@ -1,7 +1,7 @@
 import { FC, useEffect, useMemo, useRef, useState } from "react";
 import styled, { css, keyframes } from "styled-components";
 import { boxHeight, subcontractSeparatorHeight } from "@/constants";
-import { SchedulerProjectData } from "@/types/global";
+import { GhostProjectData, SchedulerProjectData } from "@/types/global";
 import { Tile } from "..";
 import { TilesProps } from "./types";
 
@@ -26,7 +26,7 @@ const dispoOut = keyframes`
 
 // "DISPONIBLE" watermark on a unit row with no events (mockup 91ed97bb .dispo). Fades out with the group on collapse
 // via a keyframe (not a transition) for the same reason as the tiles — a transition jumps on remount.
-const StyledDispo = styled.div<{ $fading?: boolean }>`
+const StyledDispo = styled.div<{ $fading?: boolean; $dimmed?: boolean }>`
   position: absolute;
   left: 0;
   right: 0;
@@ -51,7 +51,20 @@ const StyledDispo = styled.div<{ $fading?: boolean }>`
         animation: ${dispoOut} 180ms ease forwards;
       }
     `}
+  ${({ $dimmed }) => $dimmed && "opacity: 0.28;"}
 `;
+
+// A ghost's synthetic tile only needs the fields the placement + ghost render read; the rest are inert stubs.
+const ghostToProject = (g: GhostProjectData): SchedulerProjectData => ({
+  segmentId: g.segmentId,
+  reservationId: g.reservationId,
+  startDate: g.startDate,
+  endDate: g.endDate,
+  occupancy: 0,
+  title: g.title,
+  bookingNumber: "",
+  eventType: g.eventType
+});
 
 const Tiles: FC<TilesProps> = ({
   data,
@@ -62,10 +75,14 @@ const Tiles: FC<TilesProps> = ({
   draggingEventId,
   separatorRowIndices = [],
   fadingUnitIds,
-  highlightedSegmentId
+  highlightedSegmentId,
+  focusedUnitIds,
+  leavingSegmentIds,
+  ghostProject
 }) => {
   const { nodes, liveMap } = useMemo(() => {
     const liveMap = new Map<string, ExitDesc>();
+    const focusActive = !!focusedUnitIds && focusedUnitIds.length > 0;
     let rows = 0;
     const nodes = data
       .map((person, personIndex) => {
@@ -73,15 +90,38 @@ const Tiles: FC<TilesProps> = ({
           rows += Math.max(data[personIndex - 1].data.length, 1);
         }
         const unitFading = !!fadingUnitIds?.has(person.id);
+        const isDimmed = focusActive && !focusedUnitIds!.includes(person.id);
+        const baseYOffset = getSepOffset(rows, separatorRowIndices);
+        // The ghost lands on this row's base slot when it targets this unit (works for a free/Disponible unit too).
+        const ghostEl =
+          ghostProject && person.id === ghostProject.targetUnitId ? (
+            <Tile
+              key={`ghost-${person.id}`}
+              row={rows}
+              data={ghostToProject(ghostProject)}
+              zoom={zoom}
+              yOffset={baseYOffset}
+              isDragging={false}
+              isDraggable={false}
+              ghost
+              ghostBadge={ghostProject.badge}
+            />
+          ) : null;
+
         if (!person.data.some((r) => r.length > 0)) {
-          const yOffset = getSepOffset(rows, separatorRowIndices);
-          return [
-            <StyledDispo key={`dispo-${person.id}`} $fading={unitFading} style={{ top: `${rows * boxHeight + yOffset}px` }}>
+          const dispoEls: JSX.Element[] = [
+            <StyledDispo
+              key={`dispo-${person.id}`}
+              $fading={unitFading}
+              $dimmed={isDimmed}
+              style={{ top: `${rows * boxHeight + baseYOffset}px` }}>
               Disponible
             </StyledDispo>
           ];
+          if (ghostEl) dispoEls.push(ghostEl);
+          return dispoEls;
         }
-        return person.data.map((projectsPerRow, rowIndex) =>
+        const tileEls = person.data.map((projectsPerRow, rowIndex) =>
           projectsPerRow.map((project) => {
             const isDraggingThis = draggingEventId === project.segmentId;
             const isTileDraggable = isDraggable ? isDraggable(project) : false;
@@ -108,14 +148,17 @@ const Tiles: FC<TilesProps> = ({
                 yOffset={yOffset}
                 exiting={unitFading}
                 highlighted={highlightedSegmentId != null && project.segmentId === highlightedSegmentId}
+                dimmed={isDimmed}
+                leaving={!!leavingSegmentIds?.includes(project.segmentId)}
               />
             );
           })
         );
+        return ghostEl ? [...tileEls, [ghostEl]] : tileEls;
       })
       .flat(2);
     return { nodes, liveMap };
-  }, [data, onTileClick, zoom, onDragStart, isDraggable, draggingEventId, separatorRowIndices, fadingUnitIds, highlightedSegmentId]);
+  }, [data, onTileClick, zoom, onDragStart, isDraggable, draggingEventId, separatorRowIndices, fadingUnitIds, highlightedSegmentId, focusedUnitIds, leavingSegmentIds, ghostProject]);
 
   // Exit animation: keep a just-removed tile mounted with `exiting` for a beat so it fades out before unmounting.
   // Timers drop only their own batch and are cleared on unmount, so overlapping removals don't cancel each other.

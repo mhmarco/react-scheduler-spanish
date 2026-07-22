@@ -96,6 +96,21 @@ export type Config = {
    * host clears it (null/undefined) when the user clicks away.
    */
   highlightedSegmentId?: string | null;
+  /**
+   * Focus-mode (optimization "Ver cambios"): unit/row ids to keep fully visible; every other row renders dimmed.
+   * Null/empty = no focus mode. Ids are strings, matching SchedulerData row ids.
+   */
+  focusedUnitIds?: string[] | null;
+  /**
+   * Focus-mode: segmentIds of the blocking services that VACATE the target unit — rendered amber/dashed with a "Sub"
+   * leave-tag. The focused gira itself uses highlightedSegmentId for its green source outline (one channel).
+   */
+  leavingSegmentIds?: string[] | null;
+  /**
+   * Focus-mode: a translucent-green GHOST tile previewing the gira landing on the target owned unit. Rendered as one
+   * extra non-interactive tile on ghostProject.targetUnitId's row at its date span. Null = no ghost.
+   */
+  ghostProject?: GhostProjectData | null;
   theme?: Theme;
   /**
    * Whole-year event volume for the Overview ribbon, independent of the loaded board window. Each point is a day and
@@ -110,6 +125,23 @@ export type OverviewDensityPoint = {
   /** ISO date (any parseable by dayjs); only the day is used. */
   date: string;
   count: number;
+};
+
+/**
+ * A focus-mode ghost tile: a translucent-green preview of a subcontracted gira landing on a target owned unit. The
+ * fork renders it as one extra non-interactive tile on `targetUnitId`'s row at [startDate, endDate].
+ */
+export type GhostProjectData = {
+  /** Row id of the target owned unit the ghost lands on. */
+  targetUnitId: string;
+  segmentId: string;
+  reservationId: string;
+  startDate: Date;
+  endDate: Date;
+  title: string;
+  /** Badge under the tile, e.g. "entra a Bus 12". */
+  badge: string;
+  eventType?: ReservationType;
 };
 
 export type Theme = {
@@ -162,6 +194,10 @@ export type SchedulerRowLabel = {
   icon?: string;
   title: string;
   subtitle: string;
+  /** Passenger capacity — when present the left column renders it as a chip instead of the joined `subtitle`. */
+  capacity?: number;
+  /** Vehicle plate / registration — rendered next to capacity as a monospace chip. */
+  plate?: string;
 };
 /**
  * Represents a single event/reservation displayed on the scheduler timeline.

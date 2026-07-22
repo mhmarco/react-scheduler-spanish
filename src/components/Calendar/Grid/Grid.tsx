@@ -301,6 +301,9 @@ const Grid = forwardRef<HTMLDivElement, GridProps>(function Grid(
           separatorRowIndices={separatorRowIndices}
           fadingUnitIds={fadingUnitIds}
           highlightedSegmentId={config?.highlightedSegmentId ?? null}
+          focusedUnitIds={config?.focusedUnitIds ?? null}
+          leavingSegmentIds={config?.leavingSegmentIds ?? null}
+          ghostProject={config?.ghostProject ?? null}
         />
         <StyledSpan ref={refRight} position="right" />
         <Loader isLoading={isLoading} position="right" />

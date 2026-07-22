@@ -12,12 +12,13 @@ export const drawSeparator = (
   const y = separatorRowIndex * boxHeight + separatorIndex * subcontractSeparatorHeight;
   const width = ctx.canvas.width;
 
-  // Just the background band — no centre line. The subcontract band is a SUBTLE amber wash (border colour at low
-  // alpha, not the solid saturated token); category bands stay neutral.
+  // Just the background band — no centre line. The subcontract band keeps its SUBTLE amber wash; category/group bands
+  // get the shared muted GREEN (#E1ECE6) so the group divider reads as a soft grey-green across the grid, matching the
+  // left-column label chip, the toolbar header and the weekend columns (one subtle green language across the board).
   ctx.fillStyle = isSubcontract
     ? theme.colors.subcontractBorder + "40"
     : theme.mode === "dark"
     ? theme.colors.primary + "80"
-    : theme.colors.primary;
+    : "#E1ECE6";
   ctx.fillRect(0, y, width, subcontractSeparatorHeight);
 };

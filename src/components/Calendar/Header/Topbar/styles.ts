@@ -2,19 +2,20 @@ import styled from "styled-components";
 import { leftColumnWidth } from "@/constants";
 import { TopbarProps } from "./types";
 
-// Toolbar matched to the mockup .toolbar (artifact 91ed97bb): a light full-width band with a left control group and a
-// right group. The band's background spans the full board width (it sits under the sticky left column), but its
-// CONTENT is inset by leftColumnWidth so the nav/date never render under that column, which paints above the toolbar.
+// Toolbar matched to the mockup .toolbar (artifact 91ed97bb): a full-width band with a left control group and a right
+// group. The band's background spans the full board width (it sits under the sticky left column), but its CONTENT is
+// inset by leftColumnWidth so the nav/date never render under that column, which paints above the toolbar. It carries
+// the shared muted GREEN (#E1ECE6) so the toolbar header matches the group dividers + weekends; dark keeps the panel.
 export const Wrapper = styled.div<TopbarProps>`
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 12px;
   flex-wrap: wrap;
   padding: 9px 16px 9px ${leftColumnWidth + 16}px;
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
-  background: ${({ theme }) => theme.colors.primary};
+  background: ${({ theme }) => (theme.mode === "dark" ? theme.colors.primary : "#E1ECE6")};
 `;
 
 export const Grp = styled.div<{ $at?: "start" | "end" }>`
@@ -72,15 +73,6 @@ export const Today = styled.button`
   }
 `;
 
-export const Range = styled.span`
-  font-size: 14px;
-  font-weight: 750;
-  color: #183d3d;
-  margin-left: 4px;
-  text-transform: capitalize;
-  white-space: nowrap;
-`;
-
 export const ZoomSeg = styled.div`
   display: inline-flex;
   background: #fff;
@@ -100,7 +92,7 @@ export const ZoomSeg = styled.div`
     border-left: 1px solid ${({ theme }) => theme.colors.border};
   }
   & > button.on {
-    background: ${({ theme }) => theme.colors.accent};
+    background: #5c8374;
     color: #fff;
   }
 `;
@@ -113,7 +105,7 @@ export const PillBtn = styled.button<{ $primary?: boolean }>`
   font-weight: 650;
   color: ${({ $primary }) => ($primary ? "#fff" : "#3a4c46")};
   border: 1px solid ${({ $primary }) => ($primary ? "transparent" : "#c8d5cd")};
-  background: ${({ theme, $primary }) => ($primary ? theme.colors.accent : "#fff")};
+  background: ${({ $primary }) => ($primary ? "#5c8374" : "#fff")};
   border-radius: 8px;
   padding: 6px 11px;
   cursor: pointer;
@@ -181,7 +173,7 @@ export const Cmd = styled.button`
 `;
 
 export const Badge = styled.span`
-  background: ${({ theme }) => theme.colors.accent};
+  background: #5c8374;
   color: #fff;
   font-size: 10px;
   font-weight: 800;

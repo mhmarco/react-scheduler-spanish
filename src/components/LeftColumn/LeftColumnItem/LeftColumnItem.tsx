@@ -3,6 +3,9 @@ import {
   StyledImage,
   StyledImageWrapper,
   StyledInnerWrapper,
+  StyledMetaRow,
+  StyledPaxChip,
+  StyledPlateChip,
   StyledText,
   StyledTextWrapper,
   StyledWrapper
@@ -10,6 +13,16 @@ import {
 import { LeftColumnItemProps } from "./types";
 
 const isImageUrl = (s?: string) => !!s && /^(https?:|data:|blob:|\/)/.test(s);
+
+// Two passengers in a soft green chip — capacity is the number that drives assignment, so it reads on its own.
+const UsersIcon = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+    <circle cx="9" cy="8" r="3.2" />
+    <path d="M3.4 19c0-3.3 2.5-5.3 5.6-5.3s5.6 2 5.6 5.3z" />
+    <circle cx="16.8" cy="8.6" r="2.5" />
+    <path d="M15.2 14c2.5.1 4.4 1.9 4.4 5h-2.8" />
+  </svg>
+);
 
 // A front-view bus in a soft circle for owned units, a building for subcontract providers (mockup 91ed97bb .bus).
 const BusFrontIcon = () => (
@@ -48,7 +61,19 @@ const LeftColumnItem: FC<LeftColumnItemProps> = ({ id, item, rows, onItemClick, 
         </StyledImageWrapper>
         <StyledTextWrapper>
           <StyledText isMain>{item.title}</StyledText>
-          <StyledText>{item.subtitle}</StyledText>
+          {item.capacity != null || item.plate ? (
+            <StyledMetaRow>
+              {item.capacity != null && (
+                <StyledPaxChip title={`${item.capacity} pasajeros`}>
+                  <UsersIcon />
+                  {item.capacity}
+                </StyledPaxChip>
+              )}
+              {item.plate && <StyledPlateChip title={item.plate}>{item.plate}</StyledPlateChip>}
+            </StyledMetaRow>
+          ) : (
+            item.subtitle && <StyledText>{item.subtitle}</StyledText>
+          )}
         </StyledTextWrapper>
       </StyledInnerWrapper>
     </StyledWrapper>
