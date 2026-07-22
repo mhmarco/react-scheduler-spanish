@@ -2,6 +2,6 @@ import { outsideWrapperId, leftColumnWidth, screenWidthMultiplier } from "@/cons
 
 export const getCanvasWidth = () => {
   const wrapperWidth = document.getElementById(outsideWrapperId)?.clientWidth || 0;
-  const width = (wrapperWidth - leftColumnWidth) * screenWidthMultiplier;
+  const width = Math.max(0, wrapperWidth - leftColumnWidth) * screenWidthMultiplier;
   return width;
 };

@@ -185,6 +185,8 @@ const Grid = forwardRef<HTMLDivElement, GridProps>(function Grid(
     const main = canvasRef.current;
     const ghost = ghostCanvasRef.current;
     if (!main || !ghost) return;
+    // drawImage() throws on a 0-sized source, and the wrapper can be collapsed (getCanvasWidth ≤ 0) when rows change.
+    if (main.width === 0 || main.height === 0) return;
     const gctx = ghost.getContext("2d");
     if (!gctx) return;
     ghost.width = main.width;

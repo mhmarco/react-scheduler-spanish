@@ -2382,7 +2382,8 @@ const go = (e) => jt.includes(e), vt = (e) => {
   };
 }, jn = () => {
   var t;
-  return ((((t = document.getElementById(Ue)) == null ? void 0 : t.clientWidth) || 0) - Ne) * bt;
+  const e = ((t = document.getElementById(Ue)) == null ? void 0 : t.clientWidth) || 0;
+  return Math.max(0, e - Ne) * bt;
 }, yo = Gr({
   handleGoNext: () => {
   },
@@ -2586,7 +2587,8 @@ const Si = ({
     }
   );
 }, Ve = () => tt(yo), vo = (e, r, t) => {
-  e.canvas.width = r * window.devicePixelRatio, e.canvas.height = t * window.devicePixelRatio, e.canvas.style.width = r + "px", e.canvas.style.height = t + "px", e.scale(window.devicePixelRatio, window.devicePixelRatio);
+  const n = Math.max(0, r), o = Math.max(0, t);
+  e.canvas.width = n * window.devicePixelRatio, e.canvas.height = o * window.devicePixelRatio, e.canvas.style.width = n + "px", e.canvas.style.height = o + "px", e.scale(window.devicePixelRatio, window.devicePixelRatio);
 }, xo = () => {
   var e;
   return typeof window < "u" && !!((e = window.matchMedia) != null && e.call(window, "(prefers-reduced-motion: reduce)").matches);
@@ -3368,7 +3370,7 @@ const _i = v.canvas`
     if (q.current = t, T.current = I, fe === t || !I.isSame(re, "day") || xo())
       return;
     const de = k.current, oe = V.current;
-    if (!de || !oe)
+    if (!de || !oe || de.width === 0 || de.height === 0)
       return;
     const ke = oe.getContext("2d");
     if (!ke)
