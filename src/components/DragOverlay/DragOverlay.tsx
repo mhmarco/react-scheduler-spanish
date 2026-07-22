@@ -1,7 +1,9 @@
 import { FC, useEffect, useState, useMemo, useCallback } from "react";
 import dayjs from "dayjs";
 import { getTileTextColor } from "@/utils/getTileTextColor";
+import { formatTimeOfDay } from "@/utils/formatTimeOfDay";
 import { boxHeight, leftColumnWidth, subcontractSeparatorHeight } from "@/constants";
+import { useCalendar } from "@/context/CalendarProvider";
 import { useLanguage } from "@/context/LocaleProvider/LocaleProvider";
 import {
   StyledOverlayWrapper,
@@ -38,6 +40,8 @@ const DragOverlay: FC<DragOverlayProps> = ({
   separatorRowIndices = []
 }) => {
   const lang = useLanguage();
+  const { config } = useCalendar();
+  const hourFormat = config.hourFormat ?? "12h";
 
   const getRowY = (rowIndex: number) => {
     let sepCount = 0;
@@ -225,8 +229,8 @@ const DragOverlay: FC<DragOverlayProps> = ({
   // Format time labels for drop indicator
   const formatTimeLabel = () => {
     if (!dropTarget) return "";
-    const start = dayjs(dropTarget.startDate).format("MMM D, HH:mm");
-    const end = dayjs(dropTarget.endDate).format("HH:mm");
+    const start = `${dayjs(dropTarget.startDate).format("MMM D")}, ${formatTimeOfDay(dropTarget.startDate, hourFormat)}`;
+    const end = formatTimeOfDay(dropTarget.endDate, hourFormat);
     return `${start} - ${end}`;
   };
 
@@ -321,26 +325,26 @@ const DragOverlay: FC<DragOverlayProps> = ({
               const conflictSpansMultipleDays = conflictStartDay !== conflictEndDay;
               
               // Format times with dates if needed
-              const newEventStart = dragSpansMultipleDays 
-                ? dayjs(dropTarget.startDate).format("MMM D, h:mm A")
-                : dayjs(dropTarget.startDate).format("h:mm A");
+              const newEventStart = dragSpansMultipleDays
+                ? `${dayjs(dropTarget.startDate).format("MMM D")}, ${formatTimeOfDay(dropTarget.startDate, hourFormat)}`
+                : formatTimeOfDay(dropTarget.startDate, hourFormat);
               const newEventEnd = dragSpansMultipleDays
-                ? dayjs(dropTarget.endDate).format("MMM D, h:mm A")
-                : dayjs(dropTarget.endDate).format("h:mm A");
-              
+                ? `${dayjs(dropTarget.endDate).format("MMM D")}, ${formatTimeOfDay(dropTarget.endDate, hourFormat)}`
+                : formatTimeOfDay(dropTarget.endDate, hourFormat);
+
               const existingEventStart = existingSpansMultipleDays
-                ? dayjs(conflict.event.startDate).format("MMM D, h:mm A")
-                : dayjs(conflict.event.startDate).format("h:mm A");
+                ? `${dayjs(conflict.event.startDate).format("MMM D")}, ${formatTimeOfDay(conflict.event.startDate, hourFormat)}`
+                : formatTimeOfDay(conflict.event.startDate, hourFormat);
               const existingEventEnd = existingSpansMultipleDays
-                ? dayjs(conflict.event.endDate).format("MMM D, h:mm A")
-                : dayjs(conflict.event.endDate).format("h:mm A");
-              
+                ? `${dayjs(conflict.event.endDate).format("MMM D")}, ${formatTimeOfDay(conflict.event.endDate, hourFormat)}`
+                : formatTimeOfDay(conflict.event.endDate, hourFormat);
+
               const conflictStartTime = conflictSpansMultipleDays
-                ? dayjs(conflict.conflictStart).format("MMM D, h:mm A")
-                : dayjs(conflict.conflictStart).format("h:mm A");
+                ? `${dayjs(conflict.conflictStart).format("MMM D")}, ${formatTimeOfDay(conflict.conflictStart, hourFormat)}`
+                : formatTimeOfDay(conflict.conflictStart, hourFormat);
               const conflictEndTime = conflictSpansMultipleDays
-                ? dayjs(conflict.conflictEnd).format("MMM D, h:mm A")
-                : dayjs(conflict.conflictEnd).format("h:mm A");
+                ? `${dayjs(conflict.conflictEnd).format("MMM D")}, ${formatTimeOfDay(conflict.conflictEnd, hourFormat)}`
+                : formatTimeOfDay(conflict.conflictEnd, hourFormat);
               
               const conflictDate = !conflictSpansMultipleDays ? dayjs(conflict.conflictStart).format("MMM D") : "";
               
@@ -474,8 +478,8 @@ const DragOverlay: FC<DragOverlayProps> = ({
               const hasEventsBefore = dropTarget.nearbyEvents.some(e => e.position === "before");
               const hasEventsAfter = dropTarget.nearbyEvents.some(e => e.position === "after");
               
-              const dragStartTime = dayjs(dropTarget.startDate).format("h:mm A");
-              const dragEndTime = dayjs(dropTarget.endDate).format("h:mm A");
+              const dragStartTime = formatTimeOfDay(dropTarget.startDate, hourFormat);
+              const dragEndTime = formatTimeOfDay(dropTarget.endDate, hourFormat);
               
               return (
                 <StyledConflictItem style={{ backgroundColor: "#F1F8E9", borderLeftColor: "#8BC34A" }}>
@@ -518,11 +522,11 @@ const DragOverlay: FC<DragOverlayProps> = ({
               
               // Format times with dates
               const eventStart = spansMultipleDays
-                ? dayjs(nearby.event.startDate).format("MMM D, h:mm A")
-                : dayjs(nearby.event.startDate).format("h:mm A");
+                ? `${dayjs(nearby.event.startDate).format("MMM D")}, ${formatTimeOfDay(nearby.event.startDate, hourFormat)}`
+                : formatTimeOfDay(nearby.event.startDate, hourFormat);
               const eventEnd = spansMultipleDays
-                ? dayjs(nearby.event.endDate).format("MMM D, h:mm A")
-                : dayjs(nearby.event.endDate).format("h:mm A");
+                ? `${dayjs(nearby.event.endDate).format("MMM D")}, ${formatTimeOfDay(nearby.event.endDate, hourFormat)}`
+                : formatTimeOfDay(nearby.event.endDate, hourFormat);
               const eventDate = dayjs(nearby.event.startDate).format("MMM D");
               
               // Calculate gap in hours and minutes

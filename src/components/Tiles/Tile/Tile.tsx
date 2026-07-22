@@ -2,6 +2,7 @@ import { FC, useRef } from "react";
 import { useTheme } from "styled-components";
 import dayjs from "dayjs";
 import { useCalendar } from "@/context/CalendarProvider";
+import { formatTimeOfDay } from "@/utils/formatTimeOfDay";
 import { getDatesRange } from "@/utils/getDatesRange";
 import { getTileProperties } from "@/utils/getTileProperties";
 import { getTileTextColor } from "@/utils/getTileTextColor";
@@ -56,7 +57,8 @@ const Tile: FC<TileProps> = ({
   ghost = false,
   ghostBadge = ""
 }) => {
-  const { date } = useCalendar();
+  const { date, config } = useCalendar();
+  const hourFormat = config.hourFormat ?? "12h";
   const datesRange = getDatesRange(date, zoom);
   const { y, x, width } = getTileProperties(
     row,
@@ -170,8 +172,8 @@ const Tile: FC<TileProps> = ({
           <TileIcon name={isTransfer ? "transfer" : "sun"} strokeWidth={2.4} />
           {width >= TIMES_MIN && (
             <>
-              <StyledXsTime>{dayjs(data.startDate).format("h:mm A")}</StyledXsTime>
-              {!isTransfer && <StyledXsTime $end>{dayjs(data.endDate).format("h:mm A")}</StyledXsTime>}
+              <StyledXsTime>{formatTimeOfDay(data.startDate, hourFormat)}</StyledXsTime>
+              {!isTransfer && <StyledXsTime $end>{formatTimeOfDay(data.endDate, hourFormat)}</StyledXsTime>}
             </>
           )}
         </StyledNtXs>
