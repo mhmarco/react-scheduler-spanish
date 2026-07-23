@@ -85,18 +85,6 @@ export const drawDaysOnBottom = (
       ctx.restore();
     }
 
-    // Month boundary: continue the body's green month separator up through the header so it reads as one line.
-    if (day.dayOfMonth === 1) {
-      ctx.save();
-      ctx.strokeStyle = theme.mode === "dark" ? theme.colors.today : "#5C8374";
-      ctx.setLineDash([]);
-      ctx.beginPath();
-      ctx.moveTo(xPos + 0.5, 0);
-      ctx.lineTo(xPos + 0.5, yPos + headerDayHeight);
-      ctx.stroke();
-      ctx.restore();
-    }
-
     xPos += dayWidth;
   }
 };

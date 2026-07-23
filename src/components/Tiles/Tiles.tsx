@@ -1,6 +1,6 @@
 import { FC, useEffect, useMemo, useRef, useState } from "react";
-import styled, { css, keyframes } from "styled-components";
-import { boxHeight, subcontractSeparatorHeight } from "@/constants";
+import styled from "styled-components";
+import { subcontractSeparatorHeight } from "@/constants";
 import { GhostProjectData, SchedulerProjectData } from "@/types/global";
 import { Tile } from "..";
 import { TilesProps } from "./types";
@@ -14,45 +14,6 @@ const getSepOffset = (rowIndex: number, separatorRowIndices: number[]): number =
   }
   return count * subcontractSeparatorHeight;
 };
-
-const dispoIn = keyframes`
-  from { opacity: 0; }
-  to { opacity: 1; }
-`;
-const dispoOut = keyframes`
-  from { opacity: 1; }
-  to { opacity: 0; }
-`;
-
-// "DISPONIBLE" watermark on a unit row with no events (mockup 91ed97bb .dispo). Fades out with the group on collapse
-// via a keyframe (not a transition) for the same reason as the tiles — a transition jumps on remount.
-const StyledDispo = styled.div<{ $fading?: boolean; $dimmed?: boolean }>`
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: ${boxHeight}px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  font-weight: 750;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: #93b1a6;
-  pointer-events: none;
-  @media (prefers-reduced-motion: no-preference) {
-    animation: ${dispoIn} 200ms ease-out;
-  }
-  ${({ $fading }) =>
-    $fading &&
-    css`
-      opacity: 0;
-      @media (prefers-reduced-motion: no-preference) {
-        animation: ${dispoOut} 180ms ease forwards;
-      }
-    `}
-  ${({ $dimmed }) => $dimmed && "opacity: 0.28;"}
-`;
 
 // A ghost's synthetic tile only needs the fields the placement + ghost render read; the rest are inert stubs.
 const ghostToProject = (g: GhostProjectData): SchedulerProjectData => ({
@@ -108,18 +69,9 @@ const Tiles: FC<TilesProps> = ({
             />
           ) : null;
 
+        // Empty unit row: no watermark — just host the drag ghost when it targets this free unit.
         if (!person.data.some((r) => r.length > 0)) {
-          const dispoEls: JSX.Element[] = [
-            <StyledDispo
-              key={`dispo-${person.id}`}
-              $fading={unitFading}
-              $dimmed={isDimmed}
-              style={{ top: `${rows * boxHeight + baseYOffset}px` }}>
-              Disponible
-            </StyledDispo>
-          ];
-          if (ghostEl) dispoEls.push(ghostEl);
-          return dispoEls;
+          return ghostEl ? [ghostEl] : [];
         }
         const tileEls = person.data.map((projectsPerRow, rowIndex) =>
           projectsPerRow.map((project) => {

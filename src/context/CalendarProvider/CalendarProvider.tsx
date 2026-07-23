@@ -231,6 +231,15 @@ const CalendarProvider = ({
     [isLoading, onRangeChange, range]
   );
 
+  // The blue "jump" marker on the target day is a transient cue — clear it on the next click anywhere (Hoy already
+  // clears it via handleGoToday).
+  useEffect(() => {
+    if (!jumpDate) return;
+    const clear = () => setJumpDate(null);
+    document.addEventListener("mousedown", clear, { once: true });
+    return () => document.removeEventListener("mousedown", clear);
+  }, [jumpDate]);
+
   const zoomIn = () => changeZoom(zoom + 1);
 
   const zoomOut = () => changeZoom(zoom - 1);
