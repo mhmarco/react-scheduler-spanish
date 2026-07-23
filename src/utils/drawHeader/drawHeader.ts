@@ -1,6 +1,7 @@
 import { Day } from "@/types/global";
 import { headerWeekHeight } from "@/constants";
 import { Theme } from "@/styles";
+import { HourFormat } from "@/utils/formatTimeOfDay";
 import { drawDaysOnBottom } from "./drawRows/drawDaysOnBottom";
 import { drawMonthsInMiddle } from "./drawRows/drawMonthsInMiddle";
 import { drawMonthsOnTop } from "./drawRows/drawMonthsOnTop";
@@ -19,7 +20,8 @@ export const drawHeader = (
   weekLabel: string,
   dayOfYear: number,
   theme: Theme,
-  showWeekRow: boolean = true
+  showWeekRow: boolean = true,
+  hourFormat: HourFormat = "12h"
 ) => {
   switch (zoom) {
     case 0:
@@ -35,7 +37,7 @@ export const drawHeader = (
     case 2:
       drawZoom2MonthsOnTop(ctx, cols, startDate, theme);
       drawZoom2DaysInMiddle(ctx, cols, startDate, theme);
-      drawZoom2HoursOnBottom(ctx, cols, startDate, theme);
+      drawZoom2HoursOnBottom(ctx, cols, startDate, theme, hourFormat);
       break;
   }
 };

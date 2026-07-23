@@ -130,7 +130,7 @@ export const Calendar: FC<CalendarProps> = ({
     zoom,
     startDate,
     isLoading,
-    config: { includeTakenHoursOnWeekendsInDayView, showTooltip, showThemeToggle }
+    config: { includeTakenHoursOnWeekendsInDayView, showTooltip, showThemeToggle, hourFormat }
   } = useCalendar();
   const gridRef = useRef<HTMLDivElement>(null);
   // The left column's top spacer must match the calendar header block (Topbar + Legend + canvas header),
@@ -348,7 +348,8 @@ export const Calendar: FC<CalendarProps> = ({
           rowsPerItem,
           projectsPerPerson,
           zoom,
-          includeTakenHoursOnWeekendsInDayView
+          includeTakenHoursOnWeekendsInDayView,
+          hourFormat ?? "12h"
         );
         setTooltipData({
           coords: { x, y },

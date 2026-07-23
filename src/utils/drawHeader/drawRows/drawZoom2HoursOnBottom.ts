@@ -8,13 +8,15 @@ import {
 } from "@/constants";
 import { Day } from "@/types/global";
 import { Theme } from "@/styles";
+import { HourFormat } from "@/utils/formatTimeOfDay";
 import { drawRow } from "../../drawRow";
 
 export const drawZoom2HoursOnBottom = (
   ctx: CanvasRenderingContext2D,
   cols: number,
   startDate: Day,
-  theme: Theme
+  theme: Theme,
+  hourFormat: HourFormat = "12h"
 ) => {
   let xPos = 0;
   const yPos = zoom2HeaderTopRowHeight + zoom2HeaderMiddleRowHeight;
@@ -25,7 +27,10 @@ export const drawZoom2HoursOnBottom = (
   const width = zoom2ColumnWidth;
 
   for (let i = 0; i < cols; i++) {
-    const hourLabel = startDateHour.add(i, "hours").format("h:00a").toUpperCase();
+    const hourLabel =
+      hourFormat === "24h"
+        ? startDateHour.add(i, "hours").format("HH:00")
+        : startDateHour.add(i, "hours").format("h:00a").toUpperCase();
 
     drawRow(
       {

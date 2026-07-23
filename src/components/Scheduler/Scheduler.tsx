@@ -121,6 +121,7 @@ const Scheduler = forwardRef<SchedulerRef, SchedulerProps>(function Scheduler(
       zoom: 0,
       filterButtonState: 1,
       includeTakenHoursOnWeekendsInDayView: false,
+      hourFormat: "12h",
       showTooltip: true,
       showTopbar: true,
       showLegend: true,
