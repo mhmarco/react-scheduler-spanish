@@ -10,7 +10,7 @@ export const StyledGroupHeader = styled.div<{ $variant: "category" | "subcontrac
   color: ${({ theme, $variant }) =>
     $variant === "subcontract" ? theme.colors.subcontractText : "#5C8374"};
   background: ${({ theme, $variant }) =>
-    $variant === "subcontract" ? theme.colors.subcontractBorder + "24" : "#E1ECE6"};
+    $variant === "subcontract" ? theme.colors.subcontractBorder + "24" : "#E9EFEC"};
   border-left: 3px solid
     ${({ theme, $variant }) => ($variant === "subcontract" ? theme.colors.subcontractBorder : "transparent")};
   border-bottom: 1px solid

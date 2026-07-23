@@ -129,7 +129,7 @@ const Tooltip: FC<TooltipProps> = ({ tooltipData, visible = true }) => {
         {rd && (
           <StyledReadiness style={{ color: rd.color }}>
             <TileIcon name={rd.icon} strokeWidth={rd.icon === "check" ? 2.6 : 2.2} />
-            {rd.label}
+            {reservationData.readinessNote || rd.label}
           </StyledReadiness>
         )}
       </StyledHeader>

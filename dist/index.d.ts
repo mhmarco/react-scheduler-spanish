@@ -629,12 +629,17 @@ export declare type SchedulerProjectData = {
      */
     totalPassengers?: number;
     /**
-     * Driver-readiness of an in-house event — drives the 3px left stripe + top-right status dot.
-     * The consumer maps its own driver/notify/ack state onto these four; the acknowledged tier is only meaningful
+     * Driver-readiness of an in-house event — drives the top-right status dot.
+     * The consumer maps its own driver/notify/ack state onto these; the acknowledged tier is only meaningful
      * when a driver-app feature is enabled (otherwise use up to `notificado`).
      * @optional
      */
     readiness?: TileReadiness;
+    /**
+     * Overrides the readiness label in the hover status row (e.g. a dated "Se avisará el …" for `programado`).
+     * @optional
+     */
+    readinessNote?: string;
     /**
      * For subcontract-row events: whether the subcontract is confirmed. Unconfirmed renders grey + dashed.
      * @optional
@@ -920,8 +925,8 @@ declare type Theme = {
     dark?: Partial<Record<ColorType, string>>;
 };
 
-/** In-house driver readiness, worst → best. */
-export declare type TileReadiness = "sin_chofer" | "sin_avisar" | "notificado" | "confirmado";
+/** In-house driver readiness, worst → best. `programado` = pending but the notify moment is still in the future. */
+export declare type TileReadiness = "sin_chofer" | "sin_avisar" | "programado" | "notificado" | "confirmado";
 
 /**
  * Data provided to consumer when a time range is selected on the calendar.

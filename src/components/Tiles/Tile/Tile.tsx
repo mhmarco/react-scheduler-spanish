@@ -10,7 +10,6 @@ import { TileIcon } from "./icons";
 import { READINESS } from "./readiness";
 import {
   StyledTileWrapper,
-  StyledRStripe,
   StyledNt,
   StyledNtRow,
   StyledNtIco,
@@ -35,9 +34,6 @@ import { TileProps } from "./types";
 // Multi-day tiles always render the full info stack (title / booking·client / driver) and let text truncate, so
 // nothing is dropped on narrow tiles. One-day tiles show both time chips once past this width.
 const TIMES_MIN = 34;
-
-const SUB_OK = "#3E8E5A";
-const SUB_WARN = "#D98A22";
 
 const Tile: FC<TileProps> = ({
   row,
@@ -122,11 +118,10 @@ const Tile: FC<TileProps> = ({
     color: getTileTextColor(data.bgColor ?? "")
   };
 
-  // Two-indicator chrome (§22.2): a 4px left readiness stripe, plus a top-right cluster — SUB pill for subcontract
-  // tiles, or a white dot-wrap with a coloured status icon for in-house tiles.
+  // Status chrome (§22.2): a top-right cluster — SUB pill for subcontract tiles, or a white dot-wrap with a
+  // coloured status icon for in-house tiles.
   const rd = !isSubcontract && data.readiness ? READINESS[data.readiness] : null;
   const unconfirmedSub = isSubcontract && data.subcontractConfirmed === false;
-  const stripeColor = isSubcontract ? (unconfirmedSub ? SUB_WARN : SUB_OK) : rd?.stripe;
 
   const wrapper = (children: React.ReactNode) => (
     <StyledTileWrapper
@@ -142,7 +137,6 @@ const Tile: FC<TileProps> = ({
       $highlighted={highlighted}
       $dimmed={dimmed}
       $leaving={leaving}>
-      {stripeColor && <StyledRStripe style={{ background: stripeColor }} />}
       {leaving && <StyledLeaveTag>Sub</StyledLeaveTag>}
       {children}
     </StyledTileWrapper>

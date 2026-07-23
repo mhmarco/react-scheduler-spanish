@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { useCalendar } from "@/context/CalendarProvider";
-import { outsideWrapperId, schedulerBodyId } from "@/constants";
+import { schedulerBodyId } from "@/constants";
 import {
   Wrapper,
   Grp,
@@ -10,7 +10,6 @@ import {
   TbDiv,
   ZoomSeg,
   DateLabel,
-  Cmd,
   PillBtn,
   Badge
 } from "./styles";
@@ -30,7 +29,7 @@ const toggleFullscreen = () => {
 };
 
 // Two-group toolbar matched to the mockup (.toolbar, artifact 91ed97bb): a left group with ‹ Hoy › nav, month
-// label, Día│Semana│Mes zoom, Ir a fecha and Buscar; a right group with Filtros, Pantalla completa and any host
+// label, Día│Semana│Mes zoom and Ir a fecha; a right group with Filtros, Pantalla completa and any host
 // toolbarActions. Zoom maps to the fork levels (Día = hourly, Semana = week columns, Mes = day columns).
 const Topbar: FC<TopbarProps> = () => {
   const {
@@ -45,10 +44,6 @@ const Topbar: FC<TopbarProps> = () => {
     toolbarActions
   } = useCalendar();
   const { filterButtonState = -1 } = config;
-
-  const focusSearch = () => {
-    document.querySelector<HTMLInputElement>(`#${outsideWrapperId} input[placeholder]`)?.focus();
-  };
 
   return (
     <Wrapper width={0}>
@@ -90,17 +85,21 @@ const Topbar: FC<TopbarProps> = () => {
               <circle cx="16.7" cy="16.7" r="2.7" />
             </Svg>
             Ir a fecha
-            <input type="date" onChange={(e) => e.target.value && goToDate(e.target.value)} />
+            <input
+              type="date"
+              onClick={(e) => {
+                // showPicker() can throw (InvalidStateError / NotAllowedError) in some browsers or embed contexts;
+                // swallow it — the field still works via focus/typing.
+                try {
+                  (e.currentTarget as HTMLInputElement).showPicker?.();
+                } catch {
+                  /* no-op */
+                }
+              }}
+              onChange={(e) => e.target.value && goToDate(e.target.value)}
+            />
           </DateLabel>
         )}
-        <Cmd onClick={focusSearch}>
-          <Svg>
-            <circle cx="11" cy="11" r="7" />
-            <path d="m20 20-3.2-3.2" />
-          </Svg>
-          Buscar
-          <span className="k">⌘K</span>
-        </Cmd>
       </Grp>
       <Grp $at="end">
         {config.showFilterButton !== false && filterButtonState >= 0 && (

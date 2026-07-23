@@ -23,7 +23,6 @@ export const drawMonthlyView = (
         "days"
       );
       const isCurrentDay = date.isSame(dayjs(), "day");
-      const isPast = date.isBefore(dayjs(), "day");
       const isMonthStart = date.date() === 1;
       drawCell(
         ctx,
@@ -33,7 +32,6 @@ export const drawMonthlyView = (
         getIsBusinessDay(date),
         isCurrentDay,
         theme,
-        isPast,
         isMonthStart
       );
     }

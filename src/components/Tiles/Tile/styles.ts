@@ -47,9 +47,8 @@ export const StyledTileWrapper = styled.button<StyledTileWrapperProps>`
   height: ${tileHeight}px;
   border-radius: 7px;
   /* NO overflow:hidden — it would make the tile the sticky scroll-container and break the floating text (the multi-day
-     body sticks to the visible-left as a wide event scrolls). The rounded bg still clips the hatch; the stripe rounds
-     its own left corners to sit inside the radius. */
-  /* Isolate so the stripe (z 3) and top-right cluster (z 6) stay contained in the tile instead of escaping to the
+     body sticks to the visible-left as a wide event scrolls). */
+  /* Isolate so the top-right status cluster (z 6) stays contained in the tile instead of escaping to the
      grid level and painting OVER the sticky day-header on vertical scroll. */
   isolation: isolate;
   outline: none;
@@ -107,18 +106,6 @@ export const StyledTileWrapper = styled.button<StyledTileWrapperProps>`
   ${({ $leaving }) =>
     $leaving &&
     "opacity: 0.74; filter: grayscale(0.2); outline: 2px dashed #D98A22; outline-offset: -2px; z-index: 7;"}
-`;
-
-// 4px left readiness stripe (in-house state / subcontract confirmed-unconfirmed). Colour set inline.
-export const StyledRStripe = styled.span`
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 4px;
-  border-radius: 7px 0 0 7px;
-  z-index: 3;
-  pointer-events: none;
 `;
 
 // Standard tile body: two stacked rows (title row + meta row). Sticky-left so the text floats at the visible-left of a

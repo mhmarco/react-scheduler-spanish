@@ -79,6 +79,7 @@ export const getTooltipData = (
       isOneDayEvent,
       passengers: reservation.totalPassengers,
       readiness: reservation.readiness,
+      readinessNote: reservation.readinessNote,
       subcontractConfirmed: reservation.subcontractConfirmed
     }
   };

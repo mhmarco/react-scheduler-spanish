@@ -4,8 +4,8 @@ import { TopbarProps } from "./types";
 
 // Toolbar matched to the mockup .toolbar (artifact 91ed97bb): a full-width band with a left control group and a right
 // group. The band's background spans the full board width (it sits under the sticky left column), but its CONTENT is
-// inset by leftColumnWidth so the nav/date never render under that column, which paints above the toolbar. It carries
-// the shared muted GREEN (#E1ECE6) so the toolbar header matches the group dividers + weekends; dark keeps the panel.
+// inset by leftColumnWidth so the nav/date never render under that column, which paints above the toolbar. Light mode
+// is a plain white band (the controls carry their own borders); dark keeps the panel colour.
 export const Wrapper = styled.div<TopbarProps>`
   width: 100%;
   display: flex;
@@ -15,7 +15,7 @@ export const Wrapper = styled.div<TopbarProps>`
   flex-wrap: wrap;
   padding: 9px 16px 9px ${leftColumnWidth + 16}px;
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
-  background: ${({ theme }) => (theme.mode === "dark" ? theme.colors.primary : "#E1ECE6")};
+  background: ${({ theme }) => (theme.mode === "dark" ? theme.colors.primary : "#fff")};
 `;
 
 export const Grp = styled.div<{ $at?: "start" | "end" }>`
@@ -142,33 +142,6 @@ export const DateLabel = styled.label`
     inset: 0;
     opacity: 0;
     cursor: pointer;
-  }
-`;
-
-export const Cmd = styled.button`
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12.5px;
-  font-weight: 650;
-  color: #3a4c46;
-  border: 1px solid #c8d5cd;
-  background: #fff;
-  border-radius: 8px;
-  padding: 5px 10px;
-  cursor: pointer;
-  & svg {
-    width: 14px;
-    height: 14px;
-  }
-  & .k {
-    font-family: ui-monospace, monospace;
-    font-size: 11px;
-    font-weight: 700;
-    background: ${({ theme }) => theme.colors.primary};
-    border: 1px solid ${({ theme }) => theme.colors.border};
-    border-radius: 4px;
-    padding: 0 5px;
   }
 `;
 

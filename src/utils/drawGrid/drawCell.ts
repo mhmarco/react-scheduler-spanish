@@ -1,25 +1,6 @@
 import { boxHeight } from "@/constants";
 import { Theme } from "@/styles";
 
-// A -45° diagonal hatch tile, built once and cached, used to grey out past days (mockup .colguide.past).
-let hatchPattern: CanvasPattern | null = null;
-const getHatchPattern = (ctx: CanvasRenderingContext2D): CanvasPattern | null => {
-  if (hatchPattern) return hatchPattern;
-  const tile = document.createElement("canvas");
-  tile.width = 12;
-  tile.height = 12;
-  const tctx = tile.getContext("2d");
-  if (!tctx) return null;
-  tctx.strokeStyle = "rgba(120, 137, 127, 0.045)";
-  tctx.lineWidth = 6;
-  tctx.beginPath();
-  tctx.moveTo(-3, 15);
-  tctx.lineTo(15, -3);
-  tctx.stroke();
-  hatchPattern = ctx.createPattern(tile, "repeat");
-  return hatchPattern;
-};
-
 export const drawCell = (
   ctx: CanvasRenderingContext2D,
   x: number,
@@ -28,7 +9,6 @@ export const drawCell = (
   isBusinessDay: boolean,
   isCurrentDay: boolean,
   theme: Theme,
-  isPast = false,
   isMonthStart = false
 ) => {
   if (isCurrentDay) {
@@ -36,20 +16,13 @@ export const drawCell = (
   } else if (isBusinessDay) {
     ctx.fillStyle = "transparent";
   } else {
-    // Weekend tint: the SHARED muted green (#E1ECE6) — same colour as the group bands + toolbar header so weekends
-    // read as part of the same green language, not a separate paler wash.
-    ctx.fillStyle = theme.mode === "dark" ? theme.colors.primary : "#E1ECE6";
+    // Weekend tint: a barely-there sage wash — present enough to read as the weekend, faint enough not to
+    // compete with the events on top.
+    ctx.fillStyle = theme.mode === "dark" ? theme.colors.primary : "#F2F6F4";
   }
   ctx.beginPath();
   ctx.setLineDash([]);
   ctx.fillRect(x, y, width, boxHeight);
-  if (isPast && !isCurrentDay) {
-    const pattern = getHatchPattern(ctx);
-    if (pattern) {
-      ctx.fillStyle = pattern;
-      ctx.fillRect(x, y, width, boxHeight);
-    }
-  }
   const isDark = theme.mode === "dark";
   // Very subtle vertical day divider (right edge) — separates days without the old heavy box.
   ctx.strokeStyle = isDark ? theme.colors.border : "#EEF3F0";
