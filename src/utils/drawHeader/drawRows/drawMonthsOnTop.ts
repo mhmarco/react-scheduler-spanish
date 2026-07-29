@@ -4,24 +4,18 @@ import { Day } from "@/types/global";
 import { Theme } from "@/styles";
 import { drawRow } from "../../drawRow";
 
+// The label is repeated inside the month block so one copy stays on screen while the block scrolls past the viewport.
+const labelGap = " ".repeat(98);
+
 export const drawMonthsOnTop = (ctx: CanvasRenderingContext2D, startDate: Day, theme: Theme) => {
   const yPos = 0;
-  let xPos = 0;
-  let width = 0;
-  let startMonthIndex = dayjs(
-    `${startDate.year}-${startDate.month + 1}-${startDate.dayOfMonth}`
-  ).month();
-  xPos = -startDate.dayOfMonth * dayWidth + dayWidth;
+  const anchor = dayjs(`${startDate.year}-${startDate.month + 1}-${startDate.dayOfMonth}`);
+  let xPos = -startDate.dayOfMonth * dayWidth + dayWidth;
 
   for (let i = 0; i < monthsInYear; i++) {
-    if (startMonthIndex > monthsInYear - 1) {
-      startMonthIndex = 0;
-    }
-    const dayInMonth = dayjs(`${startDate.year}-${startDate.month + 1}-${startDate.dayOfMonth}`)
-      .add(i, "months")
-      .daysInMonth();
-
-    width = dayInMonth * dayWidth;
+    const month = anchor.add(i, "months");
+    const width = month.daysInMonth() * dayWidth;
+    const label = month.format("MMMM YYYY").toUpperCase();
 
     drawRow(
       {
@@ -31,22 +25,12 @@ export const drawMonthsOnTop = (ctx: CanvasRenderingContext2D, startDate: Day, t
         width,
         height: headerMonthHeight,
         textYPos: topRowTextYPos,
-        label:
-          dayjs(`${startDate.year}-${startDate.month + 1}-${startDate.dayOfMonth}`)
-            .month(startMonthIndex)
-            .format("MMMM YYYY")
-            .toUpperCase() 
-            + "                                                                                                 " +
-          ` ${dayjs(`${startDate.year}-${startDate.month + 1}-${startDate.dayOfMonth}`)
-            .month(startMonthIndex)
-            .format("MMMM YYYY")
-            .toUpperCase()}`,
+        label: `${label}${labelGap}${label}`,
         font: `800 12px ${fontFamily}`
       },
       theme
     );
 
     xPos += width;
-    startMonthIndex++;
   }
 };
