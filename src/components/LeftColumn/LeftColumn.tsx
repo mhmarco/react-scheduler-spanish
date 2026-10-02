@@ -15,6 +15,7 @@ import {
 import { LeftColumnProps } from "./types";
 import LeftColumnItem from "./LeftColumnItem/LeftColumnItem";
 import GroupHeader from "./GroupHeader";
+import { SUBCONTRACT_GROUP_ID, providerGroupId, splitByProvider } from "@/utils/subcontractProviders";
 
 const LeftColumn: FC<LeftColumnProps> = ({
   data,
@@ -53,6 +54,7 @@ const LeftColumn: FC<LeftColumnProps> = ({
   const unassignedLabel = lang.unassigned ?? "No unit assigned";
   const subcontractUnits = data.filter((item) => item.isSubcontract);
   const subcontractLabel = lang.subcontract ?? "Subcontract";
+  const subcontractGroups = splitByProvider(subcontractUnits);
 
   const renderItem = (item: (typeof data)[number]) => {
     const idx = data.indexOf(item);
@@ -163,13 +165,32 @@ const LeftColumn: FC<LeftColumnProps> = ({
           <GroupHeader
             label={subcontractLabel}
             count={subcontractUnits.length}
-            isCollapsed={collapsedGroups.has("__subcontract__") || fadingGroups.has("__subcontract__")}
-            onToggle={() => onToggleGroup("__subcontract__")}
+            isCollapsed={collapsedGroups.has(SUBCONTRACT_GROUP_ID) || fadingGroups.has(SUBCONTRACT_GROUP_ID)}
+            onToggle={() => onToggleGroup(SUBCONTRACT_GROUP_ID)}
             variant="subcontract"
           />
-          {!collapsedGroups.has("__subcontract__") && (
-            <StyledGroupBody $fading={fadingGroups.has("__subcontract__")}>
-              {subcontractUnits.map(renderItem)}
+          {!collapsedGroups.has(SUBCONTRACT_GROUP_ID) && (
+            <StyledGroupBody $fading={fadingGroups.has(SUBCONTRACT_GROUP_ID)}>
+              {subcontractGroups.loose.map(renderItem)}
+              {subcontractGroups.providers.map((provider) => {
+                const groupId = providerGroupId(provider.id);
+                return (
+                  <div key={groupId}>
+                    <GroupHeader
+                      label={provider.name}
+                      count={provider.items.length}
+                      isCollapsed={collapsedGroups.has(groupId) || fadingGroups.has(groupId)}
+                      onToggle={() => onToggleGroup(groupId)}
+                      variant="provider"
+                    />
+                    {!collapsedGroups.has(groupId) && (
+                      <StyledGroupBody $fading={fadingGroups.has(groupId)}>
+                        {provider.items.map(renderItem)}
+                      </StyledGroupBody>
+                    )}
+                  </div>
+                );
+              })}
             </StyledGroupBody>
           )}
         </>

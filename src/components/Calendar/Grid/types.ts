@@ -40,6 +40,8 @@ export type GridProps = {
   subcontractSeparatorIndex?: number;
   /** Position in separatorRowIndices of the band of a group that needs attention (unassigned colour), -1 when none does. */
   warningSeparatorIndex?: number;
+  /** Positions in separatorRowIndices of the provider sub-group bands inside the subcontract group. */
+  providerSeparatorIndices?: number[];
   /** Units whose group is mid fade-out (collapse) — their tiles render as exiting so they fade before the snap. */
   fadingUnitIds?: Set<string>;
 };

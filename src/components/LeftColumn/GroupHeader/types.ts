@@ -1,4 +1,4 @@
-export type GroupHeaderVariant = "category" | "subcontract" | "unassigned";
+export type GroupHeaderVariant = "category" | "subcontract" | "unassigned" | "provider";
 
 export type GroupTone = "ok" | "warning";
 

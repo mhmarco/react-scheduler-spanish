@@ -255,18 +255,6 @@ export const createDemoData = (): SchedulerData => {
       ]
     },
     {
-      id: "u-sub-tierraverde",
-      label: { title: "Tierra Verde", subtitle: "Proveedor · 3 unid." },
-      capacity: 40,
-      isSubcontract: true,
-      data: [
-        ev({ startDate: d(-3), endDate: d(0, 18), title: "TIERRA VERDE", subtitle: "AMADEUS", bgColor: cSubOk, bookingNumber: "CRF-11726", subcontractConfirmed: true, subcontractDetails: tierraVerde }),
-        ev({ startDate: d(1), endDate: d(3, 18), title: "ARENAL", subtitle: "AMADEUS", bgColor: cSubOk, bookingNumber: "CRF-15726", subcontractConfirmed: true, subcontractDetails: tierraVerde }),
-        ev({ startDate: d(6), endDate: d(8, 18), title: "TIERRA VERDE", subtitle: "AMADEUS", bgColor: cSubOk, bookingNumber: "CRF-22726", subcontractConfirmed: true }),
-        ev({ startDate: d(11), endDate: d(13, 18), title: "TIERRA VERDE", subtitle: "AMADEUS", bgColor: cSubOk, bookingNumber: "CRF-14926", subcontractConfirmed: true })
-      ]
-    },
-    {
       id: "u-sub-ocasional",
       label: { title: "Ocasional", subtitle: "Ad-hoc · comparte…" },
       capacity: 30,
@@ -274,6 +262,39 @@ export const createDemoData = (): SchedulerData => {
       data: [
         ev({ startDate: d(-2), endDate: d(1, 18), title: "Transportes ABC", subtitle: "Keneth C.", bgColor: cSubNo, bookingNumber: "CRF-18726", subcontractConfirmed: false })
       ]
+    },
+    {
+      id: "u-sub-tv-bus40",
+      label: { title: "Bus 40", subtitle: "40 Pax | SJB-1234", capacity: 40, plate: "SJB-1234" },
+      capacity: 40,
+      isSubcontract: true,
+      provider: { id: "tv", name: "Tierra Verde" },
+      data: [
+        ev({ startDate: d(-3), endDate: d(0, 18), title: "TIERRA VERDE", subtitle: "AMADEUS", bgColor: cSubOk, bookingNumber: "CRF-11726", subcontractConfirmed: true, subcontractDetails: tierraVerde }),
+        ev({ startDate: d(1), endDate: d(3, 18), title: "ARENAL", subtitle: "AMADEUS", bgColor: cSubOk, bookingNumber: "CRF-15726", subcontractConfirmed: true, subcontractDetails: tierraVerde })
+      ]
+    },
+    {
+      id: "u-sub-tv-van12",
+      label: { title: "Van 12", subtitle: "12 Pax | SJB-5678", capacity: 12, plate: "SJB-5678" },
+      capacity: 12,
+      isSubcontract: true,
+      provider: { id: "tv", name: "Tierra Verde" },
+      data: [
+        ev({ startDate: d(6), endDate: d(8, 18), title: "TIERRA VERDE", subtitle: "AMADEUS", bgColor: cSubOk, bookingNumber: "CRF-22726", subcontractConfirmed: true }),
+        ev({ startDate: d(11), endDate: d(13, 18), title: "TIERRA VERDE", subtitle: "AMADEUS", bgColor: cSubOk, bookingNumber: "CRF-14926", subcontractConfirmed: true })
+      ]
+    },
+    {
+      id: "u-sub-alfa-coaster",
+      label: { title: "Coaster", subtitle: "25 Pax | AB-9012", capacity: 25, plate: "AB-9012" },
+      capacity: 25,
+      isSubcontract: true,
+      provider: { id: "alfa", name: "Alfa Tours" },
+      data: [
+        ev({ startDate: d(2), endDate: d(4, 18), title: "MONTEVERDE", subtitle: "AMADEUS", bgColor: cSubNo, bookingNumber: "CRF-30726", subcontractConfirmed: false })
+      ]
     }
   ];
 };
+

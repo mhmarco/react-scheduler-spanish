@@ -5,6 +5,7 @@ export type {
   SchedulerData,
   SchedulerProjectData,
   SchedulerRow,
+  SchedulerRowProvider,
   SchedulerCategory,
   ZoomLevel,
   Config,

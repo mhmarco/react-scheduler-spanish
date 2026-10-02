@@ -26,6 +26,7 @@ export const splitToPages = (
         capacity: data[i].capacity,
         isSubcontract: data[i].isSubcontract,
         isUnassigned: data[i].isUnassigned,
+        provider: data[i].provider,
         categoryId: data[i].categoryId
       };
 
@@ -50,6 +51,7 @@ export const splitToPages = (
           capacity: data[i + leftIndex].capacity,
           isSubcontract: data[i + leftIndex].isSubcontract,
           isUnassigned: data[i + leftIndex].isUnassigned,
+          provider: data[i + leftIndex].provider,
           categoryId: data[i + leftIndex].categoryId
         };
         singlePage.push(newItem);
@@ -68,6 +70,7 @@ export const splitToPages = (
       capacity: data[i].capacity,
       isSubcontract: data[i].isSubcontract,
       isUnassigned: data[i].isUnassigned,
+      provider: data[i].provider,
       categoryId: data[i].categoryId
     };
     singlePage.push(newItem);

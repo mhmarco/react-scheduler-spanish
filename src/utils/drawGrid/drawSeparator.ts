@@ -1,7 +1,7 @@
 import { boxHeight, subcontractSeparatorHeight } from "@/constants";
 import { Theme } from "@/styles";
 
-export type SeparatorVariant = "group" | "subcontract" | "warning";
+export type SeparatorVariant = "group" | "subcontract" | "warning" | "provider";
 
 export const drawSeparator = (
   ctx: CanvasRenderingContext2D,
@@ -15,11 +15,13 @@ export const drawSeparator = (
   const width = ctx.canvas.width;
 
   // Just the background band — no centre line. The subcontract band and a group that needs attention keep a SUBTLE
-  // wash of their colour; category/group bands get a faint sage wash so the group divider reads as a soft separator
-  // without a heavy coloured stripe.
+  // wash of their colour, a provider band inside the subcontract group just the lane's own tint; category/group
+  // bands get a faint sage wash so the group divider reads as a soft separator without a heavy coloured stripe.
   ctx.fillStyle =
     variant === "subcontract"
       ? theme.colors.subcontractBorder + "40"
+      : variant === "provider"
+      ? theme.colors.subcontractBg
       : variant === "warning"
       ? theme.colors.unassignedBorder + "26"
       : theme.mode === "dark"

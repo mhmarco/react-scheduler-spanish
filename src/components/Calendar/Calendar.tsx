@@ -25,6 +25,7 @@ import { getTooltipData } from "@/utils/getTooltipData";
 import { generateAutoCategories } from "@/utils/generateAutoCategories";
 import { prefersReducedMotion } from "@/utils/prefersReducedMotion";
 import { usePagination } from "@/hooks/usePagination";
+import { SUBCONTRACT_GROUP_ID, providerGroupId, splitByProvider } from "@/utils/subcontractProviders";
 import EmptyBox from "../EmptyBox";
 import { Grid, Header, LeftColumn, Loader, Tooltip } from "..";
 import { CalendarProps } from "./types";
@@ -219,8 +220,10 @@ export const Calendar: FC<CalendarProps> = ({
         ids.push(cat.id);
       }
     }
-    if (effectivePage.some((item) => item.isSubcontract)) {
-      ids.push("__subcontract__");
+    const subcontract = effectivePage.filter((item) => item.isSubcontract);
+    if (subcontract.length > 0) {
+      ids.push(SUBCONTRACT_GROUP_ID);
+      ids.push(...splitByProvider(subcontract).providers.map((p) => providerGroupId(p.id)));
     }
     return ids;
   }, [effectiveCategories, effectivePage]);
@@ -238,8 +241,9 @@ export const Calendar: FC<CalendarProps> = ({
     if (fadingGroups.size === 0) return EMPTY_UNIT_IDS;
     const ids = new Set<string>();
     for (const item of effectivePage) {
-      const gid = item.isUnassigned ? "__unassigned__" : item.isSubcontract ? "__subcontract__" : item.categoryId;
-      if (gid && fadingGroups.has(gid)) ids.add(item.id);
+      const gid = item.isUnassigned ? "__unassigned__" : item.isSubcontract ? SUBCONTRACT_GROUP_ID : item.categoryId;
+      const providerFading = !!item.provider && fadingGroups.has(providerGroupId(item.provider.id));
+      if ((gid && fadingGroups.has(gid)) || providerFading) ids.add(item.id);
     }
     return ids;
   }, [fadingGroups, effectivePage]);
@@ -252,7 +256,8 @@ export const Calendar: FC<CalendarProps> = ({
     visibleProjectsPerPerson,
     separatorRowIndices,
     subcontractSeparatorIndex,
-    unassignedSeparatorIndex
+    unassignedSeparatorIndex,
+    providerSeparatorIndices
   } = useMemo(() => {
     const groups = buildGroupedPage(effectivePage, effectiveCategories);
     const hasCategoryHeaders = (effectiveCategories?.length ?? 0) > 0;
@@ -269,6 +274,18 @@ export const Calendar: FC<CalendarProps> = ({
     let currentRow = 0;
     let subcontractSeparatorIndex = -1;
     let unassignedSeparatorIndex = -1;
+    const providerSeparatorIndices: number[] = [];
+
+    const pushRows = (items: PaginatedSchedulerData) => {
+      for (const item of items) {
+        const idx = idToPageIdx.get(item.id) ?? 0;
+        const rows = rowsPerItem[idx];
+        visiblePage.push(item);
+        visibleRowsPerItem.push(rows);
+        visibleProjectsPerPerson.push(projectsPerPerson[idx]);
+        currentRow += rows;
+      }
+    };
 
     for (const group of groups) {
       const needsHeader =
@@ -281,7 +298,7 @@ export const Calendar: FC<CalendarProps> = ({
           group.type === "unassigned"
             ? "__unassigned__"
             : group.type === "subcontract"
-            ? "__subcontract__"
+            ? SUBCONTRACT_GROUP_ID
             : (group as { type: "category"; category: SchedulerCategory }).category.id;
         const isCollapsed = collapsedGroups.has(groupId);
 
@@ -289,25 +306,20 @@ export const Calendar: FC<CalendarProps> = ({
         if (group.type === "unassigned") unassignedSeparatorIndex = separatorRowIndices.length;
         separatorRowIndices.push(currentRow);
 
-        if (!isCollapsed) {
-          for (const item of group.items) {
-            const idx = idToPageIdx.get(item.id) ?? 0;
-            const rows = rowsPerItem[idx];
-            visiblePage.push(item);
-            visibleRowsPerItem.push(rows);
-            visibleProjectsPerPerson.push(projectsPerPerson[idx]);
-            currentRow += rows;
-          }
+        if (isCollapsed) continue;
+        if (group.type !== "subcontract") {
+          pushRows(group.items);
+          continue;
+        }
+        const { loose, providers } = splitByProvider(group.items);
+        pushRows(loose);
+        for (const provider of providers) {
+          providerSeparatorIndices.push(separatorRowIndices.length);
+          separatorRowIndices.push(currentRow);
+          if (!collapsedGroups.has(providerGroupId(provider.id))) pushRows(provider.items);
         }
       } else {
-        for (const item of group.items) {
-          const idx = idToPageIdx.get(item.id) ?? 0;
-          const rows = rowsPerItem[idx];
-          visiblePage.push(item);
-          visibleRowsPerItem.push(rows);
-          visibleProjectsPerPerson.push(projectsPerPerson[idx]);
-          currentRow += rows;
-        }
+        pushRows(group.items);
       }
     }
 
@@ -319,7 +331,8 @@ export const Calendar: FC<CalendarProps> = ({
       visibleProjectsPerPerson,
       separatorRowIndices,
       subcontractSeparatorIndex,
-      unassignedSeparatorIndex
+      unassignedSeparatorIndex,
+      providerSeparatorIndices
     };
   }, [effectivePage, effectiveCategories, page, collapsedGroups, rowsPerItem, projectsPerPerson]);
 
@@ -555,6 +568,7 @@ export const Calendar: FC<CalendarProps> = ({
             separatorRowIndices={separatorRowIndices}
             subcontractSeparatorIndex={subcontractSeparatorIndex}
             warningSeparatorIndex={unassignedCount > 0 ? unassignedSeparatorIndex : -1}
+            providerSeparatorIndices={providerSeparatorIndices}
             fadingUnitIds={fadingUnitIds}
           />
         ) : (

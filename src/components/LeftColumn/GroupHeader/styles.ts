@@ -1,4 +1,4 @@
-import styled, { css, keyframes } from "styled-components";
+import styled, { css, DefaultTheme, keyframes } from "styled-components";
 import { GroupHeaderVariant, GroupTone } from "./types";
 
 const attentionPulse = keyframes`
@@ -6,64 +6,68 @@ const attentionPulse = keyframes`
   70%, 100% { box-shadow: 0 0 0 5px transparent; }
 `;
 
+type HeaderPalette = { text: string; bg: string; edge: string; bottom: string; hover: string };
+
+const palette = (theme: DefaultTheme, variant: GroupHeaderVariant, tone?: GroupTone): HeaderPalette => {
+  const { unassignedBorder, unassignedText, subcontractBorder, subcontractText, subcontractBg } = theme.colors;
+  if (tone === "warning") {
+    return {
+      text: unassignedText,
+      bg: unassignedBorder + "26",
+      edge: unassignedBorder,
+      bottom: unassignedBorder + "66",
+      hover: unassignedBorder + "38"
+    };
+  }
+  if (variant === "subcontract") {
+    return {
+      text: subcontractText,
+      bg: subcontractBorder + "24",
+      edge: subcontractBorder,
+      bottom: subcontractBorder,
+      hover: subcontractBorder + "33"
+    };
+  }
+  // A provider inside the subcontract group: the lane's own tint and edge, so it reads as part of the group.
+  if (variant === "provider") {
+    return {
+      text: subcontractText,
+      bg: subcontractBg,
+      edge: subcontractBorder,
+      bottom: subcontractBorder + "33",
+      hover: subcontractBorder + "22"
+    };
+  }
+  return { text: "#5C8374", bg: "#E9EFEC", edge: "transparent", bottom: "#D4DFD9", hover: "#DAE6E0" };
+};
+
 // Group header matched to the mockup .bd-group .gh — a flat tinted band, uppercase sage (or gold for subcontract).
 export const StyledGroupHeader = styled.div<{ $variant: GroupHeaderVariant; $tone?: GroupTone }>`
   display: flex;
   align-items: center;
   gap: ${({ $tone }) => ($tone ? "4px" : "5px")};
-  padding: ${({ $tone }) => ($tone ? "0 7px 0 9px" : "0 11px 0 9px")};
+  padding: ${({ $tone, $variant }) =>
+    $tone ? "0 7px 0 9px" : $variant === "provider" ? "0 11px 0 20px" : "0 11px 0 9px"};
   height: 21px;
-  color: ${({ theme, $variant, $tone }) =>
-    $tone === "warning"
-      ? theme.colors.unassignedText
-      : $variant === "subcontract"
-      ? theme.colors.subcontractText
-      : "#5C8374"};
-  background: ${({ theme, $variant, $tone }) =>
-    $tone === "warning"
-      ? theme.colors.unassignedBorder + "26"
-      : $variant === "subcontract"
-      ? theme.colors.subcontractBorder + "24"
-      : "#E9EFEC"};
-  border-left: 3px solid
-    ${({ theme, $variant, $tone }) =>
-      $tone === "warning"
-        ? theme.colors.unassignedBorder
-        : $variant === "subcontract"
-        ? theme.colors.subcontractBorder
-        : "transparent"};
-  border-bottom: 1px solid
-    ${({ theme, $variant, $tone }) =>
-      $tone === "warning"
-        ? theme.colors.unassignedBorder + "66"
-        : $variant === "subcontract"
-        ? theme.colors.subcontractBorder
-        : "#D4DFD9"};
+  color: ${({ theme, $variant, $tone }) => palette(theme, $variant, $tone).text};
+  background: ${({ theme, $variant, $tone }) => palette(theme, $variant, $tone).bg};
+  border-left: 3px solid ${({ theme, $variant, $tone }) => palette(theme, $variant, $tone).edge};
+  border-bottom: 1px solid ${({ theme, $variant, $tone }) => palette(theme, $variant, $tone).bottom};
   cursor: pointer;
   user-select: none;
   transition: background 0.15s ease;
 
   &:hover {
-    background: ${({ theme, $variant, $tone }) =>
-      $tone === "warning"
-        ? theme.colors.unassignedBorder + "38"
-        : $variant === "subcontract"
-        ? theme.colors.subcontractBorder + "33"
-        : "#DAE6E0"};
+    background: ${({ theme, $variant, $tone }) => palette(theme, $variant, $tone).hover};
   }
 `;
 
 export const StyledLabel = styled.span<{ $variant: GroupHeaderVariant; $tone?: GroupTone }>`
-  font-size: 9.5px;
-  font-weight: 750;
-  letter-spacing: ${({ $tone }) => ($tone ? "0.03em" : "0.07em")};
-  text-transform: uppercase;
-  color: ${({ theme, $variant, $tone }) =>
-    $tone === "warning"
-      ? theme.colors.unassignedText
-      : $variant === "subcontract"
-      ? theme.colors.subcontractText
-      : "#5C8374"};
+  font-size: ${({ $variant }) => ($variant === "provider" ? "10.5px" : "9.5px")};
+  font-weight: ${({ $variant }) => ($variant === "provider" ? 650 : 750)};
+  letter-spacing: ${({ $tone, $variant }) => ($tone ? "0.03em" : $variant === "provider" ? "0.01em" : "0.07em")};
+  text-transform: ${({ $variant }) => ($variant === "provider" ? "none" : "uppercase")};
+  color: ${({ theme, $variant, $tone }) => palette(theme, $variant, $tone).text};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -75,8 +79,7 @@ export const StyledCount = styled.span<{ $variant: GroupHeaderVariant }>`
   font-size: 9.5px;
   font-weight: 700;
   opacity: 0.75;
-  color: ${({ theme, $variant }) =>
-    $variant === "subcontract" ? theme.colors.subcontractText : "#5C8374"};
+  color: ${({ theme, $variant }) => palette(theme, $variant).text};
   flex-shrink: 0;
 `;
 

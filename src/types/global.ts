@@ -174,9 +174,16 @@ export type SchedulerRow = {
   isSubcontract?: boolean;
   /** The lane for services without a unit: grouped first, under a header that counts its services. */
   isUnassigned?: boolean;
+  /**
+   * For subcontract rows: the provider whose collapsible sub-group, inside the subcontract group, holds the row.
+   * Rows without one sit directly under the subcontract header.
+   */
+  provider?: SchedulerRowProvider;
   /** Category ID to group this resource under. Must match a SchedulerCategory.id */
   categoryId?: string;
 };
+
+export type SchedulerRowProvider = { id: string; name: string };
 
 export type SchedulerItemClickData = Omit<SchedulerRow, "data">;
 
@@ -189,6 +196,7 @@ export type PaginatedSchedulerRow = {
   capacity?: number;
   isSubcontract?: boolean;
   isUnassigned?: boolean;
+  provider?: SchedulerRowProvider;
   categoryId?: string;
 };
 

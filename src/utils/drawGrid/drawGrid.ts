@@ -16,7 +16,8 @@ export const drawGrid = (
   theme: Theme,
   separatorRowIndices: number[] = [],
   subcontractSeparatorIndex = -1,
-  warningSeparatorIndex = -1
+  warningSeparatorIndex = -1,
+  providerSeparatorIndices: number[] = []
 ) => {
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   const canvasWrapper = document.getElementById(canvasWrapperId);
@@ -35,7 +36,14 @@ export const drawGrid = (
   }
 
   for (let i = 0; i < separatorRowIndices.length; i++) {
-    const variant = i === subcontractSeparatorIndex ? "subcontract" : i === warningSeparatorIndex ? "warning" : "group";
+    const variant =
+      i === subcontractSeparatorIndex
+        ? "subcontract"
+        : i === warningSeparatorIndex
+        ? "warning"
+        : providerSeparatorIndices.includes(i)
+        ? "provider"
+        : "group";
     drawSeparator(ctx, i, separatorRowIndices[i], theme, variant);
   }
 
