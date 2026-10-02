@@ -645,6 +645,14 @@ export declare type SchedulerProjectData = {
      * @optional
      */
     subcontractConfirmed?: boolean;
+    /**
+     * For subcontract-row events: label/value rows the tooltip lists under a CONFIRMED subcontract's status (who runs
+     * it, on which unit). @optional
+     */
+    subcontractDetails?: {
+        label: string;
+        value: string;
+    }[];
 };
 
 export declare type SchedulerProps = {

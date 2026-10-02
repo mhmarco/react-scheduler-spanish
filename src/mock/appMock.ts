@@ -173,6 +173,10 @@ export const createDemoData = (): SchedulerData => {
   const cAlert = "#C6483D"; // alert red
   const cSubOk = "#3E8E5A"; // subcontract confirmed
   const cSubNo = "#7E8A85"; // subcontract unconfirmed
+  const tierraVerde = [
+    { label: "Proveedor", value: "Tierra Verde" },
+    { label: "Unidad", value: "Bus 40 · SJB-1234" }
+  ];
   const tf = (off: number, h: number, m: number, bk: string, readiness: TileReadiness, alert = false) =>
     ev({ startDate: d(off, h, m), endDate: d(off, h, m), title: "Transfer", subtitle: "AMADEUS", bgColor: alert ? cAlert : cTf, eventType: TF, bookingNumber: bk, readiness });
 
@@ -256,8 +260,8 @@ export const createDemoData = (): SchedulerData => {
       capacity: 40,
       isSubcontract: true,
       data: [
-        ev({ startDate: d(-3), endDate: d(0, 18), title: "TIERRA VERDE", subtitle: "AMADEUS", bgColor: cSubOk, bookingNumber: "CRF-11726", subcontractConfirmed: true }),
-        ev({ startDate: d(1), endDate: d(3, 18), title: "ARENAL", subtitle: "AMADEUS", bgColor: cSubOk, bookingNumber: "CRF-15726", subcontractConfirmed: true }),
+        ev({ startDate: d(-3), endDate: d(0, 18), title: "TIERRA VERDE", subtitle: "AMADEUS", bgColor: cSubOk, bookingNumber: "CRF-11726", subcontractConfirmed: true, subcontractDetails: tierraVerde }),
+        ev({ startDate: d(1), endDate: d(3, 18), title: "ARENAL", subtitle: "AMADEUS", bgColor: cSubOk, bookingNumber: "CRF-15726", subcontractConfirmed: true, subcontractDetails: tierraVerde }),
         ev({ startDate: d(6), endDate: d(8, 18), title: "TIERRA VERDE", subtitle: "AMADEUS", bgColor: cSubOk, bookingNumber: "CRF-22726", subcontractConfirmed: true }),
         ev({ startDate: d(11), endDate: d(13, 18), title: "TIERRA VERDE", subtitle: "AMADEUS", bgColor: cSubOk, bookingNumber: "CRF-14926", subcontractConfirmed: true })
       ]

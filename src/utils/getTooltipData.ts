@@ -80,7 +80,8 @@ export const getTooltipData = (
       passengers: reservation.totalPassengers,
       readiness: reservation.readiness,
       readinessNote: reservation.readinessNote,
-      subcontractConfirmed: reservation.subcontractConfirmed
+      subcontractConfirmed: reservation.subcontractConfirmed,
+      subcontractDetails: reservation.subcontractDetails
     }
   };
 };

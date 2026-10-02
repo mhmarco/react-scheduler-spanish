@@ -374,6 +374,12 @@ export type SchedulerProjectData = {
    * @optional
    */
   subcontractConfirmed?: boolean;
+
+  /**
+   * For subcontract-row events: label/value rows the tooltip lists under a CONFIRMED subcontract's status (who runs
+   * it, on which unit). @optional
+   */
+  subcontractDetails?: { label: string; value: string }[];
 };
 
 /** In-house driver readiness, worst → best. `programado` = pending but the notify moment is still in the future. */
@@ -517,4 +523,5 @@ export type ReservationData = {
   readiness?: TileReadiness;
   readinessNote?: string;
   subcontractConfirmed?: boolean;
+  subcontractDetails?: { label: string; value: string }[];
 };

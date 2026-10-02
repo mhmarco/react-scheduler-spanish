@@ -6,7 +6,14 @@ import { GhostProjectData, SchedulerProjectData } from "@/types/global";
 import { Tile } from "..";
 import { TilesProps } from "./types";
 
-type ExitDesc = { project: SchedulerProjectData; absoluteRow: number; yOffset: number; isSubcontract: boolean };
+type ExitDesc = {
+  project: SchedulerProjectData;
+  absoluteRow: number;
+  yOffset: number;
+  isSubcontract: boolean;
+  /** Already faded out with its collapsing group: it leaves without an exit of its own. */
+  faded: boolean;
+};
 
 const getSepOffset = (rowIndex: number, separatorRowIndices: number[]): number => {
   let count = 0;
@@ -86,7 +93,8 @@ const Tiles: FC<TilesProps> = ({
               project,
               absoluteRow,
               yOffset,
-              isSubcontract: !!person.isSubcontract
+              isSubcontract: !!person.isSubcontract,
+              faded: unitFading
             });
 
             return (
@@ -130,7 +138,7 @@ const Tiles: FC<TilesProps> = ({
     prevMapRef.current = liveMap;
     const removed: ExitDesc[] = [];
     prev.forEach((desc, id) => {
-      if (!liveMap.has(id)) removed.push(desc);
+      if (!liveMap.has(id) && !desc.faded) removed.push(desc);
     });
     setExiting((cur) => {
       let next = cur.filter((e) => !liveMap.has(e.project.segmentId));
@@ -147,11 +155,21 @@ const Tiles: FC<TilesProps> = ({
     timersRef.current.push(timer);
   }, [liveMap]);
 
+  // Tiles that left in THIS render, before the effect above moves them into `exiting`: rendered now so the exit
+  // starts at once instead of after a frame without them. A collapsing group's tiles are already faded out, so they
+  // just go — giving them an exit too remounted them at full opacity and faded them out a second time.
+  const justLeft: ExitDesc[] = [];
+  if (prevMapRef.current !== liveMap) {
+    prevMapRef.current.forEach((desc, id) => {
+      if (!liveMap.has(id) && !desc.faded && !exiting.some((e) => e.project.segmentId === id)) justLeft.push(desc);
+    });
+  }
+
   // Render live + exiting tiles as ONE array keyed by segmentId, so React PRESERVES the node when a tile goes
   // live → exiting (same key, same array) and the $exiting opacity/scale transition fades it out. Two separate
   // array-children ({nodes}{exiting}) would remount the exiting tile at opacity 0 and tileIn would fade it back IN.
   // Filter out any that reappeared in liveMap this render to avoid a duplicate key.
-  const exitingEls = exiting
+  const exitingEls = [...exiting, ...justLeft]
     .filter((e) => !liveMap.has(e.project.segmentId))
     .map((e) => (
       <Tile

@@ -13,3 +13,9 @@ export const READINESS: Record<
   notificado: { icon: "clock", color: "#2C6BB0", label: "Notificado" },
   confirmado: { icon: "check", color: "#2E8B63", label: "Confirmado" }
 };
+
+// Subcontracts have no driver flow: the tooltip's status row shows the provider's confirmation instead.
+export const SUBCONTRACT_STATUS: Record<"confirmed" | "unconfirmed", { icon: TileIconName; color: string; label: string }> = {
+  confirmed: { icon: "check", color: "#2E8B63", label: "Subcontrato confirmado" },
+  unconfirmed: { icon: "clock", color: "#D98A22", label: "Subcontrato sin confirmar" }
+};
