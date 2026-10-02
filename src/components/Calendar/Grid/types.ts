@@ -15,6 +15,8 @@ export type GridProps = {
   data: PaginatedSchedulerData;
   baseData?: SchedulerData; // Unfiltered original data for conflict detection
   onTileClick?: (data: SchedulerProjectData) => void;
+  /** Right-click on a tile; the browser's own menu is suppressed when this is set. */
+  onTileContextMenu?: (data: SchedulerProjectData, position: { x: number; y: number }) => void;
   onEventDrop?: (dropData: EventDropData) => Promise<boolean> | boolean;
   onEventDrag?: (dragData: EventDragData) => void;
   draggableConfig?: DraggableConfig;

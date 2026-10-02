@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import styled from "styled-components";
 import { createDemoData, mockCategories } from "./mock/appMock";
 import { ParsedDatesRange } from "./utils/getDatesRange";
-import { ConfigFormValues, SchedulerProjectData } from "./types/global";
+import { ConfigFormValues, SchedulerProjectData, TilePulseKind } from "./types/global";
 import ConfigPanel from "./components/ConfigPanel";
 import { StyledSchedulerFrame } from "./styles";
 import { SchedulerRef } from "./components/Scheduler/types";
@@ -128,6 +128,8 @@ function App() {
   const [displayActiveUnitsMode, setDisplayActiveUnitsMode] = useState(false);
   const [resourceOnlyMode, setResourceOnlyMode] = useState(true);
   const [groupingMode, setGroupingMode] = useState<"categories" | "capacity" | "none">("categories");
+  const [pulsedCount, setPulsedCount] = useState<number | null>(null);
+  const [contextTile, setContextTile] = useState<string | null>(null);
 
   const handleRangeChange = useCallback((range: ParsedDatesRange) => {
     setRange(range);
@@ -413,6 +415,22 @@ function App() {
           >
             Today
           </button>
+          {(["confirmed", "notified", "lost"] as TilePulseKind[]).map((kind) => (
+            <button
+              key={kind}
+              onClick={() => {
+                const pulses = filteredData.flatMap((row) =>
+                  row.data.map((event) => ({ segmentId: event.segmentId, kind }))
+                );
+                setPulsedCount(schedulerRef.current?.pulseTiles(pulses).length ?? 0);
+              }}
+              style={{ padding: "4px 12px", cursor: "pointer" }}
+            >
+              Pulse {kind}
+            </button>
+          ))}
+          {pulsedCount !== null && <span data-testid="pulsed-count">{pulsedCount} on screen</span>}
+          {contextTile && <span data-testid="context-tile">Right-clicked: {contextTile}</span>}
         </div>
       </div>
       {isFullscreen ? (
@@ -424,6 +442,7 @@ function App() {
           categories={activeCategories}
           isLoading={false}
           onTileClick={handleTileClick}
+          onTileContextMenu={(tile, position) => setContextTile(`${tile.title} @ ${position.x},${position.y}`)}
           handleToggleDisplayActiveUnits={handleToggleDisplayActiveUnits}
           config={{
             zoom: 1,
@@ -461,6 +480,7 @@ function App() {
             data={filteredData}
             categories={activeCategories}
             onTileClick={handleTileClick}
+          onTileContextMenu={(tile, position) => setContextTile(`${tile.title} @ ${position.x},${position.y}`)}
             handleToggleDisplayActiveUnits={handleToggleDisplayActiveUnits}
             onItemClick={(data) => console.log("clicked: ", data)}
             onEventDrop={handleEventDrop}

@@ -376,6 +376,14 @@ export type SchedulerProjectData = {
 /** In-house driver readiness, worst → best. `programado` = pending but the notify moment is still in the future. */
 export type TileReadiness = "sin_chofer" | "sin_avisar" | "programado" | "notificado" | "confirmado";
 
+/** How a tile's status just changed; it picks the colour of the tile's pulse. */
+export type TilePulseKind = "confirmed" | "notified" | "lost";
+
+export type TilePulse = {
+  segmentId: string;
+  kind: TilePulseKind;
+};
+
 /**
  * Event type classification for scheduler items.
  * Affects both tile display and tooltip presentation.

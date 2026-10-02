@@ -1,4 +1,4 @@
-import { FC, useRef } from "react";
+import { CSSProperties, FC, ReactNode, useRef } from "react";
 import { useTheme } from "styled-components";
 import dayjs from "dayjs";
 import { useCalendar } from "@/context/CalendarProvider";
@@ -27,7 +27,9 @@ import {
   StyledGhostTitle,
   StyledGhostCap,
   StyledGhostBadge,
-  StyledLeaveTag
+  StyledLeaveTag,
+  StyledPulseOutline,
+  StyledPulseStatus
 } from "./styles";
 import { TileProps } from "./types";
 
@@ -41,6 +43,7 @@ const Tile: FC<TileProps> = ({
   zoom,
   isSubcontract = false,
   onTileClick,
+  onTileContextMenu,
   onDragStart,
   isDragging = false,
   isDraggable = true,
@@ -50,7 +53,8 @@ const Tile: FC<TileProps> = ({
   dimmed = false,
   leaving = false,
   ghost = false,
-  ghostBadge = ""
+  ghostBadge = "",
+  pulse
 }) => {
   const { date } = useCalendar();
   const datesRange = getDatesRange(date, zoom);
@@ -92,11 +96,18 @@ const Tile: FC<TileProps> = ({
   }
 
   const handleMouseDown = (e: React.MouseEvent) => {
+    if (e.button !== 0) return;
     mouseDownPos.current = { x: e.clientX, y: e.clientY };
     if (isDraggable && onDragStart) {
       e.preventDefault();
       onDragStart(data, e);
     }
+  };
+
+  const handleContextMenu = (e: React.MouseEvent) => {
+    if (!onTileContextMenu) return;
+    e.preventDefault();
+    onTileContextMenu(data, { x: e.clientX, y: e.clientY });
   };
 
   const handleClick = (e: React.MouseEvent) => {
@@ -123,12 +134,28 @@ const Tile: FC<TileProps> = ({
   const rd = !isSubcontract && data.readiness ? READINESS[data.readiness] : null;
   const unconfirmedSub = isSubcontract && data.subcontractConfirmed === false;
 
+  const pulseDelay = pulse ? ({ "--pulse-delay": `${pulse.delayMs}ms` } as CSSProperties) : undefined;
+  // Keyed on the shown status as well: the new status usually lands a render after the pulse starts, and the pop
+  // has to replay with it rather than with the status it replaced.
+  const pulsed = (status: ReactNode) =>
+    pulse ? (
+      <StyledPulseStatus
+        key={`${pulse.key}-${data.readiness ?? ""}-${String(data.subcontractConfirmed)}`}
+        $kind={pulse.kind}
+        style={pulseDelay}>
+        {status}
+      </StyledPulseStatus>
+    ) : (
+      status
+    );
+
   const wrapper = (children: React.ReactNode) => (
     <StyledTileWrapper
       data-segment-id={data.segmentId}
       style={wrapperStyle}
       onClick={handleClick}
       onMouseDown={handleMouseDown}
+      onContextMenu={handleContextMenu}
       onDragStart={(e) => e.preventDefault()}
       isDraggable={isDraggable}
       isDragging={isDragging}
@@ -136,7 +163,9 @@ const Tile: FC<TileProps> = ({
       $exiting={exiting}
       $highlighted={highlighted}
       $dimmed={dimmed}
-      $leaving={leaving}>
+      $leaving={leaving}
+      $pulsing={!!pulse}>
+      {pulse && <StyledPulseOutline key={pulse.key} $kind={pulse.kind} style={pulseDelay} aria-hidden />}
       {leaving && <StyledLeaveTag>Sub</StyledLeaveTag>}
       {children}
     </StyledTileWrapper>
@@ -149,13 +178,15 @@ const Tile: FC<TileProps> = ({
       <>
         {(isSubcontract || rd) && (
           <StyledTileTR $sm>
-            {isSubcontract ? (
-              <StyledSubPill>SUB</StyledSubPill>
-            ) : (
-              rd && (
-                <StyledDotWrap $sm style={{ color: rd.color }}>
-                  <TileIcon name={rd.icon} strokeWidth={rd.icon === "check" ? 2.6 : 2.2} />
-                </StyledDotWrap>
+            {pulsed(
+              isSubcontract ? (
+                <StyledSubPill>SUB</StyledSubPill>
+              ) : (
+                rd && (
+                  <StyledDotWrap $sm style={{ color: rd.color }}>
+                    <TileIcon name={rd.icon} strokeWidth={rd.icon === "check" ? 2.6 : 2.2} />
+                  </StyledDotWrap>
+                )
               )
             )}
           </StyledTileTR>
@@ -178,15 +209,18 @@ const Tile: FC<TileProps> = ({
   return wrapper(
     <>
       <StyledTileTR>
-        {isSubcontract ? (
-          <StyledSubPill>SUB</StyledSubPill>
-        ) : (
-          rd && (
-            <StyledDotWrap style={{ color: rd.color }}>
-              <TileIcon name={rd.icon} strokeWidth={rd.icon === "check" ? 2.6 : 2.2} />
-            </StyledDotWrap>
-          )
-        )}
+        {(isSubcontract || rd) &&
+          pulsed(
+            isSubcontract ? (
+              <StyledSubPill>SUB</StyledSubPill>
+            ) : (
+              rd && (
+                <StyledDotWrap style={{ color: rd.color }}>
+                  <TileIcon name={rd.icon} strokeWidth={rd.icon === "check" ? 2.6 : 2.2} />
+                </StyledDotWrap>
+              )
+            )
+          )}
       </StyledTileTR>
       {data.bookingNumber && <StyledNtBkCorner>{data.bookingNumber}</StyledNtBkCorner>}
       <StyledNt>

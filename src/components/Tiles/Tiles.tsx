@@ -1,6 +1,7 @@
 import { FC, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { subcontractSeparatorHeight } from "@/constants";
+import { useTilePulses } from "@/context/TilePulseProvider";
 import { GhostProjectData, SchedulerProjectData } from "@/types/global";
 import { Tile } from "..";
 import { TilesProps } from "./types";
@@ -31,6 +32,7 @@ const Tiles: FC<TilesProps> = ({
   data,
   zoom,
   onTileClick,
+  onTileContextMenu,
   onDragStart,
   isDraggable,
   draggingEventId,
@@ -41,6 +43,7 @@ const Tiles: FC<TilesProps> = ({
   leavingSegmentIds,
   ghostProject
 }) => {
+  const pulses = useTilePulses();
   const { nodes, liveMap } = useMemo(() => {
     const liveMap = new Map<string, ExitDesc>();
     const focusActive = !!focusedUnitIds && focusedUnitIds.length > 0;
@@ -94,6 +97,7 @@ const Tiles: FC<TilesProps> = ({
                 zoom={zoom}
                 isSubcontract={person.isSubcontract}
                 onTileClick={onTileClick}
+                onTileContextMenu={onTileContextMenu}
                 onDragStart={onDragStart}
                 isDragging={isDraggingThis}
                 isDraggable={isTileDraggable}
@@ -102,6 +106,7 @@ const Tiles: FC<TilesProps> = ({
                 highlighted={highlightedSegmentId != null && project.segmentId === highlightedSegmentId}
                 dimmed={isDimmed}
                 leaving={!!leavingSegmentIds?.includes(project.segmentId)}
+                pulse={pulses.get(project.segmentId)}
               />
             );
           })
@@ -110,7 +115,7 @@ const Tiles: FC<TilesProps> = ({
       })
       .flat(2);
     return { nodes, liveMap };
-  }, [data, onTileClick, zoom, onDragStart, isDraggable, draggingEventId, separatorRowIndices, fadingUnitIds, highlightedSegmentId, focusedUnitIds, leavingSegmentIds, ghostProject]);
+  }, [data, onTileClick, onTileContextMenu, zoom, onDragStart, isDraggable, draggingEventId, separatorRowIndices, fadingUnitIds, highlightedSegmentId, focusedUnitIds, leavingSegmentIds, ghostProject, pulses]);
 
   // Exit animation: keep a just-removed tile mounted with `exiting` for a beat so it fades out before unmounting.
   // Timers drop only their own batch and are cleared on unmount, so overlapping removals don't cancel each other.

@@ -107,6 +107,7 @@ export const Calendar: FC<CalendarProps> = ({
   baseData,
   categories,
   onTileClick,
+  onTileContextMenu,
   onItemClick,
   toggleTheme,
   topBarWidth,
@@ -502,6 +503,7 @@ export const Calendar: FC<CalendarProps> = ({
             rows={visibleTotalRows}
             ref={gridRef}
             onTileClick={onTileClick}
+            onTileContextMenu={onTileContextMenu}
             onEventDrop={onEventDrop}
             onEventDrag={onEventDrag}
             draggableConfig={draggableConfig}
