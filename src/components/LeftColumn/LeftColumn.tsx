@@ -66,6 +66,7 @@ const LeftColumn: FC<LeftColumnProps> = ({
         rows={rows[idx]}
         onItemClick={onItemClick}
         isSubcontract={item.isSubcontract}
+        nested={!!item.provider}
       />
     );
   };

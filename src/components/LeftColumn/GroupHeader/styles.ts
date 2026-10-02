@@ -28,14 +28,15 @@ const palette = (theme: DefaultTheme, variant: GroupHeaderVariant, tone?: GroupT
       hover: subcontractBorder + "33"
     };
   }
-  // A provider inside the subcontract group: the lane's own tint and edge, so it reads as part of the group.
+  // A provider inside the subcontract group: the lane's edge, and a band clearly darker than its units' rows so
+  // each provider reads as the start of its own block.
   if (variant === "provider") {
     return {
       text: subcontractText,
-      bg: subcontractBg,
+      bg: subcontractBorder + "2E",
       edge: subcontractBorder,
-      bottom: subcontractBorder + "33",
-      hover: subcontractBorder + "22"
+      bottom: subcontractBorder + "55",
+      hover: subcontractBorder + "40"
     };
   }
   return { text: "#5C8374", bg: "#E9EFEC", edge: "transparent", bottom: "#D4DFD9", hover: "#DAE6E0" };
@@ -52,6 +53,7 @@ export const StyledGroupHeader = styled.div<{ $variant: GroupHeaderVariant; $ton
   color: ${({ theme, $variant, $tone }) => palette(theme, $variant, $tone).text};
   background: ${({ theme, $variant, $tone }) => palette(theme, $variant, $tone).bg};
   border-left: 3px solid ${({ theme, $variant, $tone }) => palette(theme, $variant, $tone).edge};
+  border-top: ${({ theme, $variant }) => ($variant === "provider" ? `1px solid ${theme.colors.subcontractBorder}` : "none")};
   border-bottom: 1px solid ${({ theme, $variant, $tone }) => palette(theme, $variant, $tone).bottom};
   cursor: pointer;
   user-select: none;
@@ -64,7 +66,7 @@ export const StyledGroupHeader = styled.div<{ $variant: GroupHeaderVariant; $ton
 
 export const StyledLabel = styled.span<{ $variant: GroupHeaderVariant; $tone?: GroupTone }>`
   font-size: ${({ $variant }) => ($variant === "provider" ? "10.5px" : "9.5px")};
-  font-weight: ${({ $variant }) => ($variant === "provider" ? 650 : 750)};
+  font-weight: ${({ $variant }) => ($variant === "provider" ? 700 : 750)};
   letter-spacing: ${({ $tone, $variant }) => ($tone ? "0.03em" : $variant === "provider" ? "0.01em" : "0.07em")};
   text-transform: ${({ $variant }) => ($variant === "provider" ? "none" : "uppercase")};
   color: ${({ theme, $variant, $tone }) => palette(theme, $variant, $tone).text};

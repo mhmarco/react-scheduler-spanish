@@ -15,13 +15,13 @@ export const drawSeparator = (
   const width = ctx.canvas.width;
 
   // Just the background band — no centre line. The subcontract band and a group that needs attention keep a SUBTLE
-  // wash of their colour, a provider band inside the subcontract group just the lane's own tint; category/group
+  // wash of their colour, a provider band inside the subcontract group a lighter one; category/group
   // bands get a faint sage wash so the group divider reads as a soft separator without a heavy coloured stripe.
   ctx.fillStyle =
     variant === "subcontract"
       ? theme.colors.subcontractBorder + "40"
       : variant === "provider"
-      ? theme.colors.subcontractBg
+      ? theme.colors.subcontractBorder + "2E"
       : variant === "warning"
       ? theme.colors.unassignedBorder + "26"
       : theme.mode === "dark"

@@ -41,19 +41,20 @@ const BuildingIcon = () => (
   </svg>
 );
 
-const LeftColumnItem: FC<LeftColumnItemProps> = ({ id, item, rows, onItemClick, isSubcontract }) => {
+const LeftColumnItem: FC<LeftColumnItemProps> = ({ id, item, rows, onItemClick, isSubcontract, nested }) => {
   return (
     <StyledWrapper
       title={item.title}
       clickable={typeof onItemClick === "function"}
       rows={rows}
       $isSubcontract={isSubcontract}
+      $nested={nested}
       onClick={() => onItemClick?.({ id, label: item })}>
       <StyledInnerWrapper>
         <StyledImageWrapper $provider={isSubcontract}>
           {isImageUrl(item.icon) ? (
             <StyledImage src={item.icon} alt="" />
-          ) : isSubcontract ? (
+          ) : isSubcontract && !nested ? (
             <BuildingIcon />
           ) : (
             <BusFrontIcon />
