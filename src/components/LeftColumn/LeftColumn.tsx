@@ -33,7 +33,8 @@ const LeftColumn: FC<LeftColumnProps> = ({
   onToggleGroup,
   allGroupIds,
   onExpandAll,
-  onCollapseAll
+  onCollapseAll,
+  unassignedCount
 }) => {
   const [isInputFocused, setIsInputFocused] = useState(false);
   const lang = useLanguage();
@@ -48,6 +49,8 @@ const LeftColumn: FC<LeftColumnProps> = ({
   const allCollapsed = hasCollapsibleGroups && collapsedGroups.size === allGroupIds.length;
   const allExpanded = hasCollapsibleGroups && collapsedGroups.size === 0;
 
+  const unassignedRows = data.filter((item) => item.isUnassigned);
+  const unassignedLabel = lang.unassigned ?? "No unit assigned";
   const subcontractUnits = data.filter((item) => item.isSubcontract);
   const subcontractLabel = lang.subcontract ?? "Subcontract";
 
@@ -88,7 +91,7 @@ const LeftColumn: FC<LeftColumnProps> = ({
   };
 
   const uncategorized = data.filter(
-    (item) => !item.isSubcontract && (!item.categoryId || !hasCategoryHeaders)
+    (item) => !item.isSubcontract && !item.isUnassigned && (!item.categoryId || !hasCategoryHeaders)
   );
 
   return (
@@ -135,6 +138,22 @@ const LeftColumn: FC<LeftColumnProps> = ({
           pagesAmount={pagesAmount}
         />
       </StyledLeftColumnHeader>
+      {unassignedRows.length > 0 && (
+        <>
+          <GroupHeader
+            label={unassignedLabel}
+            count={unassignedCount}
+            isCollapsed={collapsedGroups.has("__unassigned__") || fadingGroups.has("__unassigned__")}
+            onToggle={() => onToggleGroup("__unassigned__")}
+            variant="unassigned"
+          />
+          {!collapsedGroups.has("__unassigned__") && (
+            <StyledGroupBody $fading={fadingGroups.has("__unassigned__")}>
+              {unassignedRows.map(renderItem)}
+            </StyledGroupBody>
+          )}
+        </>
+      )}
       {hasCategoryHeaders
         ? sortedCategories.map(renderCategoryGroup)
         : uncategorized.map(renderItem)}

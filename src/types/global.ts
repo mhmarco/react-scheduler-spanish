@@ -172,6 +172,8 @@ export type SchedulerRow = {
   data: SchedulerProjectData[];
   capacity?: number;
   isSubcontract?: boolean;
+  /** The lane for services without a unit: grouped first, under a header that counts its services. */
+  isUnassigned?: boolean;
   /** Category ID to group this resource under. Must match a SchedulerCategory.id */
   categoryId?: string;
 };
@@ -186,6 +188,7 @@ export type PaginatedSchedulerRow = {
   data: SchedulerProjectData[][];
   capacity?: number;
   isSubcontract?: boolean;
+  isUnassigned?: boolean;
   categoryId?: string;
 };
 

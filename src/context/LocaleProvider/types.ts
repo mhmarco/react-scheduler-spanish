@@ -84,6 +84,7 @@ export type Translation = {
   multiSelect?: MultiSelect;
   tooltip?: Tooltip;
   subcontract?: string;
+  unassigned?: string;
 };
 
 export type LocaleType = {

@@ -54,7 +54,7 @@ const initialTooltipData: TooltipData = {
   tileBounds: { x: 0, y: 0, width: 0, height: 0 }
 };
 
-/** Build ordered groups: categories sorted by maxPassengers, then uncategorized, then subcontract */
+/** Build ordered groups: unassigned first, then categories sorted by maxPassengers, then uncategorized, then subcontract */
 function buildGroupedPage(
   page: PaginatedSchedulerData,
   categories: SchedulerCategory[] | undefined
@@ -64,15 +64,22 @@ function buildGroupedPage(
     : [];
 
   type GroupEntry =
+    | { type: "unassigned"; items: PaginatedSchedulerRow[] }
     | { type: "category"; category: SchedulerCategory; items: PaginatedSchedulerRow[] }
     | { type: "uncategorized"; items: PaginatedSchedulerRow[] }
     | { type: "subcontract"; items: PaginatedSchedulerRow[] };
 
   const groups: GroupEntry[] = [];
 
+  const unassigned = page.filter((item) => item.isUnassigned);
+  if (unassigned.length > 0) {
+    groups.push({ type: "unassigned", items: unassigned });
+  }
+  const units = page.filter((item) => !item.isUnassigned);
+
   // Category groups
   for (const cat of sortedCategories) {
-    const items = page.filter(
+    const items = units.filter(
       (item) => !item.isSubcontract && item.categoryId === cat.id
     );
     if (items.length > 0) {
@@ -82,7 +89,7 @@ function buildGroupedPage(
 
   // Uncategorized own units (no categoryId, not subcontract)
   const hasCats = sortedCategories.length > 0;
-  const uncategorized = page.filter(
+  const uncategorized = units.filter(
     (item) => !item.isSubcontract && (!item.categoryId || !hasCats)
   );
   if (uncategorized.length > 0 && hasCats) {
@@ -94,7 +101,7 @@ function buildGroupedPage(
   }
 
   // Subcontract
-  const subcontract = page.filter((item) => item.isSubcontract);
+  const subcontract = units.filter((item) => item.isSubcontract);
   if (subcontract.length > 0) {
     groups.push({ type: "subcontract", items: subcontract });
   }
@@ -160,7 +167,7 @@ export const Calendar: FC<CalendarProps> = ({
     }
     // Assign categoryId to each item based on its capacity
     const effectivePage: PaginatedSchedulerData = page.map((item) => {
-      if (item.isSubcontract || item.capacity == null) return item;
+      if (item.isSubcontract || item.isUnassigned || item.capacity == null) return item;
       const catId = auto.capacityToCategoryId.get(item.capacity);
       return catId ? { ...item, categoryId: catId } : item;
     });
@@ -201,6 +208,9 @@ export const Calendar: FC<CalendarProps> = ({
   // Compute all collapsible group IDs
   const allGroupIds = useMemo(() => {
     const ids: string[] = [];
+    if (effectivePage.some((item) => item.isUnassigned)) {
+      ids.push("__unassigned__");
+    }
     const sortedCats = effectiveCategories
       ? [...effectiveCategories].sort((a, b) => a.maxPassengers - b.maxPassengers)
       : [];
@@ -228,7 +238,7 @@ export const Calendar: FC<CalendarProps> = ({
     if (fadingGroups.size === 0) return EMPTY_UNIT_IDS;
     const ids = new Set<string>();
     for (const item of effectivePage) {
-      const gid = item.isSubcontract ? "__subcontract__" : item.categoryId;
+      const gid = item.isUnassigned ? "__unassigned__" : item.isSubcontract ? "__subcontract__" : item.categoryId;
       if (gid && fadingGroups.has(gid)) ids.add(item.id);
     }
     return ids;
@@ -241,7 +251,8 @@ export const Calendar: FC<CalendarProps> = ({
     visibleTotalRows,
     visibleProjectsPerPerson,
     separatorRowIndices,
-    subcontractSeparatorRow
+    subcontractSeparatorIndex,
+    unassignedSeparatorIndex
   } = useMemo(() => {
     const groups = buildGroupedPage(effectivePage, effectiveCategories);
     const hasCategoryHeaders = (effectiveCategories?.length ?? 0) > 0;
@@ -256,22 +267,27 @@ export const Calendar: FC<CalendarProps> = ({
     const separatorRowIndices: number[] = [];
 
     let currentRow = 0;
-    let subcontractSeparatorRow = -1;
+    let subcontractSeparatorIndex = -1;
+    let unassignedSeparatorIndex = -1;
 
     for (const group of groups) {
       const needsHeader =
+        group.type === "unassigned" ||
         group.type === "subcontract" ||
         (group.type === "category" && hasCategoryHeaders);
 
       if (needsHeader) {
         const groupId =
-          group.type === "subcontract"
+          group.type === "unassigned"
+            ? "__unassigned__"
+            : group.type === "subcontract"
             ? "__subcontract__"
             : (group as { type: "category"; category: SchedulerCategory }).category.id;
         const isCollapsed = collapsedGroups.has(groupId);
 
+        if (group.type === "subcontract") subcontractSeparatorIndex = separatorRowIndices.length;
+        if (group.type === "unassigned") unassignedSeparatorIndex = separatorRowIndices.length;
         separatorRowIndices.push(currentRow);
-        if (group.type === "subcontract") subcontractSeparatorRow = currentRow;
 
         if (!isCollapsed) {
           for (const item of group.items) {
@@ -302,9 +318,19 @@ export const Calendar: FC<CalendarProps> = ({
       visibleTotalRows,
       visibleProjectsPerPerson,
       separatorRowIndices,
-      subcontractSeparatorRow
+      subcontractSeparatorIndex,
+      unassignedSeparatorIndex
     };
   }, [effectivePage, effectiveCategories, page, collapsedGroups, rowsPerItem, projectsPerPerson]);
+
+  const unassignedCount = useMemo(
+    () =>
+      effectivePage.reduce(
+        (count, item) => (item.isUnassigned ? count + item.data.reduce((n, row) => n + row.length, 0) : count),
+        0
+      ),
+    [effectivePage]
+  );
 
   const debouncedHandleMouseOver = useRef(
     debounce(
@@ -486,6 +512,7 @@ export const Calendar: FC<CalendarProps> = ({
         allGroupIds={allGroupIds}
         onExpandAll={handleExpandAll}
         onCollapseAll={handleCollapseAll}
+        unassignedCount={unassignedCount}
       />
       <StyledInnerWrapper>
         <Header
@@ -512,7 +539,8 @@ export const Calendar: FC<CalendarProps> = ({
             onMultiTimeRangeSelect={onMultiTimeRangeSelect}
             clickToAddConfig={clickToAddConfig}
             separatorRowIndices={separatorRowIndices}
-            subcontractSeparatorRow={subcontractSeparatorRow}
+            subcontractSeparatorIndex={subcontractSeparatorIndex}
+            warningSeparatorIndex={unassignedCount > 0 ? unassignedSeparatorIndex : -1}
             fadingUnitIds={fadingUnitIds}
           />
         ) : (

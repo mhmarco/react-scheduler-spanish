@@ -62,5 +62,6 @@ export const lt = {
     oneDay: "Vienos dienos",
     passengers: "Pax"
   },
-  subcontract: "Subrangovas"
+  subcontract: "Subrangovas",
+  unassigned: "Nepriskirta transporto priemonė"
 };

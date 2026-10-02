@@ -1,7 +1,11 @@
+export type GroupHeaderVariant = "category" | "subcontract" | "unassigned";
+
+export type GroupTone = "ok" | "warning";
+
 export type GroupHeaderProps = {
   label: string;
   count: number;
   isCollapsed: boolean;
   onToggle: () => void;
-  variant?: "category" | "subcontract";
+  variant?: GroupHeaderVariant;
 };

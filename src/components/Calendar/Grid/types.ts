@@ -33,8 +33,13 @@ export type GridProps = {
   clickToAddConfig?: ClickToAddConfig;
   /** Row indices where group separators should be drawn */
   separatorRowIndices?: number[];
-  /** The separator row index that starts the subcontract group (drawn amber). -1 when there is no subcontract group. */
-  subcontractSeparatorRow?: number;
+  /**
+   * Position in separatorRowIndices of the subcontract group's band (drawn amber), -1 when there is none. A position,
+   * not a row: a collapsed group's band shares its row with the next one.
+   */
+  subcontractSeparatorIndex?: number;
+  /** Position in separatorRowIndices of the band of a group that needs attention (drawn red), -1 when none does. */
+  warningSeparatorIndex?: number;
   /** Units whose group is mid fade-out (collapse) — their tiles render as exiting so they fade before the snap. */
   fadingUnitIds?: Set<string>;
 };

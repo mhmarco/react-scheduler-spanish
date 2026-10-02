@@ -30,7 +30,7 @@ export function generateAutoCategories(data: PaginatedSchedulerData): AutoCatego
   const empty: AutoCategoryResult = { categories: [], capacityToCategoryId: new Map() };
   const capacities = new Set<number>();
   for (const item of data) {
-    if (!item.isSubcontract && item.capacity != null) {
+    if (!item.isSubcontract && !item.isUnassigned && item.capacity != null) {
       capacities.add(item.capacity);
     }
   }

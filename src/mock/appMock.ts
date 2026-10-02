@@ -178,6 +178,15 @@ export const createDemoData = (): SchedulerData => {
 
   return [
     {
+      id: "u-none",
+      label: { title: "Sin unidad", subtitle: "" },
+      isUnassigned: true,
+      data: [
+        tf(1, 8, 0, "CRF-08126", "sin_avisar"),
+        ev({ startDate: d(4), endDate: d(5, 18), title: "LA FORTUNA", subtitle: "AMADEUS", bgColor: cTour, bookingNumber: "CRF-04126", readiness: "sin_avisar" })
+      ]
+    },
+    {
       id: "u-h1",
       label: { title: "H-1", subtitle: "5 Pax | SJB16703" },
       capacity: 5,
