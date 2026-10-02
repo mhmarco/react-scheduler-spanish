@@ -1,6 +1,7 @@
 import styled, { css, keyframes } from "styled-components";
 import { leftColumnWidth, tileHeight } from "@/constants";
 import { marginPaddingReset, truncate } from "@/styles";
+import { TilePulseKind } from "@/types/global";
 import { StyledTextProps, StyledTileWrapperProps } from "./types";
 
 // --- Kept: consumed by other components (DragOverlay, Tooltip, …) ---
@@ -94,6 +95,8 @@ export const StyledTileWrapper = styled.button<StyledTileWrapperProps>`
         animation: ${tileOut} 190ms ease-out forwards;
       }
     `}
+  /* A pulsing tile's flare and rings reach past its edges; lift it so neighbours don't cover them. */
+  ${({ $pulsing }) => $pulsing && "z-index: 8;"}
   /* Persistent green highlight for the event focused from a warning: a bold green ring + glow + an inset green wash
      over the tile bg (below the text, which stays readable). Lifted above neighbours so the ring isn't clipped. */
   ${({ $highlighted }) =>
@@ -233,6 +236,75 @@ export const StyledSubPill = styled.span`
   border-radius: 4px;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
   white-space: nowrap;
+`;
+
+// Status-change pulse (SchedulerRef.pulseTiles): the status icon pops in with two rings, the tile flares in the new
+// state's colour, and a thin outline in that colour outlasts the flare so the change can still be found later.
+const PULSE_COLORS: Record<TilePulseKind, { ring: string; glow: string }> = {
+  confirmed: { ring: "#2E8B63", glow: "rgba(46, 139, 99, 0.45)" },
+  notified: { ring: "#2C6BB0", glow: "rgba(44, 107, 176, 0.45)" },
+  lost: { ring: "#C6483D", glow: "rgba(198, 72, 61, 0.45)" }
+};
+
+const pulseFlare = keyframes`
+  0% { box-shadow: 0 0 0 0 transparent, 0 0 0 0 transparent; }
+  12% { box-shadow: 0 0 0 3px var(--pulse-ring), 0 0 16px 4px var(--pulse-glow); }
+  100% { box-shadow: 0 0 0 1.5px var(--pulse-ring), 0 0 0 0 transparent; }
+`;
+
+const pulseLinger = keyframes`
+  0%, 80% { opacity: 1; }
+  100% { opacity: 0; }
+`;
+
+const pulsePop = keyframes`
+  0% { transform: scale(0.4); opacity: 0; }
+  60% { transform: scale(1.18); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+`;
+
+const pulseRing = keyframes`
+  0% { transform: scale(0.6); opacity: 0.65; }
+  100% { transform: scale(2.2); opacity: 0; }
+`;
+
+export const StyledPulseOutline = styled.span<{ $kind: TilePulseKind }>`
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  --pulse-ring: ${({ $kind }) => PULSE_COLORS[$kind].ring};
+  --pulse-glow: ${({ $kind }) => PULSE_COLORS[$kind].glow};
+  animation:
+    ${pulseFlare} 2160ms ease-out var(--pulse-delay, 0ms) both,
+    ${pulseLinger} 9600ms linear var(--pulse-delay, 0ms) both;
+`;
+
+export const StyledPulseStatus = styled.span<{ $kind: TilePulseKind }>`
+  position: relative;
+  display: inline-flex;
+  --pulse-ring: ${({ $kind }) => PULSE_COLORS[$kind].ring};
+  @media (prefers-reduced-motion: no-preference) {
+    animation: ${pulsePop} 420ms cubic-bezier(0.34, 1.56, 0.64, 1) var(--pulse-delay, 0ms) both;
+    &::before,
+    &::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 16px;
+      height: 16px;
+      margin: -8px 0 0 -8px;
+      border-radius: 50%;
+      border: 1.5px solid var(--pulse-ring);
+      opacity: 0;
+      pointer-events: none;
+      animation: ${pulseRing} 750ms cubic-bezier(0.22, 1, 0.36, 1) var(--pulse-delay, 0ms);
+    }
+    &::after {
+      animation-delay: calc(var(--pulse-delay, 0ms) + 170ms);
+    }
+  }
 `;
 
 // One-day tile (.nt.xs.two): type icon over start/end time chips + corner status dot. The transfer glyph is the hero

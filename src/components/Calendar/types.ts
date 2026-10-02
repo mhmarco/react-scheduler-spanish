@@ -15,6 +15,8 @@ export type CalendarProps = {
   categories?: SchedulerCategory[];
   topBarWidth: number;
   onTileClick?: (data: SchedulerProjectData) => void;
+  /** Right-click on a tile; the browser's own menu is suppressed when this is set. */
+  onTileContextMenu?: (data: SchedulerProjectData, position: { x: number; y: number }) => void;
   onItemClick?: (data: SchedulerItemClickData) => void;
   toggleTheme?: () => void;
   onEventDrop?: (dropData: EventDropData) => Promise<boolean> | boolean;

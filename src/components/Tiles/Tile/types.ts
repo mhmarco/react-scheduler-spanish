@@ -1,3 +1,4 @@
+import { ActiveTilePulse } from "@/context/TilePulseProvider";
 import { SchedulerProjectData } from "@/types/global";
 
 export type TileProps = {
@@ -7,6 +8,7 @@ export type TileProps = {
   /** True when this tile's row is a subcontract lane (SUB pill + confirmed/unconfirmed styling, no ack dot). */
   isSubcontract?: boolean;
   onTileClick?: (data: SchedulerProjectData) => void;
+  onTileContextMenu?: (data: SchedulerProjectData, position: { x: number; y: number }) => void;
   onDragStart?: (event: SchedulerProjectData, mouseEvent: React.MouseEvent) => void;
   isDragging?: boolean;
   isDraggable?: boolean;
@@ -24,6 +26,8 @@ export type TileProps = {
   ghost?: boolean;
   /** Ghost only: the badge under the tile, e.g. "entra a Bus 12". */
   ghostBadge?: string;
+  /** A status change animating on this tile (see SchedulerRef.pulseTiles). */
+  pulse?: ActiveTilePulse;
 };
 
 export type StyledTextProps = {
@@ -39,4 +43,5 @@ export type StyledTileWrapperProps = {
   $dimmed?: boolean;
   $leaving?: boolean;
   $ghost?: boolean;
+  $pulsing?: boolean;
 };

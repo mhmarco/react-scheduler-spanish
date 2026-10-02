@@ -14,10 +14,12 @@ import Overview from "@/components/Overview/Overview";
 import CalendarProvider, { useCalendar } from "@/context/CalendarProvider";
 import LocaleProvider from "@/context/LocaleProvider";
 import { darkTheme, GlobalStyle, theme } from "@/styles";
-import { Config, SchedulerCategory, SchedulerData, ZoomLevel } from "@/types/global";
+import { tilePulseContext } from "@/context/TilePulseProvider";
+import { Config, SchedulerCategory, SchedulerData, TilePulse, ZoomLevel } from "@/types/global";
 import { outsideWrapperId, schedulerBodyId } from "@/constants";
 import { isAvailableZoom } from "@/types/guards";
 import { EventDropData, EventDragData, DraggableConfig } from "@/hooks/types";
+import { useTilePulseState } from "@/hooks/useTilePulseState";
 import { SchedulerProps, SchedulerRef } from "./types";
 import { StyledBody, StyledInnerWrapper, StyledOutsideWrapper } from "./styles";
 
@@ -26,6 +28,7 @@ type SchedulerContentProps = {
   baseData?: SchedulerData;
   categories?: SchedulerCategory[];
   onTileClick?: SchedulerProps["onTileClick"];
+  onTileContextMenu?: SchedulerProps["onTileContextMenu"];
   topBarWidth: number;
   onItemClick?: SchedulerProps["onItemClick"];
   toggleTheme: () => void;
@@ -43,6 +46,7 @@ const SchedulerContent = ({
   baseData,
   categories,
   onTileClick,
+  onTileContextMenu,
   topBarWidth,
   onItemClick,
   toggleTheme,
@@ -55,6 +59,7 @@ const SchedulerContent = ({
   clickToAddConfig
 }: SchedulerContentProps) => {
   const { goToDate, handleGoToday, zoomIn, zoomOut, zoom } = useCalendar();
+  const { pulses, pulseTiles } = useTilePulseState();
 
   useImperativeHandle(
     schedulerRef,
@@ -69,27 +74,31 @@ const SchedulerContent = ({
         } else {
           for (let i = 0; i < Math.abs(diff); i++) zoomOut();
         }
-      }
+      },
+      pulseTiles
     }),
-    [goToDate, handleGoToday, zoom, zoomIn, zoomOut]
+    [goToDate, handleGoToday, zoom, zoomIn, zoomOut, pulseTiles]
   );
 
   return (
-    <Calendar
-      data={data}
-      baseData={baseData}
-      categories={categories}
-      onTileClick={onTileClick}
-      topBarWidth={topBarWidth}
-      onItemClick={onItemClick}
-      toggleTheme={toggleTheme}
-      onEventDrop={onEventDrop}
-      onEventDrag={onEventDrag}
-      draggableConfig={draggableConfig}
-      onTimeRangeSelect={onTimeRangeSelect}
-      onMultiTimeRangeSelect={onMultiTimeRangeSelect}
-      clickToAddConfig={clickToAddConfig}
-    />
+    <tilePulseContext.Provider value={pulses}>
+      <Calendar
+        data={data}
+        baseData={baseData}
+        categories={categories}
+        onTileClick={onTileClick}
+        onTileContextMenu={onTileContextMenu}
+        topBarWidth={topBarWidth}
+        onItemClick={onItemClick}
+        toggleTheme={toggleTheme}
+        onEventDrop={onEventDrop}
+        onEventDrag={onEventDrag}
+        draggableConfig={draggableConfig}
+        onTimeRangeSelect={onTimeRangeSelect}
+        onMultiTimeRangeSelect={onMultiTimeRangeSelect}
+        clickToAddConfig={clickToAddConfig}
+      />
+    </tilePulseContext.Provider>
   );
 };
 
@@ -102,6 +111,7 @@ const Scheduler = forwardRef<SchedulerRef, SchedulerProps>(function Scheduler(
     startDate,
     onRangeChange,
     onTileClick,
+    onTileContextMenu,
     handleToggleDisplayActiveUnits,
     onClearFilterData,
     toolbarActions,
@@ -155,7 +165,8 @@ const Scheduler = forwardRef<SchedulerRef, SchedulerProps>(function Scheduler(
     () => ({
       goToDate: (date: Date | string | number) => schedulerRef.current?.goToDate(date),
       goToToday: () => schedulerRef.current?.goToToday(),
-      setZoom: (zoom: ZoomLevel) => schedulerRef.current?.setZoom(zoom)
+      setZoom: (zoom: ZoomLevel) => schedulerRef.current?.setZoom(zoom),
+      pulseTiles: (pulses: TilePulse[]) => schedulerRef.current?.pulseTiles(pulses) ?? []
     }),
     []
   );
@@ -215,6 +226,7 @@ const Scheduler = forwardRef<SchedulerRef, SchedulerProps>(function Scheduler(
                   baseData={baseData}
                   categories={categories}
                   onTileClick={onTileClick}
+                  onTileContextMenu={onTileContextMenu}
                   topBarWidth={topBarWidth ?? 0}
                   onItemClick={onItemClick}
                   toggleTheme={toggleTheme}

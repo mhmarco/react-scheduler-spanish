@@ -1,11 +1,19 @@
 import { FC, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { subcontractSeparatorHeight } from "@/constants";
+import { useTilePulses } from "@/context/TilePulseProvider";
 import { GhostProjectData, SchedulerProjectData } from "@/types/global";
 import { Tile } from "..";
 import { TilesProps } from "./types";
 
-type ExitDesc = { project: SchedulerProjectData; absoluteRow: number; yOffset: number; isSubcontract: boolean };
+type ExitDesc = {
+  project: SchedulerProjectData;
+  absoluteRow: number;
+  yOffset: number;
+  isSubcontract: boolean;
+  /** Already faded out with its collapsing group: it leaves without an exit of its own. */
+  faded: boolean;
+};
 
 const getSepOffset = (rowIndex: number, separatorRowIndices: number[]): number => {
   let count = 0;
@@ -31,6 +39,7 @@ const Tiles: FC<TilesProps> = ({
   data,
   zoom,
   onTileClick,
+  onTileContextMenu,
   onDragStart,
   isDraggable,
   draggingEventId,
@@ -41,6 +50,7 @@ const Tiles: FC<TilesProps> = ({
   leavingSegmentIds,
   ghostProject
 }) => {
+  const pulses = useTilePulses();
   const { nodes, liveMap } = useMemo(() => {
     const liveMap = new Map<string, ExitDesc>();
     const focusActive = !!focusedUnitIds && focusedUnitIds.length > 0;
@@ -83,7 +93,8 @@ const Tiles: FC<TilesProps> = ({
               project,
               absoluteRow,
               yOffset,
-              isSubcontract: !!person.isSubcontract
+              isSubcontract: !!person.isSubcontract,
+              faded: unitFading
             });
 
             return (
@@ -94,6 +105,7 @@ const Tiles: FC<TilesProps> = ({
                 zoom={zoom}
                 isSubcontract={person.isSubcontract}
                 onTileClick={onTileClick}
+                onTileContextMenu={onTileContextMenu}
                 onDragStart={onDragStart}
                 isDragging={isDraggingThis}
                 isDraggable={isTileDraggable}
@@ -102,6 +114,7 @@ const Tiles: FC<TilesProps> = ({
                 highlighted={highlightedSegmentId != null && project.segmentId === highlightedSegmentId}
                 dimmed={isDimmed}
                 leaving={!!leavingSegmentIds?.includes(project.segmentId)}
+                pulse={pulses.get(project.segmentId)}
               />
             );
           })
@@ -110,7 +123,7 @@ const Tiles: FC<TilesProps> = ({
       })
       .flat(2);
     return { nodes, liveMap };
-  }, [data, onTileClick, zoom, onDragStart, isDraggable, draggingEventId, separatorRowIndices, fadingUnitIds, highlightedSegmentId, focusedUnitIds, leavingSegmentIds, ghostProject]);
+  }, [data, onTileClick, onTileContextMenu, zoom, onDragStart, isDraggable, draggingEventId, separatorRowIndices, fadingUnitIds, highlightedSegmentId, focusedUnitIds, leavingSegmentIds, ghostProject, pulses]);
 
   // Exit animation: keep a just-removed tile mounted with `exiting` for a beat so it fades out before unmounting.
   // Timers drop only their own batch and are cleared on unmount, so overlapping removals don't cancel each other.
@@ -125,7 +138,7 @@ const Tiles: FC<TilesProps> = ({
     prevMapRef.current = liveMap;
     const removed: ExitDesc[] = [];
     prev.forEach((desc, id) => {
-      if (!liveMap.has(id)) removed.push(desc);
+      if (!liveMap.has(id) && !desc.faded) removed.push(desc);
     });
     setExiting((cur) => {
       let next = cur.filter((e) => !liveMap.has(e.project.segmentId));
@@ -142,11 +155,21 @@ const Tiles: FC<TilesProps> = ({
     timersRef.current.push(timer);
   }, [liveMap]);
 
+  // Tiles that left in THIS render, before the effect above moves them into `exiting`: rendered now so the exit
+  // starts at once instead of after a frame without them. A collapsing group's tiles are already faded out, so they
+  // just go — giving them an exit too remounted them at full opacity and faded them out a second time.
+  const justLeft: ExitDesc[] = [];
+  if (prevMapRef.current !== liveMap) {
+    prevMapRef.current.forEach((desc, id) => {
+      if (!liveMap.has(id) && !desc.faded && !exiting.some((e) => e.project.segmentId === id)) justLeft.push(desc);
+    });
+  }
+
   // Render live + exiting tiles as ONE array keyed by segmentId, so React PRESERVES the node when a tile goes
   // live → exiting (same key, same array) and the $exiting opacity/scale transition fades it out. Two separate
   // array-children ({nodes}{exiting}) would remount the exiting tile at opacity 0 and tileIn would fade it back IN.
   // Filter out any that reappeared in liveMap this render to avoid a duplicate key.
-  const exitingEls = exiting
+  const exitingEls = [...exiting, ...justLeft]
     .filter((e) => !liveMap.has(e.project.segmentId))
     .map((e) => (
       <Tile

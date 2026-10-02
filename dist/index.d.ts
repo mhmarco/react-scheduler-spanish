@@ -65,7 +65,7 @@ export declare type ClickToAddConfig = {
     isSelectable?: (resourceId: string, startDate: Date, endDate: Date) => boolean;
 };
 
-declare type ColorType = "background" | "gridBackground" | "primary" | "secondary" | "tertiary" | "textPrimary" | "textSecondary" | "accent" | "disabled" | "border" | "placeholder" | "warning" | "button" | "tooltip" | "defaultTile" | "hover" | "currentDay" | "today" | "subcontractBg" | "subcontractBorder" | "subcontractText";
+declare type ColorType = "background" | "gridBackground" | "primary" | "secondary" | "tertiary" | "textPrimary" | "textSecondary" | "accent" | "disabled" | "border" | "placeholder" | "warning" | "button" | "tooltip" | "defaultTile" | "hover" | "currentDay" | "today" | "subcontractBg" | "subcontractBorder" | "subcontractText" | "unassignedBorder" | "unassignedText";
 
 export declare type Config = {
     zoom: ZoomLevel;
@@ -645,6 +645,14 @@ export declare type SchedulerProjectData = {
      * @optional
      */
     subcontractConfirmed?: boolean;
+    /**
+     * For subcontract-row events: label/value rows the tooltip lists under a CONFIRMED subcontract's status (who runs
+     * it, on which unit). @optional
+     */
+    subcontractDetails?: {
+        label: string;
+        value: string;
+    }[];
 };
 
 export declare type SchedulerProps = {
@@ -684,6 +692,11 @@ export declare type SchedulerProps = {
     startDate?: string;
     onRangeChange?: (range: ParsedDatesRange) => void;
     onTileClick?: (data: SchedulerProjectData) => void;
+    /** Right-click on a tile; the browser's own menu is suppressed when this is set. */
+    onTileContextMenu?: (data: SchedulerProjectData, position: {
+        x: number;
+        y: number;
+    }) => void;
     handleToggleDisplayActiveUnits?: () => void;
     onClearFilterData?: () => void;
     /** Host controls rendered in the component toolbar's right zone (app's Ir a fecha / Filtros / Pantalla completa). */
@@ -897,6 +910,11 @@ export declare type SchedulerRef = {
      * 0 = weeks, 1 = days, 2 = hours
      */
     setZoom: (zoom: ZoomLevel) => void;
+    /**
+     * Briefly animate tiles whose status just changed (e.g. a driver confirmed). Only tiles on screen animate; returns
+     * the segmentIds of those that did, so the host can follow up (e.g. play a sound) only when the change was seen.
+     */
+    pulseTiles: (pulses: TilePulse[]) => string[];
 };
 
 export declare type SchedulerRow = {
@@ -905,6 +923,13 @@ export declare type SchedulerRow = {
     data: SchedulerProjectData[];
     capacity?: number;
     isSubcontract?: boolean;
+    /** The lane for services without a unit: grouped first, under a header that counts its services. */
+    isUnassigned?: boolean;
+    /**
+     * For subcontract rows: the provider whose collapsible sub-group, inside the subcontract group, holds the row.
+     * Rows without one sit directly under the subcontract header.
+     */
+    provider?: SchedulerRowProvider;
     /** Category ID to group this resource under. Must match a SchedulerCategory.id */
     categoryId?: string;
 };
@@ -920,10 +945,23 @@ declare type SchedulerRowLabel = {
     plate?: string;
 };
 
+export declare type SchedulerRowProvider = {
+    id: string;
+    name: string;
+};
+
 declare type Theme = {
     light?: Partial<Record<ColorType, string>>;
     dark?: Partial<Record<ColorType, string>>;
 };
+
+export declare type TilePulse = {
+    segmentId: string;
+    kind: TilePulseKind;
+};
+
+/** How a tile's status just changed; it picks the colour of the tile's pulse. */
+export declare type TilePulseKind = "confirmed" | "notified" | "lost";
 
 /** In-house driver readiness, worst → best. `programado` = pending but the notify moment is still in the future. */
 export declare type TileReadiness = "sin_chofer" | "sin_avisar" | "programado" | "notificado" | "confirmado";
@@ -1054,6 +1092,7 @@ declare type Translation = {
     multiSelect?: MultiSelect;
     tooltip?: Tooltip;
     subcontract?: string;
+    unassigned?: string;
 };
 
 export declare type ZoomLevel = ZoomLevelTuple[number];

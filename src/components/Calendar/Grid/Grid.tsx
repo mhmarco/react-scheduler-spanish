@@ -21,8 +21,10 @@ import { useClickToAdd } from "@/hooks/useClickToAdd";
 import { GridProps } from "./types";
 import { StyledCanvas, StyledGhostCanvas, StyledInnerWrapper, StyledSpan, StyledWrapper } from "./styles";
 
+const NO_PROVIDER_SEPARATORS: number[] = [];
+
 const Grid = forwardRef<HTMLDivElement, GridProps>(function Grid(
-  { zoom, rows, data, baseData, onTileClick, onEventDrop, onEventDrag, draggableConfig, onDragStateChange, onTimeRangeSelect, onMultiTimeRangeSelect, clickToAddConfig, separatorRowIndices = [], subcontractSeparatorRow = -1, fadingUnitIds },
+  { zoom, rows, data, baseData, onTileClick, onTileContextMenu, onEventDrop, onEventDrag, draggableConfig, onDragStateChange, onTimeRangeSelect, onMultiTimeRangeSelect, clickToAddConfig, separatorRowIndices = [], subcontractSeparatorIndex = -1, warningSeparatorIndex = -1, providerSeparatorIndices = NO_PROVIDER_SEPARATORS, fadingUnitIds },
   ref
 ) {
   const isThrottled = useRef(false);
@@ -152,9 +154,9 @@ const Grid = forwardRef<HTMLDivElement, GridProps>(function Grid(
       const width = getCanvasWidth();
       const height = rows * boxHeight + 1 + totalSeparatorOffset;
       resizeCanvas(ctx, width, height);
-      drawGrid(ctx, zoom, rows, cols, startDate, theme, separatorRowIndices, subcontractSeparatorRow);
+      drawGrid(ctx, zoom, rows, cols, startDate, theme, separatorRowIndices, subcontractSeparatorIndex, warningSeparatorIndex, providerSeparatorIndices);
     },
-    [cols, startDate, rows, zoom, theme, separatorRowIndices, subcontractSeparatorRow, totalSeparatorOffset]
+    [cols, startDate, rows, zoom, theme, separatorRowIndices, subcontractSeparatorIndex, warningSeparatorIndex, providerSeparatorIndices, totalSeparatorOffset]
   );
 
   useEffect(() => {
@@ -297,6 +299,7 @@ const Grid = forwardRef<HTMLDivElement, GridProps>(function Grid(
           data={data}
           zoom={zoom}
           onTileClick={onTileClick}
+          onTileContextMenu={onTileContextMenu}
           onDragStart={handleDragStart}
           isDraggable={isDraggable}
           draggingEventId={draggingEventId}
