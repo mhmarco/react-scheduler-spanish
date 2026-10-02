@@ -454,7 +454,8 @@ function App() {
               light: {
                 primary: "#EFF4F1", secondary: "#E4EDE9", tertiary: "#D3E2DA", accent: "#5C8374",
                 border: "#D5DED9", hover: "#E4EDE9", defaultTile: "#5C8374", currentDay: "#DDEEE8",
-                subcontractBg: "#EEF4EF", subcontractBorder: "#3E8E5A", subcontractText: "#2C6B43"
+                subcontractBg: "#F1EFFA", subcontractBorder: "#6B5FC7", subcontractText: "#5548AE",
+                unassignedBorder: "#D99A2B", unassignedText: "#9A6212"
               }
             }
           }}

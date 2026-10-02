@@ -25,7 +25,7 @@ const GroupHeader: FC<GroupHeaderProps> = ({
       </StyledChevron>
       <StyledLabel $variant={variant} $tone={tone}>{label}</StyledLabel>
       {tone ? (
-        <StyledStatusCount $tone={tone}>
+        <StyledStatusCount $tone={tone} $pulse={tone === "warning" && isCollapsed}>
           <svg width="10" height="10" viewBox="0 0 12 12" fill="none" aria-hidden="true">
             {tone === "ok" ? (
               <path

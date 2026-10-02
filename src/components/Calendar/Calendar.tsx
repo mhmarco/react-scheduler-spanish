@@ -332,6 +332,9 @@ export const Calendar: FC<CalendarProps> = ({
     [effectivePage]
   );
 
+  // The tile whose context menu is open keeps its tooltip hidden until the pointer moves to another tile.
+  const contextMenuTileRef = useRef<string | null>(null);
+
   const debouncedHandleMouseOver = useRef(
     debounce(
       (
@@ -344,6 +347,8 @@ export const Calendar: FC<CalendarProps> = ({
       ) => {
         if (!gridRef.current) return;
         const { tile, segmentId } = getTileElement(e);
+        if (segmentId && segmentId === contextMenuTileRef.current) return;
+        contextMenuTileRef.current = null;
         if (!segmentId || !tile) {
           // Hide via the visible flag only — keep tooltipData so the card holds its position/content while it fades.
           setIsVisible(false);
@@ -445,6 +450,15 @@ export const Calendar: FC<CalendarProps> = ({
     setIsVisible(false);
   }, []);
 
+  const handleTileContextMenu = useCallback(
+    (tile: SchedulerProjectData, position: { x: number; y: number }) => {
+      contextMenuTileRef.current = String(tile.segmentId);
+      handleMouseLeave();
+      onTileContextMenu?.(tile, position);
+    },
+    [handleMouseLeave, onTileContextMenu]
+  );
+
   useEffect(() => {
     const handleMouseOver = (e: MouseEvent) =>
       debouncedHandleMouseOver.current(
@@ -530,7 +544,7 @@ export const Calendar: FC<CalendarProps> = ({
             rows={visibleTotalRows}
             ref={gridRef}
             onTileClick={onTileClick}
-            onTileContextMenu={onTileContextMenu}
+            onTileContextMenu={onTileContextMenu && handleTileContextMenu}
             onEventDrop={onEventDrop}
             onEventDrag={onEventDrag}
             draggableConfig={draggableConfig}

@@ -14,14 +14,14 @@ export const drawSeparator = (
   const y = separatorRowIndex * boxHeight + separatorIndex * subcontractSeparatorHeight;
   const width = ctx.canvas.width;
 
-  // Just the background band — no centre line. The subcontract band keeps its SUBTLE amber wash, a group that needs
-  // attention a faint red one; category/group bands get a faint sage wash so the group divider reads as a soft
-  // separator without a heavy coloured stripe.
+  // Just the background band — no centre line. The subcontract band and a group that needs attention keep a SUBTLE
+  // wash of their colour; category/group bands get a faint sage wash so the group divider reads as a soft separator
+  // without a heavy coloured stripe.
   ctx.fillStyle =
     variant === "subcontract"
       ? theme.colors.subcontractBorder + "40"
       : variant === "warning"
-      ? theme.colors.warning + "26"
+      ? theme.colors.unassignedBorder + "26"
       : theme.mode === "dark"
       ? theme.colors.primary + "80"
       : "#E9EFEC";

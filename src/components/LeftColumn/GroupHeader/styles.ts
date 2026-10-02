@@ -1,7 +1,10 @@
-import styled, { DefaultTheme } from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 import { GroupHeaderVariant, GroupTone } from "./types";
 
-const warningText = (theme: DefaultTheme) => (theme.mode === "dark" ? "#FCA5A5" : "#B91C1C");
+const attentionPulse = keyframes`
+  0% { box-shadow: 0 0 0 0 var(--attention-ring); }
+  70%, 100% { box-shadow: 0 0 0 5px transparent; }
+`;
 
 // Group header matched to the mockup .bd-group .gh — a flat tinted band, uppercase sage (or gold for subcontract).
 export const StyledGroupHeader = styled.div<{ $variant: GroupHeaderVariant; $tone?: GroupTone }>`
@@ -12,27 +15,27 @@ export const StyledGroupHeader = styled.div<{ $variant: GroupHeaderVariant; $ton
   height: 21px;
   color: ${({ theme, $variant, $tone }) =>
     $tone === "warning"
-      ? warningText(theme)
+      ? theme.colors.unassignedText
       : $variant === "subcontract"
       ? theme.colors.subcontractText
       : "#5C8374"};
   background: ${({ theme, $variant, $tone }) =>
     $tone === "warning"
-      ? theme.colors.warning + "26"
+      ? theme.colors.unassignedBorder + "26"
       : $variant === "subcontract"
       ? theme.colors.subcontractBorder + "24"
       : "#E9EFEC"};
   border-left: 3px solid
     ${({ theme, $variant, $tone }) =>
       $tone === "warning"
-        ? theme.colors.warning
+        ? theme.colors.unassignedBorder
         : $variant === "subcontract"
         ? theme.colors.subcontractBorder
         : "transparent"};
   border-bottom: 1px solid
     ${({ theme, $variant, $tone }) =>
       $tone === "warning"
-        ? theme.colors.warning + "66"
+        ? theme.colors.unassignedBorder + "66"
         : $variant === "subcontract"
         ? theme.colors.subcontractBorder
         : "#D4DFD9"};
@@ -43,7 +46,7 @@ export const StyledGroupHeader = styled.div<{ $variant: GroupHeaderVariant; $ton
   &:hover {
     background: ${({ theme, $variant, $tone }) =>
       $tone === "warning"
-        ? theme.colors.warning + "38"
+        ? theme.colors.unassignedBorder + "38"
         : $variant === "subcontract"
         ? theme.colors.subcontractBorder + "33"
         : "#DAE6E0"};
@@ -57,7 +60,7 @@ export const StyledLabel = styled.span<{ $variant: GroupHeaderVariant; $tone?: G
   text-transform: uppercase;
   color: ${({ theme, $variant, $tone }) =>
     $tone === "warning"
-      ? warningText(theme)
+      ? theme.colors.unassignedText
       : $variant === "subcontract"
       ? theme.colors.subcontractText
       : "#5C8374"};
@@ -77,7 +80,7 @@ export const StyledCount = styled.span<{ $variant: GroupHeaderVariant }>`
   flex-shrink: 0;
 `;
 
-export const StyledStatusCount = styled.span<{ $tone: GroupTone }>`
+export const StyledStatusCount = styled.span<{ $tone: GroupTone; $pulse?: boolean }>`
   display: inline-flex;
   align-items: center;
   gap: 3px;
@@ -88,8 +91,23 @@ export const StyledStatusCount = styled.span<{ $tone: GroupTone }>`
   font-weight: 750;
   line-height: 1;
   flex-shrink: 0;
-  color: ${({ $tone }) => ($tone === "warning" ? "#FFFFFF" : "#2E8B63")};
-  background: ${({ theme, $tone }) => ($tone === "warning" ? theme.colors.warning : "#2E8B6324")};
+  color: ${({ theme, $tone }) =>
+    $tone === "warning" ? (theme.mode === "dark" ? "#1C1917" : "#FFFFFF") : "#2E8B63"};
+  background: ${({ theme, $tone }) =>
+    $tone === "warning"
+      ? theme.mode === "dark"
+        ? theme.colors.unassignedBorder
+        : theme.colors.unassignedText
+      : "#2E8B6324"};
+  --attention-ring: ${({ theme }) => theme.colors.unassignedBorder}99;
+  ${({ $pulse }) =>
+    $pulse &&
+    css`
+      animation: ${attentionPulse} 1.8s ease-out infinite;
+      @media (prefers-reduced-motion: reduce) {
+        animation: none;
+      }
+    `}
 `;
 
 export const StyledChevron = styled.div<{ $collapsed: boolean }>`

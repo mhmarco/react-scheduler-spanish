@@ -38,7 +38,7 @@ export type GridProps = {
    * not a row: a collapsed group's band shares its row with the next one.
    */
   subcontractSeparatorIndex?: number;
-  /** Position in separatorRowIndices of the band of a group that needs attention (drawn red), -1 when none does. */
+  /** Position in separatorRowIndices of the band of a group that needs attention (unassigned colour), -1 when none does. */
   warningSeparatorIndex?: number;
   /** Units whose group is mid fade-out (collapse) — their tiles render as exiting so they fade before the snap. */
   fadingUnitIds?: Set<string>;

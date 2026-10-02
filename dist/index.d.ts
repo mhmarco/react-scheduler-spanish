@@ -65,7 +65,7 @@ export declare type ClickToAddConfig = {
     isSelectable?: (resourceId: string, startDate: Date, endDate: Date) => boolean;
 };
 
-declare type ColorType = "background" | "gridBackground" | "primary" | "secondary" | "tertiary" | "textPrimary" | "textSecondary" | "accent" | "disabled" | "border" | "placeholder" | "warning" | "button" | "tooltip" | "defaultTile" | "hover" | "currentDay" | "today" | "subcontractBg" | "subcontractBorder" | "subcontractText";
+declare type ColorType = "background" | "gridBackground" | "primary" | "secondary" | "tertiary" | "textPrimary" | "textSecondary" | "accent" | "disabled" | "border" | "placeholder" | "warning" | "button" | "tooltip" | "defaultTile" | "hover" | "currentDay" | "today" | "subcontractBg" | "subcontractBorder" | "subcontractText" | "unassignedBorder" | "unassignedText";
 
 export declare type Config = {
     zoom: ZoomLevel;
