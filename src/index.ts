@@ -26,3 +26,6 @@ export type {
 } from "./hooks/types";
 
 export { Scheduler };
+export { READINESS, tilePulseColor } from "./components/Tiles/Tile/readiness";
+export { TileIcon } from "./components/Tiles/Tile/icons";
+export type { TileIconName } from "./components/Tiles/Tile/icons";

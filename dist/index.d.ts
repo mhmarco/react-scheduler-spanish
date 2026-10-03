@@ -1,3 +1,4 @@
+import { FC } from 'react';
 import type { ForwardRefExoticComponent } from 'react';
 import { ReactNode } from 'react';
 import type { RefAttributes } from 'react';
@@ -452,6 +453,8 @@ declare type ParsedDatesRange = {
     endDate: Date;
 };
 
+export declare const READINESS: Record<TileReadiness, StatusStyle>;
+
 /**
  * Event type classification for scheduler items.
  * Affects both tile display and tooltip presentation.
@@ -630,8 +633,8 @@ export declare type SchedulerProjectData = {
     totalPassengers?: number;
     /**
      * Driver-readiness of an in-house event — drives the top-right status dot.
-     * The consumer maps its own driver/notify/ack state onto these; the acknowledged tier is only meaningful
-     * when a driver-app feature is enabled (otherwise use up to `notificado`).
+     * The consumer maps its own driver/notify/ack state onto these; `por_confirmar` and `confirmado` only apply to
+     * a driver who can confirm (otherwise a notified driver stays `notificado`).
      * @optional
      */
     readiness?: TileReadiness;
@@ -950,21 +953,42 @@ export declare type SchedulerRowProvider = {
     name: string;
 };
 
+declare type StatusStyle = {
+    icon: TileIconName;
+    color: string;
+    label: string;
+};
+
 declare type Theme = {
     light?: Partial<Record<ColorType, string>>;
     dark?: Partial<Record<ColorType, string>>;
 };
+
+export declare const TileIcon: FC<{
+    name: TileIconName;
+    className?: string;
+    strokeWidth?: number;
+}>;
+
+export declare type TileIconName = "transfer" | "sun" | "tour" | "person" | "check" | "warn" | "clock" | "dash";
 
 export declare type TilePulse = {
     segmentId: string;
     kind: TilePulseKind;
 };
 
+/** A pulse takes the colour of the status it lands on; a lost confirmation is always the alert colour. */
+export declare const tilePulseColor: (kind: TilePulseKind, readiness?: TileReadiness) => string;
+
 /** How a tile's status just changed; it picks the colour of the tile's pulse. */
 export declare type TilePulseKind = "confirmed" | "notified" | "lost";
 
-/** In-house driver readiness, worst → best. `programado` = pending but the notify moment is still in the future. */
-export declare type TileReadiness = "sin_chofer" | "sin_avisar" | "programado" | "notificado" | "confirmado";
+/**
+ * In-house driver readiness. `programado` = not notified, and the notify moment is still in the future;
+ * `sin_avisar` = not notified although that moment has passed; `por_confirmar` = notified, waiting for the driver to
+ * confirm; `notificado` = notified, with no confirmation expected.
+ */
+export declare type TileReadiness = "sin_chofer" | "sin_avisar" | "programado" | "por_confirmar" | "notificado" | "confirmado";
 
 /**
  * Data provided to consumer when a time range is selected on the calendar.

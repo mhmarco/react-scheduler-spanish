@@ -1,5 +1,6 @@
 import { FC } from "react";
 import { TileIcon } from "../Tiles/Tile/icons";
+import { READINESS } from "../Tiles/Tile/readiness";
 import {
   StyledLegend,
   StyledLabel,
@@ -12,12 +13,7 @@ import {
 } from "./styles";
 
 // Always-visible legend strip explaining the tile icons + the two-indicator readiness system (mockup .legend).
-const STATES: { label: string; stripe: string; icon: "warn" | "clock" | "check"; color: string }[] = [
-  { label: "Sin chofer", stripe: "#9AA4B2", icon: "warn", color: "#9AA4B2" },
-  { label: "Sin avisar", stripe: "#D98A22", icon: "warn", color: "#D98A22" },
-  { label: "Notificado", stripe: "#2C6BB0", icon: "clock", color: "#2C6BB0" },
-  { label: "Confirmado", stripe: "#2E8B63", icon: "check", color: "#2E8B63" }
-];
+const STATES = [READINESS.sin_chofer, READINESS.sin_avisar, READINESS.por_confirmar, READINESS.confirmado];
 
 const Legend: FC = () => (
   <StyledLegend>
@@ -40,7 +36,7 @@ const Legend: FC = () => (
     </StyledLabel>
     {STATES.map((s) => (
       <StyledState key={s.label}>
-        <StyledStripe style={{ background: s.stripe }} />
+        <StyledStripe style={{ background: s.color }} />
         <StyledDot style={{ color: s.color }}>
           <TileIcon name={s.icon} strokeWidth={s.icon === "check" ? 2.6 : 2.2} />
         </StyledDot>

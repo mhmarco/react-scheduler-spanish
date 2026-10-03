@@ -7,7 +7,7 @@ import { getTileProperties } from "@/utils/getTileProperties";
 import { getTileTextColor } from "@/utils/getTileTextColor";
 import { ReservationType } from "@/types/global";
 import { TileIcon } from "./icons";
-import { READINESS } from "./readiness";
+import { READINESS, tilePulseColor } from "./readiness";
 import {
   StyledTileWrapper,
   StyledNt,
@@ -135,13 +135,14 @@ const Tile: FC<TileProps> = ({
   const unconfirmedSub = isSubcontract && data.subcontractConfirmed === false;
 
   const pulseDelay = pulse ? ({ "--pulse-delay": `${pulse.delayMs}ms` } as CSSProperties) : undefined;
+  const pulseColor = pulse ? tilePulseColor(pulse.kind, isSubcontract ? undefined : data.readiness) : "";
   // Keyed on the shown status as well: the new status usually lands a render after the pulse starts, and the pop
   // has to replay with it rather than with the status it replaced.
   const pulsed = (status: ReactNode) =>
     pulse ? (
       <StyledPulseStatus
         key={`${pulse.key}-${data.readiness ?? ""}-${String(data.subcontractConfirmed)}`}
-        $kind={pulse.kind}
+        $color={pulseColor}
         style={pulseDelay}>
         {status}
       </StyledPulseStatus>
@@ -165,7 +166,7 @@ const Tile: FC<TileProps> = ({
       $dimmed={dimmed}
       $leaving={leaving}
       $pulsing={!!pulse}>
-      {pulse && <StyledPulseOutline key={pulse.key} $kind={pulse.kind} style={pulseDelay} aria-hidden />}
+      {pulse && <StyledPulseOutline key={pulse.key} $color={pulseColor} style={pulseDelay} aria-hidden />}
       {leaving && <StyledLeaveTag>Sub</StyledLeaveTag>}
       {children}
     </StyledTileWrapper>

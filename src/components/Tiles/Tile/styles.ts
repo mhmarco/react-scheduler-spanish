@@ -1,7 +1,7 @@
 import styled, { css, keyframes } from "styled-components";
 import { leftColumnWidth, tileHeight } from "@/constants";
 import { marginPaddingReset, truncate } from "@/styles";
-import { TilePulseKind } from "@/types/global";
+import { STATUS_COLORS } from "./readiness";
 import { StyledTextProps, StyledTileWrapperProps } from "./types";
 
 // --- Kept: consumed by other components (DragOverlay, Tooltip, …) ---
@@ -81,9 +81,9 @@ export const StyledTileWrapper = styled.button<StyledTileWrapperProps>`
   ${({ $unconfirmed }) =>
     $unconfirmed &&
     `background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.14) 0 6px, transparent 6px 12px);
-     box-shadow: 0 0 0 1.5px #D98A22, 0 2px 5px -1px rgba(12,26,23,0.28);
+     box-shadow: 0 0 0 1.5px ${STATUS_COLORS.warn}, 0 2px 5px -1px rgba(12,26,23,0.28);
      @media (prefers-reduced-motion: no-preference) {
-       &:hover:not(:active) { box-shadow: 0 0 0 1.5px #D98A22, 0 6px 13px -3px rgba(12,26,23,0.42); }
+       &:hover:not(:active) { box-shadow: 0 0 0 1.5px ${STATUS_COLORS.warn}, 0 6px 13px -3px rgba(12,26,23,0.42); }
      }`}
   ${({ $exiting }) =>
     $exiting &&
@@ -239,12 +239,8 @@ export const StyledSubPill = styled.span`
 `;
 
 // Status-change pulse (SchedulerRef.pulseTiles): the status icon pops in with two rings, the tile flares in the new
-// state's colour, and a thin outline in that colour outlasts the flare so the change can still be found later.
-const PULSE_COLORS: Record<TilePulseKind, { ring: string; glow: string }> = {
-  confirmed: { ring: "#2E8B63", glow: "rgba(46, 139, 99, 0.45)" },
-  notified: { ring: "#2C6BB0", glow: "rgba(44, 107, 176, 0.45)" },
-  lost: { ring: "#C6483D", glow: "rgba(198, 72, 61, 0.45)" }
-};
+// state's colour ($color, a 6-digit hex), and a thin outline in that colour outlasts the flare so the change can still
+// be found later.
 
 const pulseFlare = keyframes`
   0% { box-shadow: 0 0 0 0 transparent, 0 0 0 0 transparent; }
@@ -268,22 +264,22 @@ const pulseRing = keyframes`
   100% { transform: scale(2.2); opacity: 0; }
 `;
 
-export const StyledPulseOutline = styled.span<{ $kind: TilePulseKind }>`
+export const StyledPulseOutline = styled.span<{ $color: string }>`
   position: absolute;
   inset: 0;
   border-radius: inherit;
   pointer-events: none;
-  --pulse-ring: ${({ $kind }) => PULSE_COLORS[$kind].ring};
-  --pulse-glow: ${({ $kind }) => PULSE_COLORS[$kind].glow};
+  --pulse-ring: ${({ $color }) => $color};
+  --pulse-glow: ${({ $color }) => `${$color}73`};
   animation:
     ${pulseFlare} 2160ms ease-out var(--pulse-delay, 0ms) both,
     ${pulseLinger} 9600ms linear var(--pulse-delay, 0ms) both;
 `;
 
-export const StyledPulseStatus = styled.span<{ $kind: TilePulseKind }>`
+export const StyledPulseStatus = styled.span<{ $color: string }>`
   position: relative;
   display: inline-flex;
-  --pulse-ring: ${({ $kind }) => PULSE_COLORS[$kind].ring};
+  --pulse-ring: ${({ $color }) => $color};
   @media (prefers-reduced-motion: no-preference) {
     animation: ${pulsePop} 420ms cubic-bezier(0.34, 1.56, 0.64, 1) var(--pulse-delay, 0ms) both;
     &::before,

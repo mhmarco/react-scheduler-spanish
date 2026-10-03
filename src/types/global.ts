@@ -365,8 +365,8 @@ export type SchedulerProjectData = {
 
   /**
    * Driver-readiness of an in-house event — drives the top-right status dot.
-   * The consumer maps its own driver/notify/ack state onto these; the acknowledged tier is only meaningful
-   * when a driver-app feature is enabled (otherwise use up to `notificado`).
+   * The consumer maps its own driver/notify/ack state onto these; `por_confirmar` and `confirmado` only apply to
+   * a driver who can confirm (otherwise a notified driver stays `notificado`).
    * @optional
    */
   readiness?: TileReadiness;
@@ -390,8 +390,18 @@ export type SchedulerProjectData = {
   subcontractDetails?: { label: string; value: string }[];
 };
 
-/** In-house driver readiness, worst → best. `programado` = pending but the notify moment is still in the future. */
-export type TileReadiness = "sin_chofer" | "sin_avisar" | "programado" | "notificado" | "confirmado";
+/**
+ * In-house driver readiness. `programado` = not notified, and the notify moment is still in the future;
+ * `sin_avisar` = not notified although that moment has passed; `por_confirmar` = notified, waiting for the driver to
+ * confirm; `notificado` = notified, with no confirmation expected.
+ */
+export type TileReadiness =
+  | "sin_chofer"
+  | "sin_avisar"
+  | "programado"
+  | "por_confirmar"
+  | "notificado"
+  | "confirmado";
 
 /** How a tile's status just changed; it picks the colour of the tile's pulse. */
 export type TilePulseKind = "confirmed" | "notified" | "lost";

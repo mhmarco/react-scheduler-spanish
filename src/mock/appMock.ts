@@ -197,7 +197,7 @@ export const createDemoData = (): SchedulerData => {
       categoryId: "p5",
       data: [
         tf(-3, 6, 30, "CRF-06726", "confirmado"),
-        tf(0, 9, 15, "CRF-09726", "notificado"),
+        tf(0, 9, 15, "CRF-09726", "por_confirmar"),
         tf(3, 14, 0, "CRF-14726", "sin_avisar", true),
         tf(6, 7, 45, "CRF-07826", "confirmado"),
         tf(11, 6, 0, "CRF-06826", "confirmado"),
@@ -233,7 +233,7 @@ export const createDemoData = (): SchedulerData => {
       data: [
         ev({ startDate: d(-2, 8), endDate: d(-2, 16), title: "IRAZÚ + CARTAGO", subtitle: "AMADEUS", bgColor: cOne, bookingNumber: "CRF-01726", readiness: "notificado" }),
         ev({ startDate: d(2), endDate: d(4, 18), title: "MONTEVERDE", subtitle: "AMADEUS", bgColor: cTour, driver: "Wilber V.", bookingNumber: "CRF-12726", readiness: "confirmado" }),
-        ev({ startDate: d(9), endDate: d(11, 18), title: "TORTUGUERO", subtitle: "BUEN PASEO", bgColor: cOne, bookingNumber: "CRF-14726", readiness: "notificado" })
+        ev({ startDate: d(9), endDate: d(11, 18), title: "TORTUGUERO", subtitle: "BUEN PASEO", bgColor: cOne, bookingNumber: "CRF-14726", readiness: "programado" })
       ]
     },
     {
