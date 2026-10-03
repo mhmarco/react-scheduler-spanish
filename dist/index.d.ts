@@ -1,3 +1,4 @@
+import { FC } from 'react';
 import type { ForwardRefExoticComponent } from 'react';
 import { ReactNode } from 'react';
 import type { RefAttributes } from 'react';
@@ -65,7 +66,7 @@ export declare type ClickToAddConfig = {
     isSelectable?: (resourceId: string, startDate: Date, endDate: Date) => boolean;
 };
 
-declare type ColorType = "background" | "gridBackground" | "primary" | "secondary" | "tertiary" | "textPrimary" | "textSecondary" | "accent" | "disabled" | "border" | "placeholder" | "warning" | "button" | "tooltip" | "defaultTile" | "hover" | "currentDay" | "today" | "subcontractBg" | "subcontractBorder" | "subcontractText";
+declare type ColorType = "background" | "gridBackground" | "primary" | "secondary" | "tertiary" | "textPrimary" | "textSecondary" | "accent" | "disabled" | "border" | "placeholder" | "warning" | "button" | "tooltip" | "defaultTile" | "hover" | "currentDay" | "today" | "subcontractBg" | "subcontractBorder" | "subcontractText" | "unassignedBorder" | "unassignedText";
 
 export declare type Config = {
     zoom: ZoomLevel;
@@ -452,6 +453,8 @@ declare type ParsedDatesRange = {
     endDate: Date;
 };
 
+export declare const READINESS: Record<TileReadiness, StatusStyle>;
+
 /**
  * Event type classification for scheduler items.
  * Affects both tile display and tooltip presentation.
@@ -630,8 +633,8 @@ export declare type SchedulerProjectData = {
     totalPassengers?: number;
     /**
      * Driver-readiness of an in-house event — drives the top-right status dot.
-     * The consumer maps its own driver/notify/ack state onto these; the acknowledged tier is only meaningful
-     * when a driver-app feature is enabled (otherwise use up to `notificado`).
+     * The consumer maps its own driver/notify/ack state onto these; `por_confirmar` and `confirmado` only apply to
+     * a driver who can confirm (otherwise a notified driver stays `notificado`).
      * @optional
      */
     readiness?: TileReadiness;
@@ -645,6 +648,14 @@ export declare type SchedulerProjectData = {
      * @optional
      */
     subcontractConfirmed?: boolean;
+    /**
+     * For subcontract-row events: label/value rows the tooltip lists under a CONFIRMED subcontract's status (who runs
+     * it, on which unit). @optional
+     */
+    subcontractDetails?: {
+        label: string;
+        value: string;
+    }[];
 };
 
 export declare type SchedulerProps = {
@@ -684,6 +695,11 @@ export declare type SchedulerProps = {
     startDate?: string;
     onRangeChange?: (range: ParsedDatesRange) => void;
     onTileClick?: (data: SchedulerProjectData) => void;
+    /** Right-click on a tile; the browser's own menu is suppressed when this is set. */
+    onTileContextMenu?: (data: SchedulerProjectData, position: {
+        x: number;
+        y: number;
+    }) => void;
     handleToggleDisplayActiveUnits?: () => void;
     onClearFilterData?: () => void;
     /** Host controls rendered in the component toolbar's right zone (app's Ir a fecha / Filtros / Pantalla completa). */
@@ -897,6 +913,11 @@ export declare type SchedulerRef = {
      * 0 = weeks, 1 = days, 2 = hours
      */
     setZoom: (zoom: ZoomLevel) => void;
+    /**
+     * Briefly animate tiles whose status just changed (e.g. a driver confirmed). Only tiles on screen animate; returns
+     * the segmentIds of those that did, so the host can follow up (e.g. play a sound) only when the change was seen.
+     */
+    pulseTiles: (pulses: TilePulse[]) => string[];
 };
 
 export declare type SchedulerRow = {
@@ -905,6 +926,13 @@ export declare type SchedulerRow = {
     data: SchedulerProjectData[];
     capacity?: number;
     isSubcontract?: boolean;
+    /** The lane for services without a unit: grouped first, under a header that counts its services. */
+    isUnassigned?: boolean;
+    /**
+     * For subcontract rows: the provider whose collapsible sub-group, inside the subcontract group, holds the row.
+     * Rows without one sit directly under the subcontract header.
+     */
+    provider?: SchedulerRowProvider;
     /** Category ID to group this resource under. Must match a SchedulerCategory.id */
     categoryId?: string;
 };
@@ -920,13 +948,47 @@ declare type SchedulerRowLabel = {
     plate?: string;
 };
 
+export declare type SchedulerRowProvider = {
+    id: string;
+    name: string;
+};
+
+declare type StatusStyle = {
+    icon: TileIconName;
+    color: string;
+    label: string;
+};
+
 declare type Theme = {
     light?: Partial<Record<ColorType, string>>;
     dark?: Partial<Record<ColorType, string>>;
 };
 
-/** In-house driver readiness, worst → best. `programado` = pending but the notify moment is still in the future. */
-export declare type TileReadiness = "sin_chofer" | "sin_avisar" | "programado" | "notificado" | "confirmado";
+export declare const TileIcon: FC<{
+    name: TileIconName;
+    className?: string;
+    strokeWidth?: number;
+}>;
+
+export declare type TileIconName = "transfer" | "sun" | "tour" | "person" | "check" | "warn" | "clock" | "dash";
+
+export declare type TilePulse = {
+    segmentId: string;
+    kind: TilePulseKind;
+};
+
+/** A pulse takes the colour of the status it lands on; a lost confirmation is always the alert colour. */
+export declare const tilePulseColor: (kind: TilePulseKind, readiness?: TileReadiness) => string;
+
+/** How a tile's status just changed; it picks the colour of the tile's pulse. */
+export declare type TilePulseKind = "confirmed" | "notified" | "lost";
+
+/**
+ * In-house driver readiness. `programado` = not notified, and the notify moment is still in the future;
+ * `sin_avisar` = not notified although that moment has passed; `por_confirmar` = notified, waiting for the driver to
+ * confirm; `notificado` = notified, with no confirmation expected.
+ */
+export declare type TileReadiness = "sin_chofer" | "sin_avisar" | "programado" | "por_confirmar" | "notificado" | "confirmado";
 
 /**
  * Data provided to consumer when a time range is selected on the calendar.
@@ -1054,6 +1116,7 @@ declare type Translation = {
     multiSelect?: MultiSelect;
     tooltip?: Tooltip;
     subcontract?: string;
+    unassigned?: string;
 };
 
 export declare type ZoomLevel = ZoomLevelTuple[number];

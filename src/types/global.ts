@@ -172,9 +172,18 @@ export type SchedulerRow = {
   data: SchedulerProjectData[];
   capacity?: number;
   isSubcontract?: boolean;
+  /** The lane for services without a unit: grouped first, under a header that counts its services. */
+  isUnassigned?: boolean;
+  /**
+   * For subcontract rows: the provider whose collapsible sub-group, inside the subcontract group, holds the row.
+   * Rows without one sit directly under the subcontract header.
+   */
+  provider?: SchedulerRowProvider;
   /** Category ID to group this resource under. Must match a SchedulerCategory.id */
   categoryId?: string;
 };
+
+export type SchedulerRowProvider = { id: string; name: string };
 
 export type SchedulerItemClickData = Omit<SchedulerRow, "data">;
 
@@ -186,6 +195,8 @@ export type PaginatedSchedulerRow = {
   data: SchedulerProjectData[][];
   capacity?: number;
   isSubcontract?: boolean;
+  isUnassigned?: boolean;
+  provider?: SchedulerRowProvider;
   categoryId?: string;
 };
 
@@ -354,8 +365,8 @@ export type SchedulerProjectData = {
 
   /**
    * Driver-readiness of an in-house event — drives the top-right status dot.
-   * The consumer maps its own driver/notify/ack state onto these; the acknowledged tier is only meaningful
-   * when a driver-app feature is enabled (otherwise use up to `notificado`).
+   * The consumer maps its own driver/notify/ack state onto these; `por_confirmar` and `confirmado` only apply to
+   * a driver who can confirm (otherwise a notified driver stays `notificado`).
    * @optional
    */
   readiness?: TileReadiness;
@@ -371,10 +382,34 @@ export type SchedulerProjectData = {
    * @optional
    */
   subcontractConfirmed?: boolean;
+
+  /**
+   * For subcontract-row events: label/value rows the tooltip lists under a CONFIRMED subcontract's status (who runs
+   * it, on which unit). @optional
+   */
+  subcontractDetails?: { label: string; value: string }[];
 };
 
-/** In-house driver readiness, worst → best. `programado` = pending but the notify moment is still in the future. */
-export type TileReadiness = "sin_chofer" | "sin_avisar" | "programado" | "notificado" | "confirmado";
+/**
+ * In-house driver readiness. `programado` = not notified, and the notify moment is still in the future;
+ * `sin_avisar` = not notified although that moment has passed; `por_confirmar` = notified, waiting for the driver to
+ * confirm; `notificado` = notified, with no confirmation expected.
+ */
+export type TileReadiness =
+  | "sin_chofer"
+  | "sin_avisar"
+  | "programado"
+  | "por_confirmar"
+  | "notificado"
+  | "confirmado";
+
+/** How a tile's status just changed; it picks the colour of the tile's pulse. */
+export type TilePulseKind = "confirmed" | "notified" | "lost";
+
+export type TilePulse = {
+  segmentId: string;
+  kind: TilePulseKind;
+};
 
 /**
  * Event type classification for scheduler items.
@@ -506,4 +541,5 @@ export type ReservationData = {
   readiness?: TileReadiness;
   readinessNote?: string;
   subcontractConfirmed?: boolean;
+  subcontractDetails?: { label: string; value: string }[];
 };

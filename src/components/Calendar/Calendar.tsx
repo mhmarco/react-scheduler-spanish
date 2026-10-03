@@ -25,6 +25,7 @@ import { getTooltipData } from "@/utils/getTooltipData";
 import { generateAutoCategories } from "@/utils/generateAutoCategories";
 import { prefersReducedMotion } from "@/utils/prefersReducedMotion";
 import { usePagination } from "@/hooks/usePagination";
+import { SUBCONTRACT_GROUP_ID, providerGroupId, splitByProvider } from "@/utils/subcontractProviders";
 import EmptyBox from "../EmptyBox";
 import { Grid, Header, LeftColumn, Loader, Tooltip } from "..";
 import { CalendarProps } from "./types";
@@ -54,7 +55,7 @@ const initialTooltipData: TooltipData = {
   tileBounds: { x: 0, y: 0, width: 0, height: 0 }
 };
 
-/** Build ordered groups: categories sorted by maxPassengers, then uncategorized, then subcontract */
+/** Build ordered groups: unassigned first, then categories sorted by maxPassengers, then uncategorized, then subcontract */
 function buildGroupedPage(
   page: PaginatedSchedulerData,
   categories: SchedulerCategory[] | undefined
@@ -64,15 +65,22 @@ function buildGroupedPage(
     : [];
 
   type GroupEntry =
+    | { type: "unassigned"; items: PaginatedSchedulerRow[] }
     | { type: "category"; category: SchedulerCategory; items: PaginatedSchedulerRow[] }
     | { type: "uncategorized"; items: PaginatedSchedulerRow[] }
     | { type: "subcontract"; items: PaginatedSchedulerRow[] };
 
   const groups: GroupEntry[] = [];
 
+  const unassigned = page.filter((item) => item.isUnassigned);
+  if (unassigned.length > 0) {
+    groups.push({ type: "unassigned", items: unassigned });
+  }
+  const units = page.filter((item) => !item.isUnassigned);
+
   // Category groups
   for (const cat of sortedCategories) {
-    const items = page.filter(
+    const items = units.filter(
       (item) => !item.isSubcontract && item.categoryId === cat.id
     );
     if (items.length > 0) {
@@ -82,7 +90,7 @@ function buildGroupedPage(
 
   // Uncategorized own units (no categoryId, not subcontract)
   const hasCats = sortedCategories.length > 0;
-  const uncategorized = page.filter(
+  const uncategorized = units.filter(
     (item) => !item.isSubcontract && (!item.categoryId || !hasCats)
   );
   if (uncategorized.length > 0 && hasCats) {
@@ -94,7 +102,7 @@ function buildGroupedPage(
   }
 
   // Subcontract
-  const subcontract = page.filter((item) => item.isSubcontract);
+  const subcontract = units.filter((item) => item.isSubcontract);
   if (subcontract.length > 0) {
     groups.push({ type: "subcontract", items: subcontract });
   }
@@ -107,6 +115,7 @@ export const Calendar: FC<CalendarProps> = ({
   baseData,
   categories,
   onTileClick,
+  onTileContextMenu,
   onItemClick,
   toggleTheme,
   topBarWidth,
@@ -159,7 +168,7 @@ export const Calendar: FC<CalendarProps> = ({
     }
     // Assign categoryId to each item based on its capacity
     const effectivePage: PaginatedSchedulerData = page.map((item) => {
-      if (item.isSubcontract || item.capacity == null) return item;
+      if (item.isSubcontract || item.isUnassigned || item.capacity == null) return item;
       const catId = auto.capacityToCategoryId.get(item.capacity);
       return catId ? { ...item, categoryId: catId } : item;
     });
@@ -200,6 +209,9 @@ export const Calendar: FC<CalendarProps> = ({
   // Compute all collapsible group IDs
   const allGroupIds = useMemo(() => {
     const ids: string[] = [];
+    if (effectivePage.some((item) => item.isUnassigned)) {
+      ids.push("__unassigned__");
+    }
     const sortedCats = effectiveCategories
       ? [...effectiveCategories].sort((a, b) => a.maxPassengers - b.maxPassengers)
       : [];
@@ -208,8 +220,10 @@ export const Calendar: FC<CalendarProps> = ({
         ids.push(cat.id);
       }
     }
-    if (effectivePage.some((item) => item.isSubcontract)) {
-      ids.push("__subcontract__");
+    const subcontract = effectivePage.filter((item) => item.isSubcontract);
+    if (subcontract.length > 0) {
+      ids.push(SUBCONTRACT_GROUP_ID);
+      ids.push(...splitByProvider(subcontract).providers.map((p) => providerGroupId(p.id)));
     }
     return ids;
   }, [effectiveCategories, effectivePage]);
@@ -227,8 +241,9 @@ export const Calendar: FC<CalendarProps> = ({
     if (fadingGroups.size === 0) return EMPTY_UNIT_IDS;
     const ids = new Set<string>();
     for (const item of effectivePage) {
-      const gid = item.isSubcontract ? "__subcontract__" : item.categoryId;
-      if (gid && fadingGroups.has(gid)) ids.add(item.id);
+      const gid = item.isUnassigned ? "__unassigned__" : item.isSubcontract ? SUBCONTRACT_GROUP_ID : item.categoryId;
+      const providerFading = !!item.provider && fadingGroups.has(providerGroupId(item.provider.id));
+      if ((gid && fadingGroups.has(gid)) || providerFading) ids.add(item.id);
     }
     return ids;
   }, [fadingGroups, effectivePage]);
@@ -240,7 +255,9 @@ export const Calendar: FC<CalendarProps> = ({
     visibleTotalRows,
     visibleProjectsPerPerson,
     separatorRowIndices,
-    subcontractSeparatorRow
+    subcontractSeparatorIndex,
+    unassignedSeparatorIndex,
+    providerSeparatorIndices
   } = useMemo(() => {
     const groups = buildGroupedPage(effectivePage, effectiveCategories);
     const hasCategoryHeaders = (effectiveCategories?.length ?? 0) > 0;
@@ -255,42 +272,54 @@ export const Calendar: FC<CalendarProps> = ({
     const separatorRowIndices: number[] = [];
 
     let currentRow = 0;
-    let subcontractSeparatorRow = -1;
+    let subcontractSeparatorIndex = -1;
+    let unassignedSeparatorIndex = -1;
+    const providerSeparatorIndices: number[] = [];
+
+    const pushRows = (items: PaginatedSchedulerData) => {
+      for (const item of items) {
+        const idx = idToPageIdx.get(item.id) ?? 0;
+        const rows = rowsPerItem[idx];
+        visiblePage.push(item);
+        visibleRowsPerItem.push(rows);
+        visibleProjectsPerPerson.push(projectsPerPerson[idx]);
+        currentRow += rows;
+      }
+    };
 
     for (const group of groups) {
       const needsHeader =
+        group.type === "unassigned" ||
         group.type === "subcontract" ||
         (group.type === "category" && hasCategoryHeaders);
 
       if (needsHeader) {
         const groupId =
-          group.type === "subcontract"
-            ? "__subcontract__"
+          group.type === "unassigned"
+            ? "__unassigned__"
+            : group.type === "subcontract"
+            ? SUBCONTRACT_GROUP_ID
             : (group as { type: "category"; category: SchedulerCategory }).category.id;
         const isCollapsed = collapsedGroups.has(groupId);
 
+        if (group.type === "subcontract") subcontractSeparatorIndex = separatorRowIndices.length;
+        if (group.type === "unassigned") unassignedSeparatorIndex = separatorRowIndices.length;
         separatorRowIndices.push(currentRow);
-        if (group.type === "subcontract") subcontractSeparatorRow = currentRow;
 
-        if (!isCollapsed) {
-          for (const item of group.items) {
-            const idx = idToPageIdx.get(item.id) ?? 0;
-            const rows = rowsPerItem[idx];
-            visiblePage.push(item);
-            visibleRowsPerItem.push(rows);
-            visibleProjectsPerPerson.push(projectsPerPerson[idx]);
-            currentRow += rows;
-          }
+        if (isCollapsed) continue;
+        if (group.type !== "subcontract") {
+          pushRows(group.items);
+          continue;
+        }
+        const { loose, providers } = splitByProvider(group.items);
+        pushRows(loose);
+        for (const provider of providers) {
+          providerSeparatorIndices.push(separatorRowIndices.length);
+          separatorRowIndices.push(currentRow);
+          if (!collapsedGroups.has(providerGroupId(provider.id))) pushRows(provider.items);
         }
       } else {
-        for (const item of group.items) {
-          const idx = idToPageIdx.get(item.id) ?? 0;
-          const rows = rowsPerItem[idx];
-          visiblePage.push(item);
-          visibleRowsPerItem.push(rows);
-          visibleProjectsPerPerson.push(projectsPerPerson[idx]);
-          currentRow += rows;
-        }
+        pushRows(group.items);
       }
     }
 
@@ -301,9 +330,23 @@ export const Calendar: FC<CalendarProps> = ({
       visibleTotalRows,
       visibleProjectsPerPerson,
       separatorRowIndices,
-      subcontractSeparatorRow
+      subcontractSeparatorIndex,
+      unassignedSeparatorIndex,
+      providerSeparatorIndices
     };
   }, [effectivePage, effectiveCategories, page, collapsedGroups, rowsPerItem, projectsPerPerson]);
+
+  const unassignedCount = useMemo(
+    () =>
+      effectivePage.reduce(
+        (count, item) => (item.isUnassigned ? count + item.data.reduce((n, row) => n + row.length, 0) : count),
+        0
+      ),
+    [effectivePage]
+  );
+
+  // The tile whose context menu is open keeps its tooltip hidden until the pointer moves to another tile.
+  const contextMenuTileRef = useRef<string | null>(null);
 
   const debouncedHandleMouseOver = useRef(
     debounce(
@@ -317,6 +360,8 @@ export const Calendar: FC<CalendarProps> = ({
       ) => {
         if (!gridRef.current) return;
         const { tile, segmentId } = getTileElement(e);
+        if (segmentId && segmentId === contextMenuTileRef.current) return;
+        contextMenuTileRef.current = null;
         if (!segmentId || !tile) {
           // Hide via the visible flag only — keep tooltipData so the card holds its position/content while it fades.
           setIsVisible(false);
@@ -418,6 +463,15 @@ export const Calendar: FC<CalendarProps> = ({
     setIsVisible(false);
   }, []);
 
+  const handleTileContextMenu = useCallback(
+    (tile: SchedulerProjectData, position: { x: number; y: number }) => {
+      contextMenuTileRef.current = String(tile.segmentId);
+      handleMouseLeave();
+      onTileContextMenu?.(tile, position);
+    },
+    [handleMouseLeave, onTileContextMenu]
+  );
+
   useEffect(() => {
     const handleMouseOver = (e: MouseEvent) =>
       debouncedHandleMouseOver.current(
@@ -485,6 +539,7 @@ export const Calendar: FC<CalendarProps> = ({
         allGroupIds={allGroupIds}
         onExpandAll={handleExpandAll}
         onCollapseAll={handleCollapseAll}
+        unassignedCount={unassignedCount}
       />
       <StyledInnerWrapper>
         <Header
@@ -502,6 +557,7 @@ export const Calendar: FC<CalendarProps> = ({
             rows={visibleTotalRows}
             ref={gridRef}
             onTileClick={onTileClick}
+            onTileContextMenu={onTileContextMenu && handleTileContextMenu}
             onEventDrop={onEventDrop}
             onEventDrag={onEventDrag}
             draggableConfig={draggableConfig}
@@ -510,7 +566,9 @@ export const Calendar: FC<CalendarProps> = ({
             onMultiTimeRangeSelect={onMultiTimeRangeSelect}
             clickToAddConfig={clickToAddConfig}
             separatorRowIndices={separatorRowIndices}
-            subcontractSeparatorRow={subcontractSeparatorRow}
+            subcontractSeparatorIndex={subcontractSeparatorIndex}
+            warningSeparatorIndex={unassignedCount > 0 ? unassignedSeparatorIndex : -1}
+            providerSeparatorIndices={providerSeparatorIndices}
             fadingUnitIds={fadingUnitIds}
           />
         ) : (

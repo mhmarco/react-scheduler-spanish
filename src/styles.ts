@@ -46,7 +46,9 @@ export type ColorType =
   | "today"
   | "subcontractBg"
   | "subcontractBorder"
-  | "subcontractText";
+  | "subcontractText"
+  | "unassignedBorder"
+  | "unassignedText";
 
 export type Theme = {
   colors: Record<ColorType, string>;
@@ -83,7 +85,9 @@ export const theme: DefaultTheme = {
     today: "#0F7D66",
     subcontractBg: "#FFF7ED",
     subcontractBorder: "#F59E0B",
-    subcontractText: "#92400E"
+    subcontractText: "#92400E",
+    unassignedBorder: "#F59E0B",
+    unassignedText: "#92400E"
   }
 };
 
@@ -116,7 +120,9 @@ export const darkTheme: Theme = {
     today: "#2DD4BF",
     subcontractBg: "#422006",
     subcontractBorder: "#D97706",
-    subcontractText: "#FCD34D"
+    subcontractText: "#FCD34D",
+    unassignedBorder: "#D97706",
+    unassignedText: "#FCD34D"
   }
 };
 
