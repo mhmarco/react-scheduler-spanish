@@ -62,5 +62,6 @@ export const en = {
     oneDay: "One-day",
     passengers: "Pax"
   },
-  subcontract: "Subcontract"
+  subcontract: "Subcontract",
+  unassigned: "No unit assigned"
 };

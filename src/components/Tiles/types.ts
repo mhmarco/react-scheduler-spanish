@@ -4,6 +4,8 @@ export type TilesProps = {
   zoom: number;
   data: PaginatedSchedulerData;
   onTileClick?: (data: SchedulerProjectData) => void;
+  /** Right-click on a tile; the browser's own menu is suppressed when this is set. */
+  onTileContextMenu?: (data: SchedulerProjectData, position: { x: number; y: number }) => void;
   onDragStart?: (event: SchedulerProjectData, mouseEvent: React.MouseEvent) => void;
   isDraggable?: (event: SchedulerProjectData) => boolean;
   draggingEventId?: string | null;

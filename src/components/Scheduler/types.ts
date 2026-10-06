@@ -5,6 +5,7 @@ import {
   SchedulerData,
   SchedulerItemClickData,
   SchedulerProjectData,
+  TilePulse,
   ZoomLevel
 } from "@/types/global";
 import { ParsedDatesRange } from "@/utils/getDatesRange";
@@ -47,6 +48,11 @@ export type SchedulerRef = {
    * 0 = weeks, 1 = days, 2 = hours
    */
   setZoom: (zoom: ZoomLevel) => void;
+  /**
+   * Briefly animate tiles whose status just changed (e.g. a driver confirmed). Only tiles on screen animate; returns
+   * the segmentIds of those that did, so the host can follow up (e.g. play a sound) only when the change was seen.
+   */
+  pulseTiles: (pulses: TilePulse[]) => string[];
 };
 
 export type SchedulerProps = {
@@ -86,6 +92,8 @@ export type SchedulerProps = {
   startDate?: string;
   onRangeChange?: (range: ParsedDatesRange) => void;
   onTileClick?: (data: SchedulerProjectData) => void;
+  /** Right-click on a tile; the browser's own menu is suppressed when this is set. */
+  onTileContextMenu?: (data: SchedulerProjectData, position: { x: number; y: number }) => void;
   handleToggleDisplayActiveUnits?: () => void;
   onClearFilterData?: () => void;
   /** Host controls rendered in the component toolbar's right zone (app's Ir a fecha / Filtros / Pantalla completa). */

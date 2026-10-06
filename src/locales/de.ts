@@ -62,5 +62,6 @@ export const de = {
     oneDay: "Eintägig",
     passengers: "Pax"
   },
-  subcontract: "Subunternehmer"
+  subcontract: "Subunternehmer",
+  unassigned: "Kein Fahrzeug zugewiesen"
 };

@@ -1,7 +1,7 @@
 import { FC } from "react";
 
 // Inline SVG icons matching the locked planner mockup (artifact 91ed97bb). Stroke-based, viewBox 0 0 24 24.
-export type TileIconName = "transfer" | "sun" | "tour" | "person" | "check" | "warn" | "clock";
+export type TileIconName = "transfer" | "sun" | "tour" | "person" | "check" | "warn" | "clock" | "dash";
 
 const PATHS: Record<TileIconName, JSX.Element> = {
   transfer: (
@@ -40,7 +40,8 @@ const PATHS: Record<TileIconName, JSX.Element> = {
       <circle cx="12" cy="12" r="8.5" />
       <path d="M12 7.5V12l3 2" />
     </>
-  )
+  ),
+  dash: <path d="M6 12h12" />
 };
 
 export const TileIcon: FC<{ name: TileIconName; className?: string; strokeWidth?: number }> = ({

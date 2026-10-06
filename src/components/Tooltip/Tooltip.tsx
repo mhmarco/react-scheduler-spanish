@@ -2,7 +2,7 @@ import { FC, useLayoutEffect, useRef, useState } from "react";
 import { ReservationType } from "@/types/global";
 import { useLanguage } from "@/context/LocaleProvider";
 import { TileIcon } from "@/components/Tiles/Tile/icons";
-import { READINESS } from "@/components/Tiles/Tile/readiness";
+import { READINESS, SUBCONTRACT_STATUS } from "@/components/Tiles/Tile/readiness";
 import { TooltipProps } from "./types";
 import {
   StyledTooltipWrapper,
@@ -100,12 +100,17 @@ const Tooltip: FC<TooltipProps> = ({ tooltipData, visible = true }) => {
   const typeIcon = !isTour ? "transfer" : isOneDayTour ? "sun" : "tour";
   const badgeLabel = !isTour ? t.transfer : isOneDayTour ? t.oneDay : t.tour;
 
-  // In-house readiness (icon + label) for the hover status row — replaces the removed legend key. Subcontracts have no
-  // driver flow, so no row (they need no explanation).
+  // In-house readiness (icon + label) for the hover status row — replaces the removed legend key. A subcontract's row
+  // is its confirmation, and a confirmed one lists who runs it.
   const rd = reservationData.readiness ? READINESS[reservationData.readiness] : null;
+  const sub =
+    reservationData.subcontractConfirmed === undefined
+      ? null
+      : SUBCONTRACT_STATUS[reservationData.subcontractConfirmed ? "confirmed" : "unconfirmed"];
 
   // Build details array for grid
   const details = [
+    ...(reservationData.subcontractConfirmed ? reservationData.subcontractDetails ?? [] : []),
     reservationData.groupName && { label: t.groupName, value: reservationData.groupName },
     reservationData.driver && { label: t.driver, value: reservationData.driver },
     reservationData.passengers && { label: t.passengers, value: String(reservationData.passengers) },
@@ -130,6 +135,12 @@ const Tooltip: FC<TooltipProps> = ({ tooltipData, visible = true }) => {
           <StyledReadiness style={{ color: rd.color }}>
             <TileIcon name={rd.icon} strokeWidth={rd.icon === "check" ? 2.6 : 2.2} />
             {reservationData.readinessNote || rd.label}
+          </StyledReadiness>
+        )}
+        {sub && (
+          <StyledReadiness style={{ color: sub.color }}>
+            <TileIcon name={sub.icon} strokeWidth={sub.icon === "check" ? 2.6 : 2.2} />
+            {sub.label}
           </StyledReadiness>
         )}
       </StyledHeader>

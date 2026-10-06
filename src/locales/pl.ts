@@ -62,5 +62,6 @@ export const pl = {
     oneDay: "Jednodniowy",
     passengers: "Pax"
   },
-  subcontract: "Podwykonawca"
+  subcontract: "Podwykonawca",
+  unassigned: "Nie przypisano pojazdu"
 };

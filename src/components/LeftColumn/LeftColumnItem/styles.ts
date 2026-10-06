@@ -10,7 +10,7 @@ const rowIn = keyframes`
 export const StyledWrapper = styled.div<StyledLeftColumnItemWrapperProps>`
   display: flex;
   align-items: ${({ rows }) => (rows > 1 ? "start" : "center")};
-  padding: 0.813rem 0 0.813rem 1rem;
+  padding: 0.813rem 0 0.813rem ${({ $nested }) => ($nested ? "1.75rem" : "1rem")};
   width: 100%;
   min-height: ${boxHeight}px;
   height: calc(${boxHeight}px * ${({ rows }) => rows});

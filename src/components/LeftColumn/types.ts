@@ -18,6 +18,8 @@ export type LeftColumnProps = {
   allGroupIds: string[];
   onExpandAll: () => void;
   onCollapseAll: () => void;
+  /** Services in the unassigned lane; its group header shows them as all clear (0) or as a warning. */
+  unassignedCount: number;
 };
 
 export type StyledInputWrapperProps = {

@@ -15,7 +15,9 @@ export const drawGrid = (
   parsedStartDate: Day,
   theme: Theme,
   separatorRowIndices: number[] = [],
-  subcontractSeparatorRow = -1
+  subcontractSeparatorIndex = -1,
+  warningSeparatorIndex = -1,
+  providerSeparatorIndices: number[] = []
 ) => {
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   const canvasWrapper = document.getElementById(canvasWrapperId);
@@ -33,9 +35,16 @@ export const drawGrid = (
       break;
   }
 
-  // Draw all separators; only the subcontract one gets the amber line.
   for (let i = 0; i < separatorRowIndices.length; i++) {
-    drawSeparator(ctx, i, separatorRowIndices[i], theme, separatorRowIndices[i] === subcontractSeparatorRow);
+    const variant =
+      i === subcontractSeparatorIndex
+        ? "subcontract"
+        : i === warningSeparatorIndex
+        ? "warning"
+        : providerSeparatorIndices.includes(i)
+        ? "provider"
+        : "group";
+    drawSeparator(ctx, i, separatorRowIndices[i], theme, variant);
   }
 
   // Month-boundary verticals drawn LAST so the line runs continuously OVER the group/separator bands (drawCell paints

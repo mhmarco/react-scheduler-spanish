@@ -6,6 +6,8 @@ export type LeftColumnItemProps = {
   rows: number;
   onItemClick?: (data: SchedulerItemClickData) => void;
   isSubcontract?: boolean;
+  /** A unit inside a provider's sub-group: indented under the provider header, with a bus for an icon. */
+  nested?: boolean;
 };
 
 export type StyledTextProps = {
@@ -16,4 +18,5 @@ export type StyledLeftColumnItemWrapperProps = {
   rows: number;
   clickable: boolean;
   $isSubcontract?: boolean;
+  $nested?: boolean;
 };

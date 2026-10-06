@@ -1,7 +1,18 @@
 import { Scheduler } from "./components";
 import "./styles.css";
 export type { SchedulerProps, SchedulerRef } from "./components/Scheduler/types";
-export type { SchedulerData, SchedulerProjectData, SchedulerRow, SchedulerCategory, ZoomLevel, Config, TileReadiness } from "./types/global";
+export type {
+  SchedulerData,
+  SchedulerProjectData,
+  SchedulerRow,
+  SchedulerRowProvider,
+  SchedulerCategory,
+  ZoomLevel,
+  Config,
+  TileReadiness,
+  TilePulse,
+  TilePulseKind
+} from "./types/global";
 export type {
   DragState,
   DropTarget,
@@ -15,3 +26,6 @@ export type {
 } from "./hooks/types";
 
 export { Scheduler };
+export { READINESS, tilePulseColor } from "./components/Tiles/Tile/readiness";
+export { TileIcon } from "./components/Tiles/Tile/icons";
+export type { TileIconName } from "./components/Tiles/Tile/icons";
