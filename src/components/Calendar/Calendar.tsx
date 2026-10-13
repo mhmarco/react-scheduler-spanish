@@ -22,6 +22,7 @@ import {
   ZoomLevel
 } from "@/types/global";
 import { getTooltipData } from "@/utils/getTooltipData";
+import { HourFormat } from "@/utils/formatTimeOfDay";
 import { generateAutoCategories } from "@/utils/generateAutoCategories";
 import { prefersReducedMotion } from "@/utils/prefersReducedMotion";
 import { usePagination } from "@/hooks/usePagination";
@@ -139,7 +140,7 @@ export const Calendar: FC<CalendarProps> = ({
     zoom,
     startDate,
     isLoading,
-    config: { includeTakenHoursOnWeekendsInDayView, showTooltip, showThemeToggle }
+    config: { includeTakenHoursOnWeekendsInDayView, showTooltip, showThemeToggle, hourFormat }
   } = useCalendar();
   const gridRef = useRef<HTMLDivElement>(null);
   // The left column's top spacer must match the calendar header block (Topbar + Legend + canvas header),
@@ -356,7 +357,8 @@ export const Calendar: FC<CalendarProps> = ({
         startDate: Day,
         rowsPerItem: number[],
         projectsPerPerson: SchedulerProjectData[][][],
-        zoom: ZoomLevel
+        zoom: ZoomLevel,
+        hourFormat: HourFormat
       ) => {
         if (!gridRef.current) return;
         const { tile, segmentId } = getTileElement(e);
@@ -393,7 +395,8 @@ export const Calendar: FC<CalendarProps> = ({
           rowsPerItem,
           projectsPerPerson,
           zoom,
-          includeTakenHoursOnWeekendsInDayView
+          includeTakenHoursOnWeekendsInDayView,
+          hourFormat
         );
         setTooltipData({
           coords: { x, y },
@@ -480,7 +483,8 @@ export const Calendar: FC<CalendarProps> = ({
         startDate,
         visibleRowsPerItem,
         visibleProjectsPerPerson,
-        zoom
+        zoom,
+        hourFormat ?? "12h"
       );
     const gridArea = gridRef.current;
     if (!gridArea) return;
@@ -497,6 +501,7 @@ export const Calendar: FC<CalendarProps> = ({
     visibleRowsPerItem,
     startDate,
     zoom,
+    hourFormat,
     data
   ]);
 

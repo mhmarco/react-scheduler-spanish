@@ -91,6 +91,12 @@ export declare type Config = {
      */
     includeTakenHoursOnWeekendsInDayView?: boolean;
     /**
+     * time-of-day render format for tiles, tooltips, hour gutter and drag overlay.
+     * "12h" → "2:30 PM"; "24h" → "14:30".
+     * @default "12h"
+     */
+    hourFormat?: "12h" | "24h";
+    /**
      * show tooltip when hovering over tiles items
      * @default true
      */

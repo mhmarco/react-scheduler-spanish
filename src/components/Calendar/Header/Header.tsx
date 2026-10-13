@@ -28,6 +28,7 @@ const Header = forwardRef<HTMLDivElement, HeaderProps>(function Header(
   const theme = useTheme();
 
   const showWeekRow = config.showWeekRow !== false;
+  const hourFormat = config.hourFormat ?? "12h";
   // The canvas AND its wrapper both shrink when the week row is hidden, so the grid below doesn't leave a 16px gap.
   const currentHeaderHeight =
     zoom === 2
@@ -41,9 +42,9 @@ const Header = forwardRef<HTMLDivElement, HeaderProps>(function Header(
       const height = currentHeaderHeight + 1;
       resizeCanvas(ctx, width, height);
 
-      drawHeader(ctx, zoom, cols, startDate, week, dayOfYear, theme, showWeekRow);
+      drawHeader(ctx, zoom, cols, startDate, week, dayOfYear, theme, showWeekRow, hourFormat);
     },
-    [cols, dayOfYear, startDate, week, zoom, theme, showWeekRow, currentHeaderHeight]
+    [cols, dayOfYear, startDate, week, zoom, theme, showWeekRow, hourFormat, currentHeaderHeight]
   );
 
   useEffect(() => {

@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import { weekWidth, boxHeight, dayWidth, zoom2ColumnWidth } from "@/constants";
 import { Day, Coords, SchedulerProjectData, TooltipData, ZoomLevel, ReservationType } from "@/types/global";
+import { formatTimeOfDay, HourFormat } from "./formatTimeOfDay";
 import { getOccupancy } from "./getOccupancy";
 
 export const getTooltipData = (
@@ -10,7 +11,8 @@ export const getTooltipData = (
   rowsPerPerson: number[],
   resourcesData: SchedulerProjectData[][][],
   zoom: ZoomLevel,
-  includeTakenHoursOnWeekendsInDayView = false
+  includeTakenHoursOnWeekendsInDayView = false,
+  hourFormat: HourFormat = "12h"
 ): TooltipData => {
   let timeUnit: dayjs.ManipulateType = "weeks";
   let currBoxWidth;
@@ -60,9 +62,9 @@ export const getTooltipData = (
     resourceIndex,
     disposition,
     reservationData: {
-      startTime: dayjs(reservation.startDate).format("hh:mm A"),
+      startTime: formatTimeOfDay(reservation.startDate, hourFormat),
       startDate: dayjs(reservation.startDate).format("MMM D, YYYY"),
-      endTime: dayjs(reservation.endDate).format("hh:mm A"),
+      endTime: formatTimeOfDay(reservation.endDate, hourFormat),
       endDate: dayjs(reservation.endDate).format("MMM D, YYYY"),
       client: reservation.subtitle ?? "",
       eventName: reservation.title,
