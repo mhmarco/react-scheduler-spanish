@@ -62,7 +62,7 @@ export const NavBtn = styled.button`
 export const Today = styled.button`
   font-size: 13px;
   font-weight: 700;
-  color: #183d3d;
+  color: #184546;
   border: 1px solid #c8d5cd;
   background: #fff;
   border-radius: 8px;

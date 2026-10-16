@@ -335,7 +335,7 @@ export const StyledXsTime = styled.span<{ $end?: boolean }>`
   text-align: center;
   max-width: 100%;
   background: ${({ $end }) => ($end ? "rgba(255,255,255,0.72)" : "rgba(255,255,255,0.95)")};
-  color: ${({ $end }) => ($end ? "#3A4C46" : "#183D3D")};
+  color: ${({ $end }) => ($end ? "#3A4C46" : "#184546")};
 `;
 
 // --- Focus-mode ghost preview tile + the "Sub" leave-tag on vacating blockers ---

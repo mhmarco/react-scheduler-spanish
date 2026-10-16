@@ -60,7 +60,7 @@ export const drawDaysOnBottom = (
             ? theme.colors.today
             : theme.mode === "dark"
             ? theme.colors.textPrimary
-            : "#183D3D"
+            : "#184546"
         }
       },
       theme
