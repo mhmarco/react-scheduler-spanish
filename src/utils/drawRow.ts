@@ -53,7 +53,7 @@ export const drawRow = (config: DrawRowConfig, theme: Theme) => {
 
     const textXPos = x + width / 2 - ctx.measureText(label).width / 2;
     ctx.textBaseline = "middle";
-    ctx.fillStyle = theme.mode === "dark" ? theme.colors.textPrimary : "#183D3D";
+    ctx.fillStyle = theme.mode === "dark" ? theme.colors.textPrimary : "#184546";
     ctx.fillText(label, textXPos, textYPos);
   }
   if (isBottomRow && fillStyle && topText && bottomText) {

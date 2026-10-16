@@ -4834,7 +4834,7 @@ const Ra = ({
 `, za = x.button`
   font-size: 13px;
   font-weight: 700;
-  color: #183d3d;
+  color: #184546;
   border: 1px solid #c8d5cd;
   background: #fff;
   border-radius: 8px;
@@ -6096,7 +6096,7 @@ to{
   if (t.strokeStyle = g, t.setLineDash([]), u && a && c) {
     t.fillStyle = r.colors.gridBackground, t.fillRect(n, o, s, i), $ ? (t.moveTo(n, o), t.lineTo(n + s, o), t.stroke(), t.moveTo(n, o + i), t.lineTo(n + s, o + i), t.stroke(), t.moveTo(n + s / 2, o + i), t.lineTo(n + s / 2, o + i - 5), t.stroke()) : (t.moveTo(n, o + i - 0.5), t.lineTo(n + s, o + i - 0.5), t.stroke()), t.font = a;
     const R = n + s / 2 - t.measureText(u).width / 2;
-    t.textBaseline = "middle", t.fillStyle = r.mode === "dark" ? r.colors.textPrimary : "#183D3D", t.fillText(u, R, c);
+    t.textBaseline = "middle", t.fillStyle = r.mode === "dark" ? r.colors.textPrimary : "#184546", t.fillText(u, R, c);
   }
   if (d && l && y && S) {
     t.fillStyle = l, t.fillRect(n, o, s, i), t.beginPath(), t.moveTo(n, o + i - 0.5), t.lineTo(n + s, o + i - 0.5), t.stroke(), t.font = y.font;
@@ -6136,7 +6136,7 @@ to{
           y: c,
           label: `${d.dayOfMonth}`,
           font: l ? `700 12px ${Ze}` : `700 13px ${Ze}`,
-          color: l ? n.colors.today : n.mode === "dark" ? n.colors.textPrimary : "#183D3D"
+          color: l ? n.colors.today : n.mode === "dark" ? n.colors.textPrimary : "#184546"
         }
       },
       n
@@ -6934,7 +6934,7 @@ const Vl = Ve`
   text-align: center;
   max-width: 100%;
   background: ${({ $end: e }) => e ? "rgba(255,255,255,0.72)" : "rgba(255,255,255,0.95)"};
-  color: ${({ $end: e }) => e ? "#3A4C46" : "#183D3D"};
+  color: ${({ $end: e }) => e ? "#3A4C46" : "#184546"};
 `, cd = Ve`
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: none; }
