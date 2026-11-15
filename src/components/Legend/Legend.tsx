@@ -8,12 +8,17 @@ import {
   StyledSubPill,
   StyledSep,
   StyledState,
-  StyledStripe,
   StyledDot
 } from "./styles";
 
-// Always-visible legend strip explaining the tile icons + the two-indicator readiness system (mockup .legend).
-const STATES = [READINESS.sin_chofer, READINESS.sin_avisar, READINESS.por_confirmar, READINESS.confirmado];
+// Always-visible legend strip explaining the tile icons + the readiness icon in the tile corner (mockup .legend).
+const STATES = [
+  READINESS.sin_chofer,
+  READINESS.programado,
+  READINESS.sin_avisar,
+  READINESS.por_confirmar,
+  READINESS.confirmado
+];
 
 const Legend: FC = () => (
   <StyledLegend>
@@ -32,11 +37,10 @@ const Legend: FC = () => (
     </StyledItem>
     <StyledSep />
     <StyledLabel>
-      Estado <em>franja izq. + punto esq.</em>
+      Estado <em>ícono en la esquina</em>
     </StyledLabel>
     {STATES.map((s) => (
       <StyledState key={s.label}>
-        <StyledStripe style={{ background: s.color }} />
         <StyledDot style={{ color: s.color }}>
           <TileIcon name={s.icon} strokeWidth={s.icon === "check" ? 2.6 : 2.2} />
         </StyledDot>

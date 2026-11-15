@@ -79,13 +79,6 @@ export const StyledState = styled.span`
   flex: none;
 `;
 
-export const StyledStripe = styled.span`
-  width: 5px;
-  height: 14px;
-  border-radius: 2px;
-  flex: none;
-`;
-
 export const StyledDot = styled.span`
   width: 14px;
   height: 14px;
