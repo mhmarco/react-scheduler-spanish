@@ -129,7 +129,7 @@ const Overview: FC = () => {
   };
 
   return (
-    <StyledOverview>
+    <StyledOverview data-tour="planner-navegar">
       <StyledCap>
         Navegar
         <br />

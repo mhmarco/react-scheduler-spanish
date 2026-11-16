@@ -60,7 +60,7 @@ export const StyledTypeBadge = styled.span`
   }
 `;
 
-// In-house readiness status (icon + label, e.g. "Sin chofer") shown on hover in place of the removed legend key.
+// In-house readiness status (icon + label, e.g. "Sin conductor") shown on hover in place of the removed legend key.
 export const StyledReadiness = styled.div`
   display: inline-flex;
   align-items: center;

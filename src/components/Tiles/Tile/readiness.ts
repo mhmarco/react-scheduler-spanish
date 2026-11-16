@@ -17,8 +17,8 @@ type StatusStyle = { icon: TileIconName; color: string; label: string };
 // Single source for in-house driver-readiness presentation — the tile's status dot AND the tooltip's status row
 // read from here (labels replace the removed legend). Spanish labels, matching the app.
 export const READINESS: Record<TileReadiness, StatusStyle> = {
-  sin_chofer: { icon: "warn", color: STATUS_COLORS.muted, label: "Sin chofer" },
-  sin_avisar: { icon: "warn", color: STATUS_COLORS.crit, label: "Pendiente de notificar" },
+  sin_chofer: { icon: "warn", color: STATUS_COLORS.muted, label: "Sin conductor" },
+  sin_avisar: { icon: "warn", color: STATUS_COLORS.crit, label: "Aviso atrasado" },
   programado: { icon: "dash", color: STATUS_COLORS.muted, label: "Pendiente de notificar" },
   por_confirmar: { icon: "clock", color: STATUS_COLORS.warn, label: "Notificado, esperando confirmación" },
   notificado: { icon: "clock", color: STATUS_COLORS.info, label: "Notificado" },
